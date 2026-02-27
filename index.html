@@ -1,0 +1,2911 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Pure Earth Marketing Effectiveness Tool</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600;700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <!-- Header -->
+  <header class="header">
+    <div class="header-inner">
+      <div class="logo-area">
+        <img src="https://cdn.shopify.com/s/files/1/0566/0649/0718/files/logo.png?v=1710941646" alt="Pure Earth" class="logo">
+      </div>
+      <div class="header-title">
+        <h1>Marketing Effectiveness Tool</h1>
+        <p class="subtitle">Viral Growth Benchmarking System &mdash; TikTok &bull; Instagram &bull; Facebook &bull; LinkedIn</p>
+      </div>
+      <div class="header-date" id="currentDate"></div>
+    </div>
+  </header>
+
+  <!-- Navigation -->
+  <nav class="nav">
+    <div class="nav-inner">
+      <button class="nav-btn active" data-section="trending">What's Trending</button>
+      <button class="nav-btn" data-section="database">Viral Post Database</button>
+      <button class="nav-btn" data-section="competitors">Competitors</button>
+      <button class="nav-btn" data-section="archetypes">Content Archetypes</button>
+      <button class="nav-btn" data-section="scorecard">Pure Earth Scorecard</button>
+      <button class="nav-btn" data-section="improved">Improved Posts</button>
+      <button class="nav-btn" data-section="kpi">KPI Dashboard</button>
+      <button class="nav-btn" data-section="roadmap">90-Day Roadmap</button>
+    </div>
+  </nav>
+
+  <main class="main">
+
+    <!-- ==================== SECTION: WHAT'S TRENDING ==================== -->
+    <section class="section active" id="trending">
+      <div class="section-header">
+        <h2>What's Trending Today</h2>
+        <p>Real-time beauty industry trends across platforms</p>
+      </div>
+
+      <div class="trend-controls">
+        <div class="trend-timeframe-tabs">
+          <button class="trend-tab active" data-period="day">Last 24 Hours</button>
+          <button class="trend-tab" data-period="week">This Week</button>
+          <button class="trend-tab" data-period="month">This Month</button>
+        </div>
+        <div class="region-selector">
+          <span class="region-label">Region:</span>
+          <select class="region-select" id="regionSelect">
+            <option value="global">Global</option>
+            <option value="australia" selected>Australia</option>
+            <option value="asia">Asia</option>
+            <option value="europe">Europe</option>
+            <option value="africa">Africa</option>
+            <option value="usa">USA</option>
+            <option value="canada">Canada</option>
+            <option value="south-america">South America</option>
+          </select>
+        </div>
+        <div class="platform-filter">
+          <span class="platform-filter-label">Filter:</span>
+          <button class="platform-filter-btn active" data-filter="all">All</button>
+          <button class="platform-filter-btn" data-filter="tiktok">TikTok</button>
+          <button class="platform-filter-btn" data-filter="instagram">Instagram</button>
+          <button class="platform-filter-btn" data-filter="facebook">Facebook</button>
+          <button class="platform-filter-btn" data-filter="linkedin">LinkedIn</button>
+        </div>
+      </div>
+
+      <!-- Last 24 Hours -->
+      <div class="trend-content active" id="trend-day">
+        <div class="trend-grid">
+          <div class="trend-card hot" data-platforms="tiktok instagram" data-views='{"global":"2.1M+","australia":"180K+","asia":"1.2M+","europe":"420K+","africa":"45K+","usa":"310K+","canada":"38K+","south-america":"95K+"}' data-growth="+340%">
+            <div class="trend-badge">TRENDING NOW</div>
+            <h3>"Skin Cycling 2.0" &mdash; Barrier Repair Focus</h3>
+            <div class="trend-platforms">
+              <span class="platform-tag tiktok clickable" data-platform="tiktok">TikTok</span>
+              <span class="platform-tag instagram clickable" data-platform="instagram">Instagram</span>
+            </div>
+            <p>Evolved version of skin cycling emphasizing ceramide-rich barrier repair nights. Australian native botanical ingredients (like Kakadu Plum) being called out as next-gen barrier support.</p>
+            <div class="trend-metrics">
+              <span class="views-label">180K+ views today</span>
+              <span>Growth: +340%</span>
+            </div>
+            <div class="relevance-bar">
+              <div class="relevance-label">Pure Earth Relevance</div>
+              <div class="relevance-track"><div class="relevance-fill" style="width:95%"></div></div>
+              <span class="relevance-score">95%</span>
+            </div>
+            <div class="expand-hint">Click to expand metrics &amp; links</div>
+            <div class="trend-card-detail">
+              <div class="detail-metrics-grid">
+                <div class="detail-metric"><div class="detail-metric-platform tiktok">TikTok</div><div class="detail-metric-value">1.4M</div><div class="detail-metric-label">Views</div></div>
+                <div class="detail-metric"><div class="detail-metric-platform tiktok">TikTok</div><div class="detail-metric-value">89K</div><div class="detail-metric-label">Likes</div></div>
+                <div class="detail-metric"><div class="detail-metric-platform tiktok">TikTok</div><div class="detail-metric-value">12K</div><div class="detail-metric-label">Shares</div></div>
+                <div class="detail-metric"><div class="detail-metric-platform instagram">Instagram</div><div class="detail-metric-value">710K</div><div class="detail-metric-label">Reel Views</div></div>
+                <div class="detail-metric"><div class="detail-metric-platform instagram">Instagram</div><div class="detail-metric-value">34K</div><div class="detail-metric-label">Saves</div></div>
+                <div class="detail-metric"><div class="detail-metric-platform instagram">Instagram</div><div class="detail-metric-value">5.8%</div><div class="detail-metric-label">Eng. Rate</div></div>
+              </div>
+              <div class="detail-links">
+                <a href="https://www.tiktok.com/search?q=skin+cycling+barrier+repair" target="_blank" rel="noopener" class="detail-link tiktok">TikTok Search &#8599;</a>
+                <a href="https://www.instagram.com/explore/tags/skincycling/" target="_blank" rel="noopener" class="detail-link instagram">#SkinCycling &#8599;</a>
+                <a href="https://trends.google.com/trends/explore?q=skin+cycling+barrier+repair&geo=AU" target="_blank" rel="noopener" class="detail-link google">Google Trends &#8599;</a>
+              </div>
+            </div>
+          </div>
+
+          <div class="trend-card warm" data-platforms="tiktok" data-views='{"global":"890K+","australia":"72K+","asia":"520K+","europe":"165K+","africa":"12K+","usa":"98K+","canada":"15K+","south-america":"28K+"}' data-growth="+180%">
+            <div class="trend-badge">RISING</div>
+            <h3>"Morning Shed" Routines &mdash; Peel-Off Overnight Masks</h3>
+            <div class="trend-platforms">
+              <span class="platform-tag tiktok clickable" data-platform="tiktok">TikTok</span>
+            </div>
+            <p>Overnight collagen masks that peel off in the morning for "glass skin" reveal. ASMR peel-off moments driving massive saves and shares.</p>
+            <div class="trend-metrics">
+              <span class="views-label">72K+ views today</span>
+              <span>Growth: +180%</span>
+            </div>
+            <div class="relevance-bar">
+              <div class="relevance-label">Pure Earth Relevance</div>
+              <div class="relevance-track"><div class="relevance-fill" style="width:60%"></div></div>
+              <span class="relevance-score">60%</span>
+            </div>
+            <div class="expand-hint">Click to expand metrics &amp; links</div>
+            <div class="trend-card-detail">
+              <div class="detail-metrics-grid">
+                <div class="detail-metric"><div class="detail-metric-platform tiktok">TikTok</div><div class="detail-metric-value">890K</div><div class="detail-metric-label">Views (Global)</div></div>
+                <div class="detail-metric"><div class="detail-metric-platform tiktok">TikTok</div><div class="detail-metric-value">67K</div><div class="detail-metric-label">Likes</div></div>
+                <div class="detail-metric"><div class="detail-metric-platform tiktok">TikTok</div><div class="detail-metric-value">8.2K</div><div class="detail-metric-label">Saves</div></div>
+                <div class="detail-metric"><div class="detail-metric-platform tiktok">TikTok</div><div class="detail-metric-value">4.1K</div><div class="detail-metric-label">Shares</div></div>
+              </div>
+              <div class="detail-links">
+                <a href="https://www.tiktok.com/search?q=morning+shed+peel+off+mask" target="_blank" rel="noopener" class="detail-link tiktok">TikTok Search &#8599;</a>
+                <a href="https://trends.google.com/trends/explore?q=peel+off+mask+overnight&geo=AU" target="_blank" rel="noopener" class="detail-link google">Google Trends &#8599;</a>
+              </div>
+            </div>
+          </div>
+
+          <div class="trend-card warm" data-platforms="linkedin" data-views='{"global":"45K+","australia":"3.8K+","asia":"8K+","europe":"12K+","africa":"1.2K+","usa":"16K+","canada":"2.5K+","south-america":"1.8K+"}' data-growth="+220%">
+            <div class="trend-badge">RISING</div>
+            <h3>Founder Vulnerability Posts &mdash; "My Brand Almost Failed"</h3>
+            <div class="trend-platforms">
+              <span class="platform-tag linkedin clickable" data-platform="linkedin">LinkedIn</span>
+            </div>
+            <p>Beauty founders sharing raw stories of near-failure. Revenue numbers, pivots, and real P&L screenshots driving 10x typical engagement.</p>
+            <div class="trend-metrics">
+              <span class="views-label">3.8K+ engagements today</span>
+              <span>Growth: +220%</span>
+            </div>
+            <div class="relevance-bar">
+              <div class="relevance-label">Pure Earth Relevance</div>
+              <div class="relevance-track"><div class="relevance-fill" style="width:90%"></div></div>
+              <span class="relevance-score">90%</span>
+            </div>
+            <div class="expand-hint">Click to expand metrics &amp; links</div>
+            <div class="trend-card-detail">
+              <div class="detail-metrics-grid">
+                <div class="detail-metric"><div class="detail-metric-platform linkedin">LinkedIn</div><div class="detail-metric-value">45K</div><div class="detail-metric-label">Engagements (Global)</div></div>
+                <div class="detail-metric"><div class="detail-metric-platform linkedin">LinkedIn</div><div class="detail-metric-value">12K</div><div class="detail-metric-label">Reactions</div></div>
+                <div class="detail-metric"><div class="detail-metric-platform linkedin">LinkedIn</div><div class="detail-metric-value">3.2K</div><div class="detail-metric-label">Comments</div></div>
+                <div class="detail-metric"><div class="detail-metric-platform linkedin">LinkedIn</div><div class="detail-metric-value">890</div><div class="detail-metric-label">Reposts</div></div>
+              </div>
+              <div class="detail-links">
+                <a href="https://www.linkedin.com/search/results/content/?keywords=beauty%20founder%20story" target="_blank" rel="noopener" class="detail-link linkedin">LinkedIn Search &#8599;</a>
+                <a href="https://trends.google.com/trends/explore?q=beauty+brand+founder+story" target="_blank" rel="noopener" class="detail-link google">Google Trends &#8599;</a>
+              </div>
+            </div>
+          </div>
+
+          <div class="trend-card" data-platforms="tiktok instagram" data-views='{"global":"340K+","australia":"85K+","asia":"42K+","europe":"68K+","africa":"8K+","usa":"95K+","canada":"18K+","south-america":"24K+"}' data-growth="+125%">
+            <div class="trend-badge">EMERGING</div>
+            <h3>Australian Native Botanicals in Haircare</h3>
+            <div class="trend-platforms">
+              <span class="platform-tag tiktok clickable" data-platform="tiktok">TikTok</span>
+              <span class="platform-tag instagram clickable" data-platform="instagram">Instagram</span>
+            </div>
+            <p>Growing search volume for Kakadu Plum, Davidson Plum, and Lemon Myrtle in hair products. "Bush to bottle" storytelling gaining traction.</p>
+            <div class="trend-metrics">
+              <span class="views-label">85K+ searches this week</span>
+              <span>Growth: +125%</span>
+            </div>
+            <div class="relevance-bar">
+              <div class="relevance-label">Pure Earth Relevance</div>
+              <div class="relevance-track"><div class="relevance-fill" style="width:100%"></div></div>
+              <span class="relevance-score">100%</span>
+            </div>
+            <div class="expand-hint">Click to expand metrics &amp; links</div>
+            <div class="trend-card-detail">
+              <div class="detail-metrics-grid">
+                <div class="detail-metric"><div class="detail-metric-platform tiktok">TikTok</div><div class="detail-metric-value">210K</div><div class="detail-metric-label">Views</div></div>
+                <div class="detail-metric"><div class="detail-metric-platform tiktok">TikTok</div><div class="detail-metric-value">15K</div><div class="detail-metric-label">Likes</div></div>
+                <div class="detail-metric"><div class="detail-metric-platform instagram">Instagram</div><div class="detail-metric-value">130K</div><div class="detail-metric-label">Reel Views</div></div>
+                <div class="detail-metric"><div class="detail-metric-platform instagram">Instagram</div><div class="detail-metric-value">8.5K</div><div class="detail-metric-label">Saves</div></div>
+              </div>
+              <div class="detail-links">
+                <a href="https://www.tiktok.com/search?q=kakadu+plum+hair" target="_blank" rel="noopener" class="detail-link tiktok">TikTok Search &#8599;</a>
+                <a href="https://www.instagram.com/explore/tags/kakaduplum/" target="_blank" rel="noopener" class="detail-link instagram">#KakaduPlum &#8599;</a>
+                <a href="https://trends.google.com/trends/explore?q=kakadu+plum+haircare,australian+native+botanicals&geo=AU" target="_blank" rel="noopener" class="detail-link google">Google Trends &#8599;</a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- This Week -->
+      <div class="trend-content" id="trend-week">
+        <div class="trend-grid">
+          <div class="trend-card hot" data-platforms="tiktok instagram facebook" data-views='{"global":"18M+","australia":"1.5M+","asia":"8.2M+","europe":"4.1M+","africa":"320K+","usa":"3.2M+","canada":"480K+","south-america":"620K+"}' data-growth="+275%">
+            <div class="trend-badge">TRENDING</div>
+            <h3>"Anti-Filter" Beauty Movement</h3>
+            <div class="trend-platforms">
+              <span class="platform-tag tiktok clickable" data-platform="tiktok">TikTok</span>
+              <span class="platform-tag instagram clickable" data-platform="instagram">Instagram</span>
+              <span class="platform-tag facebook clickable" data-platform="facebook">Facebook</span>
+            </div>
+            <p>Raw, unfiltered skin/hair texture videos rejecting FaceTune culture. Brands showing real product results without editing are winning trust.</p>
+            <div class="trend-metrics">
+              <span class="views-label">1.5M+ views this week</span>
+              <span>Growth: +275%</span>
+            </div>
+            <div class="relevance-bar">
+              <div class="relevance-label">Pure Earth Relevance</div>
+              <div class="relevance-track"><div class="relevance-fill" style="width:98%"></div></div>
+              <span class="relevance-score">98%</span>
+            </div>
+            <div class="expand-hint">Click to expand metrics &amp; links</div>
+            <div class="trend-card-detail">
+              <div class="detail-metrics-grid">
+                <div class="detail-metric"><div class="detail-metric-platform tiktok">TikTok</div><div class="detail-metric-value">9.8M</div><div class="detail-metric-label">Views</div></div>
+                <div class="detail-metric"><div class="detail-metric-platform instagram">Instagram</div><div class="detail-metric-value">5.4M</div><div class="detail-metric-label">Reel Views</div></div>
+                <div class="detail-metric"><div class="detail-metric-platform facebook">Facebook</div><div class="detail-metric-value">2.8M</div><div class="detail-metric-label">Views</div></div>
+                <div class="detail-metric"><div class="detail-metric-platform tiktok">TikTok</div><div class="detail-metric-value">6.2%</div><div class="detail-metric-label">Eng. Rate</div></div>
+              </div>
+              <div class="detail-links">
+                <a href="https://www.tiktok.com/search?q=no+filter+skin+texture" target="_blank" rel="noopener" class="detail-link tiktok">TikTok Search &#8599;</a>
+                <a href="https://www.instagram.com/explore/tags/nofilterskin/" target="_blank" rel="noopener" class="detail-link instagram">#NoFilterSkin &#8599;</a>
+                <a href="https://trends.google.com/trends/explore?q=no+filter+beauty&geo=AU" target="_blank" rel="noopener" class="detail-link google">Google Trends &#8599;</a>
+              </div>
+            </div>
+          </div>
+
+          <div class="trend-card hot" data-platforms="tiktok instagram" data-views='{"global":"12M+","australia":"980K+","asia":"5.8M+","europe":"2.9M+","africa":"180K+","usa":"1.8M+","canada":"260K+","south-america":"380K+"}' data-growth="+190%">
+            <div class="trend-badge">TRENDING</div>
+            <h3>ASMR Hair Oiling Rituals</h3>
+            <div class="trend-platforms">
+              <span class="platform-tag tiktok clickable" data-platform="tiktok">TikTok</span>
+              <span class="platform-tag instagram clickable" data-platform="instagram">Instagram</span>
+            </div>
+            <p>Slow, meditative hair oiling videos with close-up texture shots. Gisou-style golden oil pours, scalp massage ASMR, and "ritual not routine" framing.</p>
+            <div class="trend-metrics">
+              <span class="views-label">980K+ views this week</span>
+              <span>Growth: +190%</span>
+            </div>
+            <div class="relevance-bar">
+              <div class="relevance-label">Pure Earth Relevance</div>
+              <div class="relevance-track"><div class="relevance-fill" style="width:92%"></div></div>
+              <span class="relevance-score">92%</span>
+            </div>
+            <div class="expand-hint">Click to expand metrics &amp; links</div>
+            <div class="trend-card-detail">
+              <div class="detail-metrics-grid">
+                <div class="detail-metric"><div class="detail-metric-platform tiktok">TikTok</div><div class="detail-metric-value">8.1M</div><div class="detail-metric-label">Views</div></div>
+                <div class="detail-metric"><div class="detail-metric-platform instagram">Instagram</div><div class="detail-metric-value">3.9M</div><div class="detail-metric-label">Reel Views</div></div>
+                <div class="detail-metric"><div class="detail-metric-platform tiktok">TikTok</div><div class="detail-metric-value">540K</div><div class="detail-metric-label">Saves</div></div>
+              </div>
+              <div class="detail-links">
+                <a href="https://www.tiktok.com/search?q=hair+oiling+asmr" target="_blank" rel="noopener" class="detail-link tiktok">TikTok Search &#8599;</a>
+                <a href="https://www.instagram.com/gisou/" target="_blank" rel="noopener" class="detail-link instagram">Gisou (Competitor) &#8599;</a>
+                <a href="https://trends.google.com/trends/explore?q=hair+oiling+ritual&geo=AU" target="_blank" rel="noopener" class="detail-link google">Google Trends &#8599;</a>
+              </div>
+            </div>
+          </div>
+
+          <div class="trend-card warm" data-platforms="tiktok instagram" data-views='{"global":"5.2M+","australia":"1.8M+","asia":"420K+","europe":"1.1M+","africa":"85K+","usa":"1.2M+","canada":"320K+","south-america":"280K+"}' data-growth="+160%">
+            <div class="trend-badge">RISING</div>
+            <h3>Beach Damage Recovery Content</h3>
+            <div class="trend-platforms">
+              <span class="platform-tag tiktok clickable" data-platform="tiktok">TikTok</span>
+              <span class="platform-tag instagram clickable" data-platform="instagram">Instagram</span>
+            </div>
+            <p>Southern Hemisphere summer driving "post-beach hair repair" content. Salt damage, sun bleaching, and chlorine recovery routines trending.</p>
+            <div class="trend-metrics">
+              <span class="views-label">1.8M+ views this week</span>
+              <span>Growth: +160%</span>
+            </div>
+            <div class="relevance-bar">
+              <div class="relevance-label">Pure Earth Relevance</div>
+              <div class="relevance-track"><div class="relevance-fill" style="width:100%"></div></div>
+              <span class="relevance-score">100%</span>
+            </div>
+            <div class="expand-hint">Click to expand metrics &amp; links</div>
+            <div class="trend-card-detail">
+              <div class="detail-metrics-grid">
+                <div class="detail-metric"><div class="detail-metric-platform tiktok">TikTok</div><div class="detail-metric-value">3.4M</div><div class="detail-metric-label">Views</div></div>
+                <div class="detail-metric"><div class="detail-metric-platform instagram">Instagram</div><div class="detail-metric-value">1.8M</div><div class="detail-metric-label">Reel Views</div></div>
+                <div class="detail-metric"><div class="detail-metric-platform tiktok">TikTok</div><div class="detail-metric-value">4.8%</div><div class="detail-metric-label">Eng. Rate</div></div>
+              </div>
+              <div class="detail-links">
+                <a href="https://www.tiktok.com/search?q=beach+hair+repair" target="_blank" rel="noopener" class="detail-link tiktok">TikTok Search &#8599;</a>
+                <a href="https://trends.google.com/trends/explore?q=beach+hair+damage+repair&geo=AU" target="_blank" rel="noopener" class="detail-link google">Google Trends &#8599;</a>
+              </div>
+            </div>
+          </div>
+
+          <div class="trend-card warm" data-platforms="linkedin" data-views='{"global":"120K+","australia":"9.5K+","asia":"18K+","europe":"35K+","africa":"3.2K+","usa":"42K+","canada":"6.8K+","south-america":"5.2K+"}' data-growth="+310%">
+            <div class="trend-badge">RISING</div>
+            <h3>Indie Brand M&amp;A Commentary</h3>
+            <div class="trend-platforms">
+              <span class="platform-tag linkedin clickable" data-platform="linkedin">LinkedIn</span>
+            </div>
+            <p>Post-Rhode acquisition, beauty founders debating exit strategies, valuation multiples, and what makes a brand "acquirable."</p>
+            <div class="trend-metrics">
+              <span class="views-label">9.5K+ engagements this week</span>
+              <span>Growth: +310%</span>
+            </div>
+            <div class="relevance-bar">
+              <div class="relevance-label">Pure Earth Relevance</div>
+              <div class="relevance-track"><div class="relevance-fill" style="width:70%"></div></div>
+              <span class="relevance-score">70%</span>
+            </div>
+            <div class="expand-hint">Click to expand metrics &amp; links</div>
+            <div class="trend-card-detail">
+              <div class="detail-metrics-grid">
+                <div class="detail-metric"><div class="detail-metric-platform linkedin">LinkedIn</div><div class="detail-metric-value">120K</div><div class="detail-metric-label">Engagements (Global)</div></div>
+                <div class="detail-metric"><div class="detail-metric-platform linkedin">LinkedIn</div><div class="detail-metric-value">28K</div><div class="detail-metric-label">Reactions</div></div>
+                <div class="detail-metric"><div class="detail-metric-platform linkedin">LinkedIn</div><div class="detail-metric-value">5.4K</div><div class="detail-metric-label">Comments</div></div>
+              </div>
+              <div class="detail-links">
+                <a href="https://www.linkedin.com/search/results/content/?keywords=beauty%20brand%20acquisition" target="_blank" rel="noopener" class="detail-link linkedin">LinkedIn Search &#8599;</a>
+              </div>
+            </div>
+          </div>
+
+          <div class="trend-card" data-platforms="tiktok instagram" data-views='{"global":"3.8M+","australia":"620K+","asia":"1.1M+","europe":"980K+","africa":"65K+","usa":"780K+","canada":"145K+","south-america":"110K+"}' data-growth="+145%">
+            <div class="trend-badge">EMERGING</div>
+            <h3>Sustainable Packaging Unboxings</h3>
+            <div class="trend-platforms">
+              <span class="platform-tag tiktok clickable" data-platform="tiktok">TikTok</span>
+              <span class="platform-tag instagram clickable" data-platform="instagram">Instagram</span>
+            </div>
+            <p>Aluminium, glass, and refillable packaging showcases. Consumers comparing "eco-guilt" vs. "eco-pride" unboxing experiences.</p>
+            <div class="trend-metrics">
+              <span class="views-label">620K+ views this week</span>
+              <span>Growth: +145%</span>
+            </div>
+            <div class="relevance-bar">
+              <div class="relevance-label">Pure Earth Relevance</div>
+              <div class="relevance-track"><div class="relevance-fill" style="width:100%"></div></div>
+              <span class="relevance-score">100%</span>
+            </div>
+            <div class="expand-hint">Click to expand metrics &amp; links</div>
+            <div class="trend-card-detail">
+              <div class="detail-metrics-grid">
+                <div class="detail-metric"><div class="detail-metric-platform tiktok">TikTok</div><div class="detail-metric-value">2.4M</div><div class="detail-metric-label">Views</div></div>
+                <div class="detail-metric"><div class="detail-metric-platform instagram">Instagram</div><div class="detail-metric-value">1.4M</div><div class="detail-metric-label">Reel Views</div></div>
+                <div class="detail-metric"><div class="detail-metric-platform tiktok">TikTok</div><div class="detail-metric-value">180K</div><div class="detail-metric-label">Saves</div></div>
+              </div>
+              <div class="detail-links">
+                <a href="https://www.tiktok.com/search?q=sustainable+packaging+unboxing" target="_blank" rel="noopener" class="detail-link tiktok">TikTok Search &#8599;</a>
+                <a href="https://www.instagram.com/explore/tags/sustainablepackaging/" target="_blank" rel="noopener" class="detail-link instagram">#SustainablePackaging &#8599;</a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- This Month -->
+      <div class="trend-content" id="trend-month">
+        <div class="trend-grid">
+          <div class="trend-card hot" data-platforms="tiktok instagram" data-views='{"global":"85M+","australia":"6.8M+","asia":"42M+","europe":"18M+","africa":"1.2M+","usa":"12M+","canada":"2.1M+","south-america":"3.4M+"}' data-growth="+420%">
+            <div class="trend-badge">DOMINANT</div>
+            <h3>"Glass Skin" Has Evolved to "Dew Skin"</h3>
+            <div class="trend-platforms">
+              <span class="platform-tag tiktok clickable" data-platform="tiktok">TikTok</span>
+              <span class="platform-tag instagram clickable" data-platform="instagram">Instagram</span>
+            </div>
+            <p>The glass skin trend has matured into "dew skin" &mdash; a more natural, less reflective finish using botanical oils and vitamin C serums.</p>
+            <div class="trend-metrics">
+              <span class="views-label">6.8M+ views this month</span>
+              <span>Growth: +420%</span>
+            </div>
+            <div class="relevance-bar">
+              <div class="relevance-label">Pure Earth Relevance</div>
+              <div class="relevance-track"><div class="relevance-fill" style="width:95%"></div></div>
+              <span class="relevance-score">95%</span>
+            </div>
+            <div class="expand-hint">Click to expand metrics &amp; links</div>
+            <div class="trend-card-detail">
+              <div class="detail-metrics-grid">
+                <div class="detail-metric"><div class="detail-metric-platform tiktok">TikTok</div><div class="detail-metric-value">58M</div><div class="detail-metric-label">Views</div></div>
+                <div class="detail-metric"><div class="detail-metric-platform instagram">Instagram</div><div class="detail-metric-value">27M</div><div class="detail-metric-label">Reel Views</div></div>
+                <div class="detail-metric"><div class="detail-metric-platform tiktok">TikTok</div><div class="detail-metric-value">4.2M</div><div class="detail-metric-label">Saves</div></div>
+              </div>
+              <div class="detail-links">
+                <a href="https://www.tiktok.com/search?q=dew+skin+routine" target="_blank" rel="noopener" class="detail-link tiktok">TikTok Search &#8599;</a>
+                <a href="https://www.instagram.com/explore/tags/dewskin/" target="_blank" rel="noopener" class="detail-link instagram">#DewSkin &#8599;</a>
+                <a href="https://trends.google.com/trends/explore?q=dew+skin,glass+skin&geo=AU" target="_blank" rel="noopener" class="detail-link google">Google Trends &#8599;</a>
+              </div>
+            </div>
+          </div>
+
+          <div class="trend-card hot" data-platforms="linkedin instagram" data-views='{"global":"250K+","australia":"18K+","asia":"35K+","europe":"72K+","africa":"5.8K+","usa":"95K+","canada":"14K+","south-america":"10K+"}' data-growth="+380%">
+            <div class="trend-badge">DOMINANT</div>
+            <h3>DTC Brand Transparency Movement</h3>
+            <div class="trend-platforms">
+              <span class="platform-tag linkedin clickable" data-platform="linkedin">LinkedIn</span>
+              <span class="platform-tag instagram clickable" data-platform="instagram">Instagram</span>
+            </div>
+            <p>Founders sharing real COGS, margin breakdowns, and supply chain stories. "Behind the price tag" content getting 8x engagement.</p>
+            <div class="trend-metrics">
+              <span class="views-label">18K+ engagements this month</span>
+              <span>Growth: +380%</span>
+            </div>
+            <div class="relevance-bar">
+              <div class="relevance-label">Pure Earth Relevance</div>
+              <div class="relevance-track"><div class="relevance-fill" style="width:88%"></div></div>
+              <span class="relevance-score">88%</span>
+            </div>
+            <div class="expand-hint">Click to expand metrics &amp; links</div>
+            <div class="trend-card-detail">
+              <div class="detail-metrics-grid">
+                <div class="detail-metric"><div class="detail-metric-platform linkedin">LinkedIn</div><div class="detail-metric-value">180K</div><div class="detail-metric-label">Engagements</div></div>
+                <div class="detail-metric"><div class="detail-metric-platform instagram">Instagram</div><div class="detail-metric-value">70K</div><div class="detail-metric-label">Engagements</div></div>
+                <div class="detail-metric"><div class="detail-metric-platform linkedin">LinkedIn</div><div class="detail-metric-value">42K</div><div class="detail-metric-label">Comments</div></div>
+              </div>
+              <div class="detail-links">
+                <a href="https://www.linkedin.com/search/results/content/?keywords=dtc%20beauty%20brand%20transparency" target="_blank" rel="noopener" class="detail-link linkedin">LinkedIn Search &#8599;</a>
+                <a href="https://www.instagram.com/explore/tags/behindthebrand/" target="_blank" rel="noopener" class="detail-link instagram">#BehindTheBrand &#8599;</a>
+              </div>
+            </div>
+          </div>
+
+          <div class="trend-card hot" data-platforms="tiktok instagram" data-views='{"global":"62M+","australia":"5.1M+","asia":"28M+","europe":"14M+","africa":"980K+","usa":"10M+","canada":"1.8M+","south-america":"2.2M+"}' data-growth="+290%">
+            <div class="trend-badge">DOMINANT</div>
+            <h3>Scalp Health as New Skincare</h3>
+            <div class="trend-platforms">
+              <span class="platform-tag tiktok clickable" data-platform="tiktok">TikTok</span>
+              <span class="platform-tag instagram clickable" data-platform="instagram">Instagram</span>
+            </div>
+            <p>Scalp care treated with same seriousness as skincare routines. Scalp oils, serums, and dermatologist content exploding. #ScalpCare at 2.8B TikTok views.</p>
+            <div class="trend-metrics">
+              <span class="views-label">5.1M+ views this month</span>
+              <span>Growth: +290%</span>
+            </div>
+            <div class="relevance-bar">
+              <div class="relevance-label">Pure Earth Relevance</div>
+              <div class="relevance-track"><div class="relevance-fill" style="width:96%"></div></div>
+              <span class="relevance-score">96%</span>
+            </div>
+            <div class="expand-hint">Click to expand metrics &amp; links</div>
+            <div class="trend-card-detail">
+              <div class="detail-metrics-grid">
+                <div class="detail-metric"><div class="detail-metric-platform tiktok">TikTok</div><div class="detail-metric-value">42M</div><div class="detail-metric-label">Views</div></div>
+                <div class="detail-metric"><div class="detail-metric-platform instagram">Instagram</div><div class="detail-metric-value">20M</div><div class="detail-metric-label">Reel Views</div></div>
+                <div class="detail-metric"><div class="detail-metric-platform tiktok">TikTok</div><div class="detail-metric-value">2.8B</div><div class="detail-metric-label">#ScalpCare Total</div></div>
+              </div>
+              <div class="detail-links">
+                <a href="https://www.tiktok.com/search?q=scalp+care+routine" target="_blank" rel="noopener" class="detail-link tiktok">TikTok Search &#8599;</a>
+                <a href="https://www.instagram.com/explore/tags/scalpcare/" target="_blank" rel="noopener" class="detail-link instagram">#ScalpCare &#8599;</a>
+                <a href="https://trends.google.com/trends/explore?q=scalp+care+routine&geo=AU" target="_blank" rel="noopener" class="detail-link google">Google Trends &#8599;</a>
+              </div>
+            </div>
+          </div>
+
+          <div class="trend-card warm" data-platforms="tiktok instagram facebook" data-views='{"global":"28M+","australia":"2.2M+","asia":"12M+","europe":"6.5M+","africa":"420K+","usa":"5.1M+","canada":"890K+","south-america":"1.1M+"}' data-growth="+200%">
+            <div class="trend-badge">RISING</div>
+            <h3>Community-Led Product Development</h3>
+            <div class="trend-platforms">
+              <span class="platform-tag tiktok clickable" data-platform="tiktok">TikTok</span>
+              <span class="platform-tag instagram clickable" data-platform="instagram">Instagram</span>
+              <span class="platform-tag facebook clickable" data-platform="facebook">Facebook</span>
+            </div>
+            <p>Brands polling followers on next products, shade ranges, and scents. SACHEU's "invented on camera" model being widely replicated.</p>
+            <div class="trend-metrics">
+              <span class="views-label">2.2M+ views this month</span>
+              <span>Growth: +200%</span>
+            </div>
+            <div class="relevance-bar">
+              <div class="relevance-label">Pure Earth Relevance</div>
+              <div class="relevance-track"><div class="relevance-fill" style="width:85%"></div></div>
+              <span class="relevance-score">85%</span>
+            </div>
+            <div class="expand-hint">Click to expand metrics &amp; links</div>
+            <div class="trend-card-detail">
+              <div class="detail-metrics-grid">
+                <div class="detail-metric"><div class="detail-metric-platform tiktok">TikTok</div><div class="detail-metric-value">16M</div><div class="detail-metric-label">Views</div></div>
+                <div class="detail-metric"><div class="detail-metric-platform instagram">Instagram</div><div class="detail-metric-value">8M</div><div class="detail-metric-label">Reel Views</div></div>
+                <div class="detail-metric"><div class="detail-metric-platform facebook">Facebook</div><div class="detail-metric-value">4M</div><div class="detail-metric-label">Views</div></div>
+              </div>
+              <div class="detail-links">
+                <a href="https://www.tiktok.com/search?q=community+product+development+beauty" target="_blank" rel="noopener" class="detail-link tiktok">TikTok Search &#8599;</a>
+                <a href="https://www.instagram.com/explore/tags/communityled/" target="_blank" rel="noopener" class="detail-link instagram">#CommunityLed &#8599;</a>
+              </div>
+            </div>
+          </div>
+
+          <div class="trend-card warm" data-platforms="tiktok facebook" data-views='{"global":"41M+","australia":"4.8M+","asia":"8.2M+","europe":"12M+","africa":"1.5M+","usa":"9.8M+","canada":"2.4M+","south-america":"2.8M+"}' data-growth="+175%">
+            <div class="trend-badge">RISING</div>
+            <h3>"Low-Tox" Living Goes Mainstream</h3>
+            <div class="trend-platforms">
+              <span class="platform-tag tiktok clickable" data-platform="tiktok">TikTok</span>
+              <span class="platform-tag facebook clickable" data-platform="facebook">Facebook</span>
+            </div>
+            <p>Toxic ingredient exposure content crossing from niche wellness to mainstream. Parents especially engaged with "hidden toxins" and "clean swap" content.</p>
+            <div class="trend-metrics">
+              <span class="views-label">4.8M+ views this month</span>
+              <span>Growth: +175%</span>
+            </div>
+            <div class="relevance-bar">
+              <div class="relevance-label">Pure Earth Relevance</div>
+              <div class="relevance-track"><div class="relevance-fill" style="width:100%"></div></div>
+              <span class="relevance-score">100%</span>
+            </div>
+            <div class="expand-hint">Click to expand metrics &amp; links</div>
+            <div class="trend-card-detail">
+              <div class="detail-metrics-grid">
+                <div class="detail-metric"><div class="detail-metric-platform tiktok">TikTok</div><div class="detail-metric-value">28M</div><div class="detail-metric-label">Views</div></div>
+                <div class="detail-metric"><div class="detail-metric-platform facebook">Facebook</div><div class="detail-metric-value">13M</div><div class="detail-metric-label">Views</div></div>
+                <div class="detail-metric"><div class="detail-metric-platform tiktok">TikTok</div><div class="detail-metric-value">5.1%</div><div class="detail-metric-label">Eng. Rate</div></div>
+              </div>
+              <div class="detail-links">
+                <a href="https://www.tiktok.com/search?q=low+tox+living+beauty" target="_blank" rel="noopener" class="detail-link tiktok">TikTok Search &#8599;</a>
+                <a href="https://trends.google.com/trends/explore?q=low+tox+living,clean+beauty&geo=AU" target="_blank" rel="noopener" class="detail-link google">Google Trends &#8599;</a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Google Search Terms & Pure Earth SEO Ranking -->
+      <div class="seo-panel">
+        <h3>Google Search Terms &amp; Pure Earth Ranking</h3>
+        <p class="panel-subtitle">Key search terms in the beauty/health space &mdash; where Pure Earth ranks and who is capturing the traffic</p>
+        <div class="search-terms-grid">
+          <div class="search-term-card gap">
+            <div class="term-header">
+              <span class="term-name">"natural shampoo australia"</span>
+              <a href="https://trends.google.com/trends/explore?q=natural+shampoo+australia&geo=AU" target="_blank" rel="noopener" class="term-link">Google Trends &#8599;</a>
+            </div>
+            <div class="term-volume">2,400 searches/mo</div>
+            <div class="term-ranking">
+              <span class="rank-label">Pure Earth:</span>
+              <span class="rank-value rank-absent">Not on Page 1</span>
+            </div>
+            <div class="term-traffic">Traffic going to: <a href="https://www.sukin.com" target="_blank" rel="noopener">Sukin</a>, <a href="https://www.ethique.com" target="_blank" rel="noopener">Ethique</a>, <a href="https://www.adorebeauty.com.au" target="_blank" rel="noopener">Adore Beauty</a></div>
+            <span class="seo-expand-hint">Click for strategy &amp; insights &#9660;</span>
+            <div class="seo-card-detail">
+              <div class="seo-detail-section">
+                <h4>Google Trend Data</h4>
+                <ul>
+                  <li><strong>Trend:</strong> Steady, +8% year-over-year</li>
+                  <li><strong>Peak months:</strong> January, September (new year &amp; back-to-school)</li>
+                  <li><strong>Related rising:</strong> "sulphate free shampoo", "vegan shampoo", "plastic free shampoo"</li>
+                  <li><strong>Regional:</strong> Strongest in NSW, VIC, QLD</li>
+                </ul>
+              </div>
+              <div class="seo-detail-section">
+                <h4>Strategy to Rank</h4>
+                <ol>
+                  <li>Create a pillar blog post: "Best Natural Shampoos in Australia 2026 &mdash; Expert Guide"</li>
+                  <li>Build 10&ndash;15 backlinks from beauty directories and blogs</li>
+                  <li>Optimise product pages with target keyword in H1, meta, and body copy</li>
+                  <li>Get listed on Adore Beauty and Nourished Life for referral authority</li>
+                </ol>
+              </div>
+              <div class="seo-detail-costs">
+                <div class="seo-cost-box"><h4>Estimated Cost</h4><p>$500&ndash;$1,500 DIY (content + outreach). Agency: $2,000&ndash;$4,000/mo</p></div>
+                <div class="seo-impact-box"><h4>Potential Impact</h4><p>Page 1 ranking = 400&ndash;800 organic visits/mo. At 2% conversion = 8&ndash;16 sales/mo ($250&ndash;$500 revenue)</p></div>
+              </div>
+            </div>
+          </div>
+          <div class="search-term-card gap">
+            <div class="term-header">
+              <span class="term-name">"kakadu plum skincare"</span>
+              <a href="https://trends.google.com/trends/explore?q=kakadu+plum+skincare&geo=AU" target="_blank" rel="noopener" class="term-link">Google Trends &#8599;</a>
+            </div>
+            <div class="term-volume">1,900 searches/mo</div>
+            <div class="term-ranking">
+              <span class="rank-label">Pure Earth:</span>
+              <span class="rank-value rank-absent">Not on Page 1</span>
+            </div>
+            <div class="term-traffic">Traffic going to: <a href="https://www.kakaduplumco.com.au" target="_blank" rel="noopener">Kakadu Plum Co</a>, <a href="https://www.muktiorganics.com" target="_blank" rel="noopener">Mukti Organics</a></div>
+            <span class="seo-expand-hint">Click for strategy &amp; insights &#9660;</span>
+            <div class="seo-card-detail">
+              <div class="seo-detail-section">
+                <h4>Google Trend Data</h4>
+                <ul>
+                  <li><strong>Trend:</strong> Growing rapidly, +45% year-over-year</li>
+                  <li><strong>Peak months:</strong> Year-round, slight increase in winter (skin dryness)</li>
+                  <li><strong>Related rising:</strong> "kakadu plum serum", "vitamin C serum australia", "native australian skincare"</li>
+                  <li><strong>Regional:</strong> Nationwide, growing in international searches (UK, USA)</li>
+                </ul>
+              </div>
+              <div class="seo-detail-section">
+                <h4>Strategy to Rank</h4>
+                <ol>
+                  <li>Own the "Kakadu Plum" content space with expert authority blog posts</li>
+                  <li>Create ingredient deep-dives: "Kakadu Plum vs Vitamin C: Why Australian Natives Win"</li>
+                  <li>Build comparison content vs generic Vitamin C serums</li>
+                  <li>Target featured snippets with FAQ-style content about Kakadu Plum benefits</li>
+                </ol>
+              </div>
+              <div class="seo-detail-costs">
+                <div class="seo-cost-box"><h4>Estimated Cost</h4><p>$300&ndash;$800 DIY content creation. Pure Earth IS this keyword &mdash; low competition, high relevance.</p></div>
+                <div class="seo-impact-box"><h4>Potential Impact</h4><p>Page 1 = 300&ndash;600 visits/mo, highly targeted buyers. 15&ndash;30 sales/mo ($450&ndash;$900 revenue)</p></div>
+              </div>
+            </div>
+          </div>
+          <div class="search-term-card moderate">
+            <div class="term-header">
+              <span class="term-name">"clean beauty australia"</span>
+              <a href="https://trends.google.com/trends/explore?q=clean+beauty+australia&geo=AU" target="_blank" rel="noopener" class="term-link">Google Trends &#8599;</a>
+            </div>
+            <div class="term-volume">1,300 searches/mo</div>
+            <div class="term-ranking">
+              <span class="rank-label">Pure Earth:</span>
+              <span class="rank-value rank-low">Page 3-4</span>
+            </div>
+            <div class="term-traffic">Traffic going to: <a href="https://www.koraorganics.com" target="_blank" rel="noopener">KORA Organics</a>, <a href="https://www.biologi.com.au" target="_blank" rel="noopener">Biologi</a>, <a href="https://www.nourished.com.au" target="_blank" rel="noopener">Nourished Life</a></div>
+            <span class="seo-expand-hint">Click for strategy &amp; insights &#9660;</span>
+            <div class="seo-card-detail">
+              <div class="seo-detail-section">
+                <h4>Google Trend Data</h4>
+                <ul>
+                  <li><strong>Trend:</strong> Growing, +18% year-over-year</li>
+                  <li><strong>Peak months:</strong> February (new year health kick), October (spring refresh)</li>
+                  <li><strong>Related rising:</strong> "non-toxic beauty", "natural skincare australia", "organic beauty brands"</li>
+                  <li><strong>Regional:</strong> Strong in urban VIC, NSW, QLD</li>
+                </ul>
+              </div>
+              <div class="seo-detail-section">
+                <h4>Strategy to Rank</h4>
+                <ol>
+                  <li>Already Page 3&ndash;4, so optimise existing pages for this keyword</li>
+                  <li>Build authority with guest posts on beauty blogs (BeautyHeaven, Adore Beauty editorial)</li>
+                  <li>Target featured snippets with "What is clean beauty?" FAQ content</li>
+                  <li>Add schema markup to product pages for rich search results</li>
+                </ol>
+              </div>
+              <div class="seo-detail-costs">
+                <div class="seo-cost-box"><h4>Estimated Cost</h4><p>$400&ndash;$1,200 for content + link building outreach</p></div>
+                <div class="seo-impact-box"><h4>Potential Impact</h4><p>Moving to Page 1 = 200&ndash;450 visits/mo. 4&ndash;9 sales/mo ($120&ndash;$270 revenue)</p></div>
+              </div>
+            </div>
+          </div>
+          <div class="search-term-card gap">
+            <div class="term-header">
+              <span class="term-name">"organic hair care australia"</span>
+              <a href="https://trends.google.com/trends/explore?q=organic+hair+care+australia&geo=AU" target="_blank" rel="noopener" class="term-link">Google Trends &#8599;</a>
+            </div>
+            <div class="term-volume">1,600 searches/mo</div>
+            <div class="term-ranking">
+              <span class="rank-label">Pure Earth:</span>
+              <span class="rank-value rank-absent">Not on Page 1</span>
+            </div>
+            <div class="term-traffic">Traffic going to: <a href="https://www.sukin.com" target="_blank" rel="noopener">Sukin</a>, <a href="https://www.schwarzkopf.com.au" target="_blank" rel="noopener">Schwarzkopf Natural</a>, Amazon AU</div>
+            <span class="seo-expand-hint">Click for strategy &amp; insights &#9660;</span>
+            <div class="seo-card-detail">
+              <div class="seo-detail-section">
+                <h4>Google Trend Data</h4>
+                <ul>
+                  <li><strong>Trend:</strong> Stable, +5% year-over-year</li>
+                  <li><strong>Peak months:</strong> January, May (Mother's Day gifting)</li>
+                  <li><strong>Related rising:</strong> "natural shampoo and conditioner", "organic shampoo brands", "best organic haircare"</li>
+                  <li><strong>Regional:</strong> National, strong in VIC metro</li>
+                </ul>
+              </div>
+              <div class="seo-detail-section">
+                <h4>Strategy to Rank</h4>
+                <ol>
+                  <li>Create comparison guides: "Organic vs Natural Haircare: What&rsquo;s the Difference?"</li>
+                  <li>Build ingredient transparency pages with certifications</li>
+                  <li>Target long-tail keywords first: "organic shampoo for fine hair australia"</li>
+                  <li>Collaborate with organic lifestyle bloggers for backlinks</li>
+                </ol>
+              </div>
+              <div class="seo-detail-costs">
+                <div class="seo-cost-box"><h4>Estimated Cost</h4><p>$500&ndash;$1,500 for content strategy and outreach</p></div>
+                <div class="seo-impact-box"><h4>Potential Impact</h4><p>Page 1 = 300&ndash;500 visits/mo. 6&ndash;10 sales/mo ($180&ndash;$300 revenue)</p></div>
+              </div>
+            </div>
+          </div>
+          <div class="search-term-card opportunity">
+            <div class="term-header">
+              <span class="term-name">"sustainable beauty brands australia"</span>
+              <a href="https://trends.google.com/trends/explore?q=sustainable+beauty+brands+australia&geo=AU" target="_blank" rel="noopener" class="term-link">Google Trends &#8599;</a>
+            </div>
+            <div class="term-volume">880 searches/mo</div>
+            <div class="term-ranking">
+              <span class="rank-label">Pure Earth:</span>
+              <span class="rank-value rank-low">Page 2</span>
+            </div>
+            <div class="term-traffic">Traffic going to: <a href="https://www.ethique.com" target="_blank" rel="noopener">Ethique</a>, <a href="https://www.sukin.com" target="_blank" rel="noopener">Sukin</a>, beauty directories</div>
+            <span class="seo-expand-hint">Click for strategy &amp; insights &#9660;</span>
+            <div class="seo-card-detail">
+              <div class="seo-detail-section">
+                <h4>Google Trend Data</h4>
+                <ul>
+                  <li><strong>Trend:</strong> Growing rapidly, +32% year-over-year</li>
+                  <li><strong>Peak months:</strong> April (Earth Day), year-round interest</li>
+                  <li><strong>Related rising:</strong> "eco friendly beauty", "zero waste beauty", "plastic free beauty"</li>
+                  <li><strong>Regional:</strong> Strong in all capital cities</li>
+                </ul>
+              </div>
+              <div class="seo-detail-section">
+                <h4>Strategy to Rank</h4>
+                <ol>
+                  <li>Already Page 2 &mdash; just needs a backlink push to Page 1</li>
+                  <li>Get listed in sustainability directories (The Green Edit, Eco Warrior Princess)</li>
+                  <li>Pitch to eco-focused publications for editorial coverage</li>
+                  <li>Create "Sustainable Beauty Brands" listicle where Pure Earth is featured</li>
+                </ol>
+              </div>
+              <div class="seo-detail-costs">
+                <div class="seo-cost-box"><h4>Estimated Cost</h4><p>$200&ndash;$600 for directory submissions and outreach</p></div>
+                <div class="seo-impact-box"><h4>Potential Impact</h4><p>Page 1 = 150&ndash;300 visits/mo, very high intent buyers. 8&ndash;15 sales/mo ($240&ndash;$450 revenue)</p></div>
+              </div>
+            </div>
+          </div>
+          <div class="search-term-card opportunity">
+            <div class="term-header">
+              <span class="term-name">"aluminium packaging beauty"</span>
+              <a href="https://trends.google.com/trends/explore?q=aluminium+packaging+beauty&geo=AU" target="_blank" rel="noopener" class="term-link">Google Trends &#8599;</a>
+            </div>
+            <div class="term-volume">720 searches/mo (&#8593; +85% YoY)</div>
+            <div class="term-ranking">
+              <span class="rank-label">Pure Earth:</span>
+              <span class="rank-value rank-low">Page 2-3</span>
+            </div>
+            <div class="term-traffic">Traffic going to: packaging suppliers, industry blogs, <a href="https://www.ethique.com" target="_blank" rel="noopener">Ethique</a></div>
+            <span class="seo-expand-hint">Click for strategy &amp; insights &#9660;</span>
+            <div class="seo-card-detail">
+              <div class="seo-detail-section">
+                <h4>Google Trend Data</h4>
+                <ul>
+                  <li><strong>Trend:</strong> Surging, +85% year-over-year</li>
+                  <li><strong>Peak months:</strong> Year-round with spikes around Earth Day and sustainability events</li>
+                  <li><strong>Related rising:</strong> "plastic free packaging", "refillable beauty", "zero waste skincare"</li>
+                  <li><strong>Regional:</strong> Growing in AU, UK, USA &mdash; global relevance</li>
+                </ul>
+              </div>
+              <div class="seo-detail-section">
+                <h4>Strategy to Rank</h4>
+                <ol>
+                  <li>Create THE definitive guide: "Aluminium Packaging in Beauty: Complete Guide"</li>
+                  <li>Pure Earth IS this keyword &mdash; own it with authority content</li>
+                  <li>Target PR around packaging innovation (beauty + sustainability journalists)</li>
+                  <li>Add a dedicated "Why Aluminium?" page on pureearth.com.au</li>
+                </ol>
+              </div>
+              <div class="seo-detail-costs">
+                <div class="seo-cost-box"><h4>Estimated Cost</h4><p>$200&ndash;$500 for one authoritative article + PR outreach</p></div>
+                <div class="seo-impact-box"><h4>Potential Impact</h4><p>Page 1 = 100&ndash;250 visits/mo, extremely high purchase intent. 10&ndash;20 sales/mo ($300&ndash;$600 revenue)</p></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- LLM Marketing & AI Search Opportunities -->
+      <div class="llm-panel">
+        <h3>AI &amp; LLM Marketing Opportunities</h3>
+        <p class="panel-subtitle">New AI-powered search and advertising channels Pure Earth should be aware of and preparing for</p>
+        <div class="llm-grid">
+          <div class="llm-card">
+            <span class="llm-badge llm-critical">CRITICAL</span>
+            <h4>Google AI Overviews (SGE)</h4>
+            <p>Google now shows AI-generated summaries at the top of search results. Being referenced in these overviews is the new Page 1. Pure Earth needs structured data, expert content, and authority signals to be cited.</p>
+            <div class="llm-action"><strong>Action:</strong> Add FAQ schema markup to all product pages. Create expert-level content about Kakadu Plum and aluminium packaging that AI can cite.</div>
+            <div class="llm-cost"><strong>Cost:</strong> $300&ndash;$800 for schema implementation + content</div>
+          </div>
+          <div class="llm-card">
+            <span class="llm-badge llm-new">NEW CHANNEL</span>
+            <h4>Perplexity AI Advertising</h4>
+            <p>Perplexity launched sponsored results in AI search. Early adopters are getting cheap CPCs ($0.30&ndash;$0.80) on beauty and wellness queries. This is where Google Ads was 10 years ago.</p>
+            <div class="llm-action"><strong>Action:</strong> Set up a Perplexity Ads account and run test campaigns on "natural shampoo" and "sustainable beauty" queries. First-mover advantage is significant.</div>
+            <div class="llm-cost"><strong>Cost:</strong> $200&ndash;$500/mo test budget for early learning</div>
+          </div>
+          <div class="llm-card">
+            <span class="llm-badge llm-opportunity">OPPORTUNITY</span>
+            <h4>ChatGPT Product Recommendations</h4>
+            <p>When users ask ChatGPT "what&rsquo;s the best natural shampoo in Australia?", it recommends brands with strong web presence, reviews, and structured data. Pure Earth is currently NOT recommended.</p>
+            <div class="llm-action"><strong>Action:</strong> Build web presence that LLMs can reference &mdash; expert blog posts, PR coverage, and third-party reviews. Get listed on comparison and review sites.</div>
+            <div class="llm-cost"><strong>Cost:</strong> $500&ndash;$1,500 for content + review outreach</div>
+          </div>
+          <div class="llm-card">
+            <span class="llm-badge llm-opportunity">OPPORTUNITY</span>
+            <h4>GEO (Generative Engine Optimisation)</h4>
+            <p>A new discipline focused on getting brands cited by AI assistants (ChatGPT, Gemini, Claude, Perplexity). Requires authoritative, factual, well-structured content that AI models prefer to reference.</p>
+            <div class="llm-action"><strong>Action:</strong> Create a "Pure Earth Facts" page with clear claims, statistics, certifications, and ingredient data. Structure for AI readability.</div>
+            <div class="llm-cost"><strong>Cost:</strong> $200&ndash;$600 for structured content creation</div>
+          </div>
+          <div class="llm-card">
+            <span class="llm-badge llm-new">NEW CHANNEL</span>
+            <h4>Meta AI &amp; TikTok AI Ad Targeting</h4>
+            <p>Both Meta and TikTok now offer AI-powered ad targeting (Advantage+ and Smart Performance). These use machine learning to find the highest-converting audiences automatically, outperforming manual targeting by 20&ndash;40%.</p>
+            <div class="llm-action"><strong>Action:</strong> Switch current ad campaigns to Advantage+ (Meta) and Smart Performance (TikTok). Upload product catalogue for dynamic creative.</div>
+            <div class="llm-cost"><strong>Cost:</strong> Same ad budget, just better targeting. $0 extra for setup.</div>
+          </div>
+          <div class="llm-card">
+            <span class="llm-badge llm-critical">CRITICAL</span>
+            <h4>Amazon AU &amp; AI Shopping</h4>
+            <p>Amazon&rsquo;s Rufus AI shopping assistant now recommends products to millions of Australian shoppers. Not being on Amazon AU means missing AI-driven product discovery entirely.</p>
+            <div class="llm-action"><strong>Action:</strong> List at least 2&ndash;3 hero products on Amazon AU. Optimise listings for Rufus AI with detailed ingredients, benefits, and comparison keywords.</div>
+            <div class="llm-cost"><strong>Cost:</strong> $500&ndash;$1,000 setup + Amazon referral fees (15%)</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Traffic Flow Panel -->
+      <div class="traffic-panel">
+        <h3>Who's Getting the Traffic?</h3>
+        <p class="panel-subtitle">Where searchers in Pure Earth's space are actually landing today</p>
+        <div class="traffic-grid">
+          <div class="traffic-card">
+            <span class="traffic-badge high-traffic">HIGH VOLUME</span>
+            <h4>Sukin (sukin.com)</h4>
+            <p>Dominating "natural shampoo australia", "organic hair care", and "vegan beauty" searches. Estimated 120K+ organic visits/mo in Australia.</p>
+            <a href="https://www.sukin.com" target="_blank" rel="noopener">Visit Sukin &#8599;</a>
+          </div>
+          <div class="traffic-card">
+            <span class="traffic-badge high-traffic">HIGH VOLUME</span>
+            <h4>KORA Organics (koraorganics.com)</h4>
+            <p>Capturing "clean beauty australia" and "organic skincare" searches. Miranda Kerr's brand awareness drives significant direct traffic.</p>
+            <a href="https://www.koraorganics.com" target="_blank" rel="noopener">Visit KORA &#8599;</a>
+          </div>
+          <div class="traffic-card">
+            <span class="traffic-badge med-traffic">GROWING</span>
+            <h4>Ethique (ethique.com)</h4>
+            <p>Winning "sustainable beauty" and "plastic-free haircare" terms. Strong SEO from press coverage and directory listings.</p>
+            <a href="https://www.ethique.com" target="_blank" rel="noopener">Visit Ethique &#8599;</a>
+          </div>
+          <div class="traffic-card">
+            <span class="traffic-badge med-traffic">GROWING</span>
+            <h4>Kakadu Plum Co (kakaduplumco.com.au)</h4>
+            <p>Capturing "kakadu plum" branded searches. Getting traffic Pure Earth should be competing for with its Kakadu Plum Serum.</p>
+            <a href="https://www.kakaduplumco.com.au" target="_blank" rel="noopener">Visit Kakadu Plum Co &#8599;</a>
+          </div>
+          <div class="traffic-card">
+            <span class="traffic-badge no-traffic">MINIMAL</span>
+            <h4>Pure Earth (pureearth.com.au)</h4>
+            <p>Estimated &lt;500 organic visits/mo. Not ranking on page 1 for any high-volume terms. Almost zero referral traffic from blogs or directories.</p>
+            <a href="https://www.pureearth.com.au" target="_blank" rel="noopener">Visit Pure Earth &#8599;</a>
+          </div>
+        </div>
+      </div>
+
+      <!-- Backlink Status Panel -->
+      <div class="backlink-panel">
+        <h3>Pure Earth Backlink &amp; Referral Status</h3>
+        <p class="panel-subtitle">Inbound links from blogs, press, and directories driving referral traffic to pureearth.com.au</p>
+        <div class="backlink-stat">
+          <span class="backlink-number">~5</span>
+          <div class="backlink-info">
+            <h4>Total External Backlinks</h4>
+            <p>Critically low. Competitors like Sukin have 10,000+, Ethique has 3,000+. Pure Earth needs 50+ quality backlinks to appear on page 1.</p>
+          </div>
+        </div>
+        <div class="backlink-stat">
+          <span class="backlink-number">0</span>
+          <div class="backlink-info">
+            <h4>Press Coverage / Media Mentions</h4>
+            <p>Zero coverage in Vogue Australia, Harper's Bazaar, BeautyHeaven, or Adore Beauty editorial. These are critical for SEO authority.</p>
+          </div>
+        </div>
+        <div class="backlink-stat">
+          <span class="backlink-number">0</span>
+          <div class="backlink-info">
+            <h4>Beauty Directory Listings</h4>
+            <p>Not listed on Adore Beauty, Nourished Life, Flora &amp; Fauna, or The Green Edit. These directories drive targeted referral traffic.</p>
+          </div>
+        </div>
+        <div class="backlink-stat">
+          <span class="backlink-number ok">2-3</span>
+          <div class="backlink-info">
+            <h4>Blog / Content Mentions</h4>
+            <p>Minor mentions from small sustainability blogs. No significant content partnerships or guest posts driving traffic back to Pure Earth.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="action-box">
+        <h3>Immediate Action Items for Pure Earth</h3>
+        <div class="action-grid">
+          <div class="action-item priority-high">
+            <span class="action-priority">HIGH PRIORITY</span>
+            <p>Create a "Kakadu Plum Scalp Oil Ritual" ASMR video &mdash; aligns with scalp health, hair oiling, and Australian botanicals trends simultaneously.</p>
+          </div>
+          <div class="action-item priority-high">
+            <span class="action-priority">HIGH PRIORITY</span>
+            <p>Film a raw, unfiltered "beach to shower" routine showing real post-beach hair damage and Pure Earth repair process.</p>
+          </div>
+          <div class="action-item priority-med">
+            <span class="action-priority">MEDIUM PRIORITY</span>
+            <p>Gabriela to post a LinkedIn vulnerability piece about the real costs of sustainable packaging choices.</p>
+          </div>
+          <div class="action-item priority-med">
+            <span class="action-priority">MEDIUM PRIORITY</span>
+            <p>Launch a "What's in your shampoo?" toxic ingredient comparison TikTok series.</p>
+          </div>
+          <div class="action-item priority-high">
+            <span class="action-priority">HIGH PRIORITY &mdash; SEO</span>
+            <p>Build backlinks urgently: submit to Adore Beauty, Nourished Life, Flora &amp; Fauna, and The Green Edit directories. Target 20+ quality backlinks in 30 days.</p>
+          </div>
+          <div class="action-item priority-high">
+            <span class="action-priority">HIGH PRIORITY &mdash; SEO</span>
+            <p>Create SEO-optimised blog content targeting "kakadu plum skincare", "natural shampoo australia", and "aluminium packaging beauty" &mdash; Pure Earth ranks for none of these.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ==================== SECTION: VIRAL POST DATABASE ==================== -->
+    <section class="section" id="database">
+      <div class="section-header">
+        <h2>Viral Post Database</h2>
+        <p>Top 5 viral posts per platform with structural breakdowns</p>
+      </div>
+
+      <div class="platform-tabs">
+        <button class="platform-tab active" data-platform="tiktok">
+          <span class="platform-icon">&#9654;</span> TikTok
+        </button>
+        <button class="platform-tab" data-platform="instagram">
+          <span class="platform-icon">&#9673;</span> Instagram
+        </button>
+        <button class="platform-tab" data-platform="facebook">
+          <span class="platform-icon">&#9737;</span> Facebook
+        </button>
+        <button class="platform-tab" data-platform="linkedin">
+          <span class="platform-icon">&#9632;</span> LinkedIn
+        </button>
+      </div>
+
+      <!-- TikTok Posts -->
+      <div class="platform-content active" id="platform-tiktok">
+
+        <div class="viral-card">
+          <div class="viral-header">
+            <div class="viral-rank">#1</div>
+            <div class="viral-info">
+              <h3>Trinidad Sandoval &mdash; Peter Thomas Roth Eye Tightener</h3>
+              <span class="viral-brand">@trinidad1967</span>
+            </div>
+            <div class="viral-score">
+              <div class="score-circle">94</div>
+              <span>Virality Score</span>
+            </div>
+          </div>
+          <div class="viral-metrics">
+            <div class="metric"><span class="metric-value">30M+</span><span class="metric-label">Views</span></div>
+            <div class="metric"><span class="metric-value">4M+</span><span class="metric-label">Likes</span></div>
+            <div class="metric"><span class="metric-value">130K+</span><span class="metric-label">Comments</span></div>
+            <div class="metric"><span class="metric-value">~13%</span><span class="metric-label">Eng. Rate</span></div>
+          </div>
+          <div class="viral-details">
+            <div class="detail-group">
+              <h4>Content Category</h4>
+              <span class="tag">UGC Showcase</span>
+              <span class="tag">Before &amp; After</span>
+            </div>
+            <div class="detail-group">
+              <h4>Hook Type</h4>
+              <span class="tag">Emotional Trigger</span>
+              <span class="tag">Pattern Interrupt</span>
+            </div>
+            <div class="detail-group">
+              <h4>Visual Style</h4>
+              <p>Raw selfie-cam, no editing, bathroom lighting, zero branding. The anti-production aesthetic IS the brand signal.</p>
+            </div>
+            <div class="detail-group">
+              <h4>Psychological Triggers</h4>
+              <span class="tag trigger">Aspiration</span>
+              <span class="tag trigger">Validation</span>
+              <span class="tag trigger">Identity</span>
+            </div>
+            <div class="detail-group">
+              <h4>Why It Resonated</h4>
+              <p>A 54-year-old hospital housekeeper with zero following demonstrated a real-time, visible transformation. The humble delivery ("I don't know if we're allowed to do this on TikTok") created intimacy. Product sold out 6 months of inventory overnight.</p>
+            </div>
+            <div class="scores-row">
+              <div class="mini-score"><span>Shareability</span><div class="mini-bar"><div style="width:90%"></div></div><span>9/10</span></div>
+              <div class="mini-score"><span>Saveability</span><div class="mini-bar"><div style="width:80%"></div></div><span>8/10</span></div>
+              <div class="mini-score"><span>Comment Driver</span><div class="mini-bar"><div style="width:100%"></div></div><span>10/10</span></div>
+            </div>
+            <div class="detail-group">
+              <h4>Core Learning for Pure Earth</h4>
+              <p class="core-learning">Real people showing real results in real time beats any produced content. Pure Earth should seed product to authentic, non-influencer customers and encourage raw before/after videos.</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="viral-card">
+          <div class="viral-header">
+            <div class="viral-rank">#2</div>
+            <div class="viral-info">
+              <h3>Medicube Collagen Night Wrapping Mask</h3>
+              <span class="viral-brand">@medicube_global</span>
+            </div>
+            <div class="viral-score">
+              <div class="score-circle">91</div>
+              <span>Virality Score</span>
+            </div>
+          </div>
+          <div class="viral-metrics">
+            <div class="metric"><span class="metric-value">10.6B</span><span class="metric-label">Total Views</span></div>
+            <div class="metric"><span class="metric-value">33.9K+</span><span class="metric-label">Creators</span></div>
+            <div class="metric"><span class="metric-value">$102.9M</span><span class="metric-label">TikTok Revenue</span></div>
+            <div class="metric"><span class="metric-value">1000%+</span><span class="metric-label">YoY Growth</span></div>
+          </div>
+          <div class="viral-details">
+            <div class="detail-group">
+              <h4>Content Category</h4>
+              <span class="tag">ASMR / Texture</span>
+              <span class="tag">Transformation Visual</span>
+            </div>
+            <div class="detail-group">
+              <h4>Hook Type</h4>
+              <span class="tag">Pattern Interrupt</span>
+              <span class="tag">Data Shock</span>
+            </div>
+            <div class="detail-group">
+              <h4>Visual Style</h4>
+              <p>Night routine GRWM format. White jelly mask turns translucent as collagen absorbs. Close-up texture shots. Morning "peel-off reveal" creates inherent narrative arc.</p>
+            </div>
+            <div class="detail-group">
+              <h4>Psychological Triggers</h4>
+              <span class="tag trigger">Aspiration</span>
+              <span class="tag trigger">FOMO</span>
+              <span class="tag trigger">Education</span>
+            </div>
+            <div class="detail-group">
+              <h4>Core Learning for Pure Earth</h4>
+              <p class="core-learning">Products that visually transform during use are inherently viral. Pure Earth's hair treatment mask could be filmed showing the application-to-absorption process with ASMR audio.</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="viral-card">
+          <div class="viral-header">
+            <div class="viral-rank">#3</div>
+            <div class="viral-info">
+              <h3>Nyadollie Deng &mdash; Everyday Makeup Tutorial</h3>
+              <span class="viral-brand">@dollievision</span>
+            </div>
+            <div class="viral-score">
+              <div class="score-circle">97</div>
+              <span>Virality Score</span>
+            </div>
+          </div>
+          <div class="viral-metrics">
+            <div class="metric"><span class="metric-value">504M+</span><span class="metric-label">Views</span></div>
+            <div class="metric"><span class="metric-value">35.7M</span><span class="metric-label">Likes</span></div>
+            <div class="metric"><span class="metric-value">1.8M</span><span class="metric-label">Saves</span></div>
+            <div class="metric"><span class="metric-value">~7%</span><span class="metric-label">Eng. Rate</span></div>
+          </div>
+          <div class="viral-details">
+            <div class="detail-group">
+              <h4>Content Category</h4>
+              <span class="tag">UGC Showcase</span>
+              <span class="tag">Educational</span>
+            </div>
+            <div class="detail-group">
+              <h4>Hook Type</h4>
+              <span class="tag">Pattern Interrupt</span>
+              <span class="tag">Cultural Reference</span>
+            </div>
+            <div class="detail-group">
+              <h4>Psychological Triggers</h4>
+              <span class="tag trigger">Identity</span>
+              <span class="tag trigger">Belonging</span>
+              <span class="tag trigger">Aspiration</span>
+            </div>
+            <div class="detail-group">
+              <h4>Core Learning for Pure Earth</h4>
+              <p class="core-learning">Simplicity wins. No gimmicks, no trending audio, no effects. Just a genuine routine. TikTok's algorithm rewards authenticity at any production level. Pure Earth should encourage real routine videos from diverse customers.</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="viral-card">
+          <div class="viral-header">
+            <div class="viral-rank">#4</div>
+            <div class="viral-info">
+              <h3>Gisou Honey Infused Hair Oil</h3>
+              <span class="viral-brand">@gisou</span>
+            </div>
+            <div class="viral-score">
+              <div class="score-circle">89</div>
+              <span>Virality Score</span>
+            </div>
+          </div>
+          <div class="viral-metrics">
+            <div class="metric"><span class="metric-value">600M+</span><span class="metric-label">Hashtag Views</span></div>
+            <div class="metric"><span class="metric-value">1.5M</span><span class="metric-label">Followers</span></div>
+            <div class="metric"><span class="metric-value">21.3M</span><span class="metric-label">Total Likes</span></div>
+            <div class="metric"><span class="metric-value">1/20s</span><span class="metric-label">Sales Velocity</span></div>
+          </div>
+          <div class="viral-details">
+            <div class="detail-group">
+              <h4>Content Category</h4>
+              <span class="tag">ASMR / Texture</span>
+              <span class="tag">Founder Story</span>
+              <span class="tag">Educational</span>
+            </div>
+            <div class="detail-group">
+              <h4>Hook Type</h4>
+              <span class="tag">Emotional Trigger</span>
+              <span class="tag">Cultural Reference</span>
+            </div>
+            <div class="detail-group">
+              <h4>Visual Style</h4>
+              <p>Golden, honey-toned palette. Slow-motion oil pours. Close-up hair application shots. Warm lighting. Heritage beekeeping B-roll. The product colour IS the brand aesthetic.</p>
+            </div>
+            <div class="detail-group">
+              <h4>Core Learning for Pure Earth</h4>
+              <p class="core-learning">DIRECT COMPETITOR INSIGHT: Gisou proves that a natural ingredient heritage story (beekeeping) + ASMR oil application + founder authenticity = category dominance. Pure Earth's Kakadu Plum + Australian bush harvesting story is equally compelling but untold on video.</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="viral-card">
+          <div class="viral-header">
+            <div class="viral-rank">#5</div>
+            <div class="viral-info">
+              <h3>Biodance Bio-Collagen Real Deep Mask</h3>
+              <span class="viral-brand">@biodance_global</span>
+            </div>
+            <div class="viral-score">
+              <div class="score-circle">86</div>
+              <span>Virality Score</span>
+            </div>
+          </div>
+          <div class="viral-metrics">
+            <div class="metric"><span class="metric-value">322K+</span><span class="metric-label">Likes (Top Post)</span></div>
+            <div class="metric"><span class="metric-value">12% &rarr; 42%</span><span class="metric-label">Hydration Proof</span></div>
+            <div class="metric"><span class="metric-value">~$19</span><span class="metric-label">Price Point</span></div>
+            <div class="metric"><span class="metric-value">Hailey Bieber</span><span class="metric-label">Celebrity Fan</span></div>
+          </div>
+          <div class="viral-details">
+            <div class="detail-group">
+              <h4>Content Category</h4>
+              <span class="tag">Data-Share</span>
+              <span class="tag">Transformation Visual</span>
+              <span class="tag">Educational</span>
+            </div>
+            <div class="detail-group">
+              <h4>Hook Type</h4>
+              <span class="tag">Data Shock</span>
+              <span class="tag">Bold Statement</span>
+            </div>
+            <div class="detail-group">
+              <h4>Core Learning for Pure Earth</h4>
+              <p class="core-learning">Science-backed proof (hydration meters, before/after measurements) adds massive credibility. Pure Earth should invest in a simple skin/hair analysis device to show measurable improvement in content.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Instagram Posts -->
+      <div class="platform-content" id="platform-instagram">
+
+        <div class="viral-card">
+          <div class="viral-header">
+            <div class="viral-rank">#1</div>
+            <div class="viral-info">
+              <h3>Rhode Skin &mdash; Peptide Lip Treatment Phone Case</h3>
+              <span class="viral-brand">@rhodeskin</span>
+            </div>
+            <div class="viral-score">
+              <div class="score-circle">96</div>
+              <span>Virality Score</span>
+            </div>
+          </div>
+          <div class="viral-metrics">
+            <div class="metric"><span class="metric-value">60.4M</span><span class="metric-label">Views</span></div>
+            <div class="metric"><span class="metric-value">400K</span><span class="metric-label">Waitlist</span></div>
+            <div class="metric"><span class="metric-value">25 min</span><span class="metric-label">Sold Out In</span></div>
+            <div class="metric"><span class="metric-value">2.2%</span><span class="metric-label">Eng. Rate</span></div>
+          </div>
+          <div class="viral-details">
+            <div class="detail-group">
+              <h4>Content Category</h4>
+              <span class="tag">Founder Story</span>
+              <span class="tag">Community Engagement</span>
+            </div>
+            <div class="detail-group">
+              <h4>Hook Type</h4>
+              <span class="tag">Pattern Interrupt</span>
+              <span class="tag">Emotional Trigger</span>
+            </div>
+            <div class="detail-group">
+              <h4>Why It Resonated</h4>
+              <p>The product IS the content. A phone case with a lip glaze holder is inherently photographable and shareable. Hailey Bieber positioned it casually in daily life rather than through a polished ad. Scarcity (waitlist + limited run) created FOMO.</p>
+            </div>
+            <div class="detail-group">
+              <h4>Core Learning for Pure Earth</h4>
+              <p class="core-learning">Innovation in product-as-content format creates organic sharing. Pure Earth could explore lifestyle-integrated packaging (e.g., beach bag-friendly aluminium formats) that become content moments themselves.</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="viral-card">
+          <div class="viral-header">
+            <div class="viral-rank">#2</div>
+            <div class="viral-info">
+              <h3>Fenty Hair Launch &mdash; Rihanna's "Mane Street"</h3>
+              <span class="viral-brand">@fentyhair</span>
+            </div>
+            <div class="viral-score">
+              <div class="score-circle">93</div>
+              <span>Virality Score</span>
+            </div>
+          </div>
+          <div class="viral-metrics">
+            <div class="metric"><span class="metric-value">47.4M</span><span class="metric-label">Engagements</span></div>
+            <div class="metric"><span class="metric-value">558.8M</span><span class="metric-label">Impressions</span></div>
+            <div class="metric"><span class="metric-value">$24.6M</span><span class="metric-label">EMV</span></div>
+            <div class="metric"><span class="metric-value">1.1B</span><span class="metric-label">7-Month Imp.</span></div>
+          </div>
+          <div class="viral-details">
+            <div class="detail-group">
+              <h4>Content Category</h4>
+              <span class="tag">Founder Story</span>
+              <span class="tag">Behind the Scenes</span>
+            </div>
+            <div class="detail-group">
+              <h4>Core Learning for Pure Earth</h4>
+              <p class="core-learning">Founder-as-face with playful, non-corporate energy. Gabriela could create her own "Byron Hinterland to bottle" journey Reels with similar warm, personality-driven energy.</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="viral-card">
+          <div class="viral-header">
+            <div class="viral-rank">#3</div>
+            <div class="viral-info">
+              <h3>Zen Head Spa ASMR Reel</h3>
+              <span class="viral-brand">@zenheads_asmr</span>
+            </div>
+            <div class="viral-score">
+              <div class="score-circle">88</div>
+              <span>Virality Score</span>
+            </div>
+          </div>
+          <div class="viral-metrics">
+            <div class="metric"><span class="metric-value">90M</span><span class="metric-label">Views</span></div>
+            <div class="metric"><span class="metric-value">562K</span><span class="metric-label">Followers</span></div>
+            <div class="metric"><span class="metric-value">360M+</span><span class="metric-label">#HeadSpa Views</span></div>
+            <div class="metric"><span class="metric-value">High</span><span class="metric-label">Rewatch Rate</span></div>
+          </div>
+          <div class="viral-details">
+            <div class="detail-group">
+              <h4>Content Category</h4>
+              <span class="tag">ASMR / Texture</span>
+              <span class="tag">Behind the Scenes</span>
+            </div>
+            <div class="detail-group">
+              <h4>Core Learning for Pure Earth</h4>
+              <p class="core-learning">"Trigger stacking" &mdash; introducing a new sensory element every 5-10 seconds &mdash; prevents scroll-away. Pure Earth scalp oil application could use this format with different tools and techniques.</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="viral-card">
+          <div class="viral-header">
+            <div class="viral-rank">#4</div>
+            <div class="viral-info">
+              <h3>Sol de Janeiro &mdash; #SDJonthestreet</h3>
+              <span class="viral-brand">@soldejaneiro</span>
+            </div>
+            <div class="viral-score">
+              <div class="score-circle">92</div>
+              <span>Virality Score</span>
+            </div>
+          </div>
+          <div class="viral-metrics">
+            <div class="metric"><span class="metric-value">1B</span><span class="metric-label">TikTok Views</span></div>
+            <div class="metric"><span class="metric-value">8.6%</span><span class="metric-label">IG Eng. Rate</span></div>
+            <div class="metric"><span class="metric-value">$780M</span><span class="metric-label">Net Sales</span></div>
+            <div class="metric"><span class="metric-value">#1</span><span class="metric-label">Sephora Brand</span></div>
+          </div>
+          <div class="viral-details">
+            <div class="detail-group">
+              <h4>Content Category</h4>
+              <span class="tag">Community Engagement</span>
+              <span class="tag">UGC Showcase</span>
+            </div>
+            <div class="detail-group">
+              <h4>Core Learning for Pure Earth</h4>
+              <p class="core-learning">Street interview "What's in your bag?" format creates social proof through genuine reactions. Pure Earth could do Byron Bay beach/market versions: "What's your beach hair secret?"</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="viral-card">
+          <div class="viral-header">
+            <div class="viral-rank">#5</div>
+            <div class="viral-info">
+              <h3>Rare Beauty &mdash; Fan-Made Community Reels</h3>
+              <span class="viral-brand">@rarebeauty</span>
+            </div>
+            <div class="viral-score">
+              <div class="score-circle">90</div>
+              <span>Virality Score</span>
+            </div>
+          </div>
+          <div class="viral-metrics">
+            <div class="metric"><span class="metric-value">9M</span><span class="metric-label">Followers</span></div>
+            <div class="metric"><span class="metric-value">4%</span><span class="metric-label">Eng. Rate</span></div>
+            <div class="metric"><span class="metric-value">$400M</span><span class="metric-label">Annual Sales</span></div>
+            <div class="metric"><span class="metric-value">~11%</span><span class="metric-label">Marketing Spend</span></div>
+          </div>
+          <div class="viral-details">
+            <div class="detail-group">
+              <h4>Content Category</h4>
+              <span class="tag">Community Engagement</span>
+              <span class="tag">Emotional Storytelling</span>
+            </div>
+            <div class="detail-group">
+              <h4>Core Learning for Pure Earth</h4>
+              <p class="core-learning">Fan-made content outperformed brand-produced content. Low marketing spend + high authenticity = discovered by community, not pushed by ads. Pure Earth's 1% donation to One Tree Planted mirrors Rare Beauty's Rare Impact Fund model.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Facebook Posts -->
+      <div class="platform-content" id="platform-facebook">
+
+        <div class="viral-card">
+          <div class="viral-header">
+            <div class="viral-rank">#1</div>
+            <div class="viral-info">
+              <h3>CeraVe x Michael Cera &mdash; Super Bowl Conspiracy</h3>
+              <span class="viral-brand">CeraVe</span>
+            </div>
+            <div class="viral-score">
+              <div class="score-circle">95</div>
+              <span>Virality Score</span>
+            </div>
+          </div>
+          <div class="viral-metrics">
+            <div class="metric"><span class="metric-value">6B+</span><span class="metric-label">Impressions</span></div>
+            <div class="metric"><span class="metric-value">400+</span><span class="metric-label">Organic Creators</span></div>
+            <div class="metric"><span class="metric-value">#1</span><span class="metric-label">Super Bowl Ad</span></div>
+            <div class="metric"><span class="metric-value">Super Clio</span><span class="metric-label">Award</span></div>
+          </div>
+          <div class="viral-details">
+            <div class="detail-group">
+              <h4>Content Category</h4>
+              <span class="tag">Meme / Absurd</span>
+              <span class="tag">Community Engagement</span>
+            </div>
+            <div class="detail-group">
+              <h4>Core Learning for Pure Earth</h4>
+              <p class="core-learning">The "earned-first" conspiracy narrative drove organic Facebook group discussions. Even small brands can create intrigue-based campaigns that fuel community speculation and sharing.</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="viral-card">
+          <div class="viral-header">
+            <div class="viral-rank">#2</div>
+            <div class="viral-info">
+              <h3>Maybelline CGI London Underground Mascara</h3>
+              <span class="viral-brand">Maybelline</span>
+            </div>
+            <div class="viral-score">
+              <div class="score-circle">90</div>
+              <span>Virality Score</span>
+            </div>
+          </div>
+          <div class="viral-metrics">
+            <div class="metric"><span class="metric-value">76.1M</span><span class="metric-label">Views</span></div>
+            <div class="metric"><span class="metric-value">3M</span><span class="metric-label">Likes</span></div>
+            <div class="metric"><span class="metric-value">46.4M</span><span class="metric-label">IG Views</span></div>
+            <div class="metric"><span class="metric-value">"Is it real?"</span><span class="metric-label">Comment Driver</span></div>
+          </div>
+          <div class="viral-details">
+            <div class="detail-group">
+              <h4>Content Category</h4>
+              <span class="tag">Meme / Absurd</span>
+              <span class="tag">Trend Hijack</span>
+            </div>
+            <div class="detail-group">
+              <h4>Core Learning for Pure Earth</h4>
+              <p class="core-learning">The "is this real?" debate drove massive Facebook engagement. Pure Earth could create similarly playful content: CGI of Kakadu Plum trees growing through Byron Bay landmarks.</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="viral-card">
+          <div class="viral-header">
+            <div class="viral-rank">#3</div>
+            <div class="viral-info">
+              <h3>Beyonce Cecred &mdash; Natural Hair Wash Day</h3>
+              <span class="viral-brand">Cecred</span>
+            </div>
+            <div class="viral-score">
+              <div class="score-circle">91</div>
+              <span>Virality Score</span>
+            </div>
+          </div>
+          <div class="viral-metrics">
+            <div class="metric"><span class="metric-value">39M+</span><span class="metric-label">IG Views</span></div>
+            <div class="metric"><span class="metric-value">2M</span><span class="metric-label">Customers (6mo)</span></div>
+            <div class="metric"><span class="metric-value">+123%</span><span class="metric-label">Search Growth</span></div>
+            <div class="metric"><span class="metric-value">Allure</span><span class="metric-label">Best of Beauty</span></div>
+          </div>
+          <div class="viral-details">
+            <div class="detail-group">
+              <h4>Content Category</h4>
+              <span class="tag">Emotional Storytelling</span>
+              <span class="tag">Founder Story</span>
+            </div>
+            <div class="detail-group">
+              <h4>Core Learning for Pure Earth</h4>
+              <p class="core-learning">Vulnerability + founder authenticity. Gabriela showing her own real hair routine, addressing the challenges of natural haircare in the Australian climate, would create deep emotional connection.</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="viral-card">
+          <div class="viral-header">
+            <div class="viral-rank">#4</div>
+            <div class="viral-info">
+              <h3>Dove "The Code" &mdash; Anti-AI Beauty Pledge</h3>
+              <span class="viral-brand">Dove</span>
+            </div>
+            <div class="viral-score">
+              <div class="score-circle">87</div>
+              <span>Virality Score</span>
+            </div>
+          </div>
+          <div class="viral-metrics">
+            <div class="metric"><span class="metric-value">200M+</span><span class="metric-label">People Reached</span></div>
+            <div class="metric"><span class="metric-value">26M</span><span class="metric-label">Participating</span></div>
+            <div class="metric"><span class="metric-value">95/100</span><span class="metric-label">Brand Impact</span></div>
+            <div class="metric"><span class="metric-value">10x</span><span class="metric-label">Traffic Spike</span></div>
+          </div>
+          <div class="viral-details">
+            <div class="detail-group">
+              <h4>Content Category</h4>
+              <span class="tag">Emotional Storytelling</span>
+              <span class="tag">Community Engagement</span>
+            </div>
+            <div class="detail-group">
+              <h4>Core Learning for Pure Earth</h4>
+              <p class="core-learning">Taking a bold stance on an industry issue (AI, filters, toxic ingredients) creates share-worthy conversation. Pure Earth's "anti-toxic" positioning could fuel a similar pledge-style campaign.</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="viral-card">
+          <div class="viral-header">
+            <div class="viral-rank">#5</div>
+            <div class="viral-info">
+              <h3>Rare Beauty &mdash; "Love Your Rare" Global Campaign</h3>
+              <span class="viral-brand">Rare Beauty</span>
+            </div>
+            <div class="viral-score">
+              <div class="score-circle">88</div>
+              <span>Virality Score</span>
+            </div>
+          </div>
+          <div class="viral-metrics">
+            <div class="metric"><span class="metric-value">$400M</span><span class="metric-label">Sales</span></div>
+            <div class="metric"><span class="metric-value">$2B+</span><span class="metric-label">Valuation</span></div>
+            <div class="metric"><span class="metric-value">94%</span><span class="metric-label">Positive Sentiment</span></div>
+            <div class="metric"><span class="metric-value">7x</span><span class="metric-label">ROAS</span></div>
+          </div>
+          <div class="viral-details">
+            <div class="detail-group">
+              <h4>Content Category</h4>
+              <span class="tag">Emotional Storytelling</span>
+              <span class="tag">Community Engagement</span>
+            </div>
+            <div class="detail-group">
+              <h4>Core Learning for Pure Earth</h4>
+              <p class="core-learning">Facebook works best as a community conversation platform, not broadcast. Rare Beauty's emotional storytelling + mental health mission drove exceptional comment and share rates. Pure Earth's sustainability mission can serve the same role.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- LinkedIn Posts -->
+      <div class="platform-content" id="platform-linkedin">
+
+        <div class="viral-card">
+          <div class="viral-header">
+            <div class="viral-rank">#1</div>
+            <div class="viral-info">
+              <h3>Ron Robinson &mdash; "The Beauty Boom Is Over"</h3>
+              <span class="viral-brand">BeautyStat Cosmetics</span>
+            </div>
+            <div class="viral-score">
+              <div class="score-circle">92</div>
+              <span>Virality Score</span>
+            </div>
+          </div>
+          <div class="viral-details">
+            <div class="detail-group">
+              <h4>LinkedIn Post Type</h4>
+              <span class="tag">Bold Opinion</span>
+              <span class="tag">Industry Insight</span>
+              <span class="tag">Data Thread</span>
+            </div>
+            <div class="detail-group">
+              <h4>Hook Structure (First 2 Lines)</h4>
+              <p>"Ami Cole just closed and Freck shuttered... These were beloved beauty brands with cult followings, Sephora placement, founder buzz, and passionate communities."</p>
+              <div class="hook-analysis">
+                <span class="hook-check yes">Curiosity Gap</span>
+                <span class="hook-check yes">Authority Positioning</span>
+                <span class="hook-check no">Status Framing</span>
+                <span class="hook-check yes">Vulnerability</span>
+              </div>
+            </div>
+            <div class="detail-group">
+              <h4>Formatting Style</h4>
+              <span class="tag">Short punchy lines</span>
+              <span class="tag">White space heavy</span>
+              <span class="tag">Numbered framework</span>
+            </div>
+            <div class="detail-group">
+              <h4>Authority Signals</h4>
+              <span class="tag">Named specific brands</span>
+              <span class="tag">20+ years industry experience</span>
+              <span class="tag">Formulated for Rhode Skin</span>
+            </div>
+            <div class="detail-group">
+              <h4>CTA Type</h4>
+              <span class="tag">Soft engagement (implicit debate)</span>
+            </div>
+            <div class="detail-group">
+              <h4>Core Learning for Pure Earth</h4>
+              <p class="core-learning">Bold, contrarian industry takes backed by named examples and structured frameworks get shared by professionals. Gabriela could write "What the beauty industry gets wrong about sustainability" with specific cost data.</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="viral-card">
+          <div class="viral-header">
+            <div class="viral-rank">#2</div>
+            <div class="viral-info">
+              <h3>Jamika Martin &mdash; "$15M Mistake Most Beauty Founders Make"</h3>
+              <span class="viral-brand">ROSEN Skincare</span>
+            </div>
+            <div class="viral-score">
+              <div class="score-circle">89</div>
+              <span>Virality Score</span>
+            </div>
+          </div>
+          <div class="viral-details">
+            <div class="detail-group">
+              <h4>LinkedIn Post Type</h4>
+              <span class="tag">Revenue Transparency</span>
+              <span class="tag">Failure Story</span>
+              <span class="tag">Case Study</span>
+            </div>
+            <div class="detail-group">
+              <h4>Hook Structure</h4>
+              <p>"The $15 Million Mistake Most Beauty Founders Make (And Don't Even Know It)"</p>
+              <div class="hook-analysis">
+                <span class="hook-check yes">Curiosity Gap</span>
+                <span class="hook-check yes">Status Framing</span>
+                <span class="hook-check no">Authority Positioning</span>
+                <span class="hook-check yes">Vulnerability</span>
+              </div>
+            </div>
+            <div class="detail-group">
+              <h4>Core Learning for Pure Earth</h4>
+              <p class="core-learning">Dollar figures in hooks create immediate FOMO. Gabriela could share "The real cost of going plastic-free: what we spent vs. what we saved" with specific numbers.</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="viral-card">
+          <div class="viral-header">
+            <div class="viral-rank">#3</div>
+            <div class="viral-info">
+              <h3>Rea Ann Silva &mdash; "E.L.F. Acquired Rhode for $1 Billion"</h3>
+              <span class="viral-brand">Beautyblender</span>
+            </div>
+            <div class="viral-score">
+              <div class="score-circle">91</div>
+              <span>Virality Score</span>
+            </div>
+          </div>
+          <div class="viral-details">
+            <div class="detail-group">
+              <h4>LinkedIn Post Type</h4>
+              <span class="tag">Industry Insight</span>
+              <span class="tag">Data Thread</span>
+              <span class="tag">Bold Opinion</span>
+            </div>
+            <div class="detail-group">
+              <h4>Core Learning for Pure Earth</h4>
+              <p class="core-learning">News-jacking (tying to major industry events) with founder-perspective analysis gets massive reach. Gabriela should comment on industry news from a small-brand sustainability perspective.</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="viral-card">
+          <div class="viral-header">
+            <div class="viral-rank">#4</div>
+            <div class="viral-info">
+              <h3>Alisa Metzger &mdash; "The Middle of Beauty Is a Wasteland"</h3>
+              <span class="viral-brand">INNBEAUTY PROJECT</span>
+            </div>
+            <div class="viral-score">
+              <div class="score-circle">87</div>
+              <span>Virality Score</span>
+            </div>
+          </div>
+          <div class="viral-details">
+            <div class="detail-group">
+              <h4>LinkedIn Post Type</h4>
+              <span class="tag">Bold Opinion</span>
+              <span class="tag">Data Thread</span>
+            </div>
+            <div class="detail-group">
+              <h4>Core Learning for Pure Earth</h4>
+              <p class="core-learning">The "abandoned middle" thesis speaks to Pure Earth's own positioning. A post about how sustainable brands can offer premium quality at honest prices would resonate deeply.</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="viral-card">
+          <div class="viral-header">
+            <div class="viral-rank">#5</div>
+            <div class="viral-info">
+              <h3>Bobbi Brown &mdash; The Second-Act Founder Story</h3>
+              <span class="viral-brand">Jones Road Beauty</span>
+            </div>
+            <div class="viral-score">
+              <div class="score-circle">93</div>
+              <span>Virality Score</span>
+            </div>
+          </div>
+          <div class="viral-metrics">
+            <div class="metric"><span class="metric-value">$20M &rarr; $150M+</span><span class="metric-label">Revenue Growth</span></div>
+            <div class="metric"><span class="metric-value">375K</span><span class="metric-label">Units (Black Fri)</span></div>
+            <div class="metric"><span class="metric-value">~$1B</span><span class="metric-label">Valuation</span></div>
+            <div class="metric"><span class="metric-value">Age 63</span><span class="metric-label">Started Jones Road</span></div>
+          </div>
+          <div class="viral-details">
+            <div class="detail-group">
+              <h4>LinkedIn Post Type</h4>
+              <span class="tag">Founder Journey</span>
+              <span class="tag">Revenue Transparency</span>
+              <span class="tag">Behind the Brand</span>
+            </div>
+            <div class="detail-group">
+              <h4>Core Learning for Pure Earth</h4>
+              <p class="core-learning">The "second act" reinvention narrative resonates deeply. Gabriela's own story (Mexico &rarr; US &rarr; Byron Bay &rarr; founding Pure Earth) is equally compelling. Revenue transparency and family-business warmth drive saves and shares.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ==================== SECTION: COMPETITORS ==================== -->
+        <section class="section" id="competitors">
+      <div class="section-header">
+        <h2>Pure Earth vs Competitor Brands</h2>
+        <p>Compare each Pure Earth product against similar Australian DTC &amp; retail beauty brands. Select a product to filter, then choose a competitor from the dropdown.</p>
+      </div>
+
+      <!-- Product Filter -->
+      <div class="product-filter-bar">
+        <span class="product-filter-label">Pure Earth Product:</span>
+        <div class="product-btns">
+          <button class="product-btn active" data-product="all">All Products</button>
+          <button class="product-btn" data-product="serum">Kakadu Plum Serum</button>
+          <button class="product-btn" data-product="shampoo">Hydrating Shampoo</button>
+          <button class="product-btn" data-product="oil">Scalp &amp; Hair Oil</button>
+          <button class="product-btn" data-product="conditioner">Conditioner</button>
+          <button class="product-btn" data-product="bodywash">Body Wash</button>
+        </div>
+      </div>
+
+      <div class="competitor-grid">
+
+        <!-- ====== SERUM ====== -->
+        <div class="competitor-card" data-product="serum" id="comp-serum">
+          <div class="competitor-card-top">
+            <div class="pe-product-label">Kakadu Plum Vitamin C Serum &mdash; <strong>$49</strong></div>
+            <span class="competitor-vs-badge">VS</span>
+            <div class="brand-selector">
+              <select class="brand-select" data-product="serum">
+                <option value="0">Mukti Organics</option>
+                <option value="1">Biologi</option>
+                <option value="2">Sand &amp; Sky</option>
+                <option value="3">Ere Perez</option>
+              </select>
+            </div>
+          </div>
+          <div class="comp-body" id="comp-body-serum"></div>
+        </div>
+
+        <!-- ====== SHAMPOO ====== -->
+        <div class="competitor-card" data-product="shampoo" id="comp-shampoo">
+          <div class="competitor-card-top">
+            <div class="pe-product-label">Hydrating Shampoo (Kakadu Plum) &mdash; <strong>$32</strong></div>
+            <span class="competitor-vs-badge">VS</span>
+            <div class="brand-selector">
+              <select class="brand-select" data-product="shampoo">
+                <option value="0">Sukin</option>
+                <option value="1">A&apos;kin</option>
+                <option value="2">EverEscents</option>
+                <option value="3">Kevin Murphy</option>
+              </select>
+            </div>
+          </div>
+          <div class="comp-body" id="comp-body-shampoo"></div>
+        </div>
+
+        <!-- ====== OIL ====== -->
+        <div class="competitor-card" data-product="oil" id="comp-oil">
+          <div class="competitor-card-top">
+            <div class="pe-product-label">Kakadu Plum Scalp &amp; Hair Oil &mdash; <strong>$45</strong></div>
+            <span class="competitor-vs-badge">VS</span>
+            <div class="brand-selector">
+              <select class="brand-select" data-product="oil">
+                <option value="0">KORA Organics</option>
+                <option value="1">Grown Alchemist</option>
+                <option value="2">Mr. Smith</option>
+                <option value="3">Evo</option>
+              </select>
+            </div>
+          </div>
+          <div class="comp-body" id="comp-body-oil"></div>
+        </div>
+
+        <!-- ====== CONDITIONER ====== -->
+        <div class="competitor-card" data-product="conditioner" id="comp-conditioner">
+          <div class="competitor-card-top">
+            <div class="pe-product-label">Hydrating Conditioner (Lemon Myrtle) &mdash; <strong>$32</strong></div>
+            <span class="competitor-vs-badge">VS</span>
+            <div class="brand-selector">
+              <select class="brand-select" data-product="conditioner">
+                <option value="0">Ethique</option>
+                <option value="1">Sukin</option>
+                <option value="2">A&apos;kin</option>
+                <option value="3">EverEscents</option>
+              </select>
+            </div>
+          </div>
+          <div class="comp-body" id="comp-body-conditioner"></div>
+        </div>
+
+        <!-- ====== BODY WASH ====== -->
+        <div class="competitor-card" data-product="bodywash" id="comp-bodywash">
+          <div class="competitor-card-top">
+            <div class="pe-product-label">Nourishing Body Wash &mdash; <strong>$28</strong></div>
+            <span class="competitor-vs-badge">VS</span>
+            <div class="brand-selector">
+              <select class="brand-select" data-product="bodywash">
+                <option value="0">Bondi Wash</option>
+                <option value="1">Sukin</option>
+                <option value="2">Aesop</option>
+                <option value="3">Grown Alchemist</option>
+              </select>
+            </div>
+          </div>
+          <div class="comp-body" id="comp-body-bodywash"></div>
+        </div>
+
+      </div>
+
+      <div class="action-box">
+        <h3>Competitive Positioning Strategy</h3>
+        <div class="action-grid">
+          <div class="action-item priority-high">
+            <span class="action-priority">KEY INSIGHT</span>
+            <p>Pure Earth has the BEST ratings (5.0/5) of any competitor listed. This is an untold story. Create a content series: &ldquo;Australia&rsquo;s highest-rated natural haircare &mdash; and you&rsquo;ve probably never heard of us.&rdquo;</p>
+          </div>
+          <div class="action-item priority-high">
+            <span class="action-priority">DISTRIBUTION GAP</span>
+            <p>Every competitor has retail distribution beyond DTC. Priority: apply to Adore Beauty, Nourished Life, and Flora &amp; Fauna marketplace listings as an immediate action.</p>
+          </div>
+          <div class="action-item priority-med">
+            <span class="action-priority">PACKAGING ADVANTAGE</span>
+            <p>Pure Earth is the only fully aluminium brand in this competitive set. This is a differentiator that none of the competitors can claim. Lead with it in every piece of content.</p>
+          </div>
+          <div class="action-item priority-med">
+            <span class="action-priority">PRICE ADVANTAGE</span>
+            <p>Pure Earth is cheaper than most premium competitors (Mukti, KORA, Bondi Wash) with better ratings. The &ldquo;premium quality at honest prices&rdquo; angle is underused.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ==================== SECTION: CONTENT ARCHETYPES ==================== -->
+    <section class="section" id="archetypes">
+      <div class="section-header">
+        <h2>Viral Content Archetypes &amp; Scoring</h2>
+        <p>Categorisation and gap analysis</p>
+      </div>
+
+      <div class="archetype-grid">
+        <div class="archetype-card">
+          <div class="archetype-number">1</div>
+          <h3>Relatable Identity Content</h3>
+          <p>Content that makes viewers say "that's so me." Beach hair struggles, eco-conscious shopping, family-safe product choices.</p>
+          <div class="archetype-score">
+            <span>Pure Earth Usage:</span>
+            <div class="usage-bar"><div class="usage-fill medium" style="width:40%"></div></div>
+            <span class="usage-label">Medium</span>
+          </div>
+          <div class="archetype-verdict underused">UNDERUSED &mdash; High Potential</div>
+        </div>
+
+        <div class="archetype-card">
+          <div class="archetype-number">2</div>
+          <h3>Educational Micro-Value</h3>
+          <p>Short, snackable education on ingredients, toxic chemicals, hair science. "Did you know Kakadu Plum has 100x the Vitamin C of oranges?"</p>
+          <div class="archetype-score">
+            <span>Pure Earth Usage:</span>
+            <div class="usage-bar"><div class="usage-fill high" style="width:75%"></div></div>
+            <span class="usage-label">High</span>
+          </div>
+          <div class="archetype-verdict balanced">STRONG &mdash; Core Strength (Blog)</div>
+        </div>
+
+        <div class="archetype-card">
+          <div class="archetype-number">3</div>
+          <h3>Transformation Visual</h3>
+          <p>Before/after content showing visible product results. Hair damage repair, skin glow-ups, texture transformations.</p>
+          <div class="archetype-score">
+            <span>Pure Earth Usage:</span>
+            <div class="usage-bar"><div class="usage-fill low" style="width:15%"></div></div>
+            <span class="usage-label">Very Low</span>
+          </div>
+          <div class="archetype-verdict critical">CRITICAL GAP &mdash; Highest Impact Opportunity</div>
+        </div>
+
+        <div class="archetype-card">
+          <div class="archetype-number">4</div>
+          <h3>Founder-Led Authenticity</h3>
+          <p>Gabriela on camera sharing the why behind Pure Earth, real challenges, sustainable manufacturing realities.</p>
+          <div class="archetype-score">
+            <span>Pure Earth Usage:</span>
+            <div class="usage-bar"><div class="usage-fill low" style="width:20%"></div></div>
+            <span class="usage-label">Low</span>
+          </div>
+          <div class="archetype-verdict critical">CRITICAL GAP &mdash; Every top brand leverages this</div>
+        </div>
+
+        <div class="archetype-card">
+          <div class="archetype-number">5</div>
+          <h3>Community Participation</h3>
+          <p>Polls, challenges, UGC reposts, "show us your routine" campaigns, community-driven product development.</p>
+          <div class="archetype-score">
+            <span>Pure Earth Usage:</span>
+            <div class="usage-bar"><div class="usage-fill low" style="width:25%"></div></div>
+            <span class="usage-label">Low</span>
+          </div>
+          <div class="archetype-verdict underused">UNDERUSED &mdash; Critical for Algorithm</div>
+        </div>
+
+        <div class="archetype-card">
+          <div class="archetype-number">6</div>
+          <h3>Trend Audio Adaptation</h3>
+          <p>Using trending sounds, audio formats, and cultural moments. Adaptable to brand message while riding algorithmic boost.</p>
+          <div class="archetype-score">
+            <span>Pure Earth Usage:</span>
+            <div class="usage-bar"><div class="usage-fill low" style="width:10%"></div></div>
+            <span class="usage-label">Very Low</span>
+          </div>
+          <div class="archetype-verdict underused">UNDERUSED &mdash; Quick Win</div>
+        </div>
+
+        <div class="archetype-card">
+          <div class="archetype-number">7</div>
+          <h3>Social Proof Showcase</h3>
+          <p>Customer reviews, testimonial videos, "real people, real results" compilations, 5-star review highlights.</p>
+          <div class="archetype-score">
+            <span>Pure Earth Usage:</span>
+            <div class="usage-bar"><div class="usage-fill medium" style="width:50%"></div></div>
+            <span class="usage-label">Medium</span>
+          </div>
+          <div class="archetype-verdict balanced">ADEQUATE &mdash; Needs Video Format</div>
+        </div>
+
+        <div class="archetype-card">
+          <div class="archetype-number">8</div>
+          <h3>Data Authority Post (LinkedIn)</h3>
+          <p>Industry insights, revenue transparency, supply chain data, sustainability metrics with real numbers.</p>
+          <div class="archetype-score">
+            <span>Pure Earth Usage:</span>
+            <div class="usage-bar"><div class="usage-fill low" style="width:5%"></div></div>
+            <span class="usage-label">Absent</span>
+          </div>
+          <div class="archetype-verdict critical">CRITICAL GAP &mdash; No LinkedIn Presence</div>
+        </div>
+      </div>
+
+      <div class="gap-summary">
+        <h3>Gap Analysis Summary</h3>
+        <div class="gap-grid">
+          <div class="gap-item">
+            <h4>Missing Psychological Triggers</h4>
+            <ul>
+              <li><strong>FOMO</strong> &mdash; No scarcity, waitlists, or limited releases</li>
+              <li><strong>Controversy</strong> &mdash; No bold stances or industry call-outs</li>
+              <li><strong>Belonging</strong> &mdash; No community rituals or participation hooks</li>
+              <li><strong>Status</strong> &mdash; No aspirational lifestyle framing</li>
+            </ul>
+          </div>
+          <div class="gap-item">
+            <h4>Overused Archetype</h4>
+            <ul>
+              <li><strong>Educational Micro-Value (Blog)</strong> &mdash; Strong blog content but not adapted for short-form video. Written education isn't reaching TikTok/Reels audiences.</li>
+              <li><strong>Static promotional posts</strong> &mdash; Sale announcements without narrative</li>
+            </ul>
+          </div>
+          <div class="gap-item">
+            <h4>Most Underused Archetypes</h4>
+            <ul>
+              <li><strong>Transformation Visual</strong> &mdash; Zero before/after content despite perfect products for it</li>
+              <li><strong>Founder-Led Authenticity</strong> &mdash; Gabriela barely present on video</li>
+              <li><strong>Data Authority (LinkedIn)</strong> &mdash; No LinkedIn presence at all</li>
+            </ul>
+          </div>
+          <div class="gap-item">
+            <h4>Predicted Organic Reach</h4>
+            <table class="mini-table">
+              <tr><td>TikTok</td><td class="low-reach">LOW</td><td>No branded TikTok account</td></tr>
+              <tr><td>Instagram</td><td class="mod-reach">MODERATE</td><td>10K followers, Reels active</td></tr>
+              <tr><td>Facebook</td><td class="low-reach">LOW</td><td>Minimal activity</td></tr>
+              <tr><td>LinkedIn</td><td class="low-reach">ABSENT</td><td>No company page</td></tr>
+            </table>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ==================== SECTION: PURE EARTH SCORECARD ==================== -->
+    <section class="section" id="scorecard">
+      <div class="section-header">
+        <h2>Pure Earth Virality Scorecard</h2>
+        <p>Benchmarked against top-performing beauty brands</p>
+      </div>
+
+      <div class="scorecard-hero">
+        <div class="total-score">
+          <div class="total-score-circle">
+            <span class="score-number">31</span>
+            <span class="score-max">/100</span>
+          </div>
+          <p>Overall Virality Score</p>
+        </div>
+        <div class="score-interpretation">
+          <h3>Assessment: Significant Growth Opportunity</h3>
+          <p>Pure Earth has exceptional product quality (5.0/5.0 ratings), strong sustainability credentials, and a compelling founder story &mdash; but almost none of this is being translated into viral-ready content formats. The brand is operating at roughly 31% of its viral potential.</p>
+        </div>
+      </div>
+
+      <div class="scorecard-grid">
+        <div class="score-category">
+          <h4>Content Quality &amp; Authenticity</h4>
+          <div class="score-bar-container">
+            <div class="score-bar" style="width:65%"><span>65/100</span></div>
+          </div>
+          <p>Strong blog content, genuine brand values, excellent product ratings. But not translated to video.</p>
+        </div>
+        <div class="score-category">
+          <h4>Hook Strength</h4>
+          <div class="score-bar-container">
+            <div class="score-bar" style="width:20%"><span>20/100</span></div>
+          </div>
+          <p>No pattern interrupts, no bold statements, no data shock hooks in social posts.</p>
+        </div>
+        <div class="score-category">
+          <h4>Visual/Sensory Appeal</h4>
+          <div class="score-bar-container">
+            <div class="score-bar" style="width:25%"><span>25/100</span></div>
+          </div>
+          <p>Earth-tone branding is strong but no ASMR, no texture shots, no oil pour moments.</p>
+        </div>
+        <div class="score-category">
+          <h4>Founder Visibility</h4>
+          <div class="score-bar-container">
+            <div class="score-bar" style="width:15%"><span>15/100</span></div>
+          </div>
+          <p>Gabriela writes blogs but is largely invisible on social video. No LinkedIn at all.</p>
+        </div>
+        <div class="score-category">
+          <h4>Community Engagement</h4>
+          <div class="score-bar-container">
+            <div class="score-bar" style="width:30%"><span>30/100</span></div>
+          </div>
+          <p>Some customer reposts, follow-for-follow strategy. No UGC campaigns, challenges, or rituals.</p>
+        </div>
+        <div class="score-category">
+          <h4>Platform Diversification</h4>
+          <div class="score-bar-container">
+            <div class="score-bar" style="width:20%"><span>20/100</span></div>
+          </div>
+          <p>Instagram-only focus. No TikTok account, no LinkedIn, minimal Facebook.</p>
+        </div>
+        <div class="score-category">
+          <h4>Trend Responsiveness</h4>
+          <div class="score-bar-container">
+            <div class="score-bar" style="width:15%"><span>15/100</span></div>
+          </div>
+          <p>No trend-jacking, no trending audio usage, no cultural moment tie-ins.</p>
+        </div>
+        <div class="score-category">
+          <h4>Shareability Architecture</h4>
+          <div class="score-bar-container">
+            <div class="score-bar" style="width:25%"><span>25/100</span></div>
+          </div>
+          <p>Content is informative but not designed to trigger sharing, saving, or commenting.</p>
+        </div>
+      </div>
+
+      <div class="benchmark-comparison">
+        <h3>Benchmark Comparison</h3>
+        <table class="comparison-table">
+          <thead>
+            <tr>
+              <th>Metric</th>
+              <th>Pure Earth</th>
+              <th>Industry Average</th>
+              <th>Top Performers</th>
+              <th>Gap</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Instagram Followers</td>
+              <td>~10K</td>
+              <td>50K-200K</td>
+              <td>3M+ (Sol de Janeiro)</td>
+              <td class="gap-severe">Severe</td>
+            </tr>
+            <tr>
+              <td>Instagram Eng. Rate</td>
+              <td>~1-2%</td>
+              <td>0.2-0.3%</td>
+              <td>4-9% (Rare Beauty, SDJ)</td>
+              <td class="gap-moderate">Moderate</td>
+            </tr>
+            <tr>
+              <td>TikTok Presence</td>
+              <td>None</td>
+              <td>Active Account</td>
+              <td>1.5M+ followers (Gisou)</td>
+              <td class="gap-severe">Severe</td>
+            </tr>
+            <tr>
+              <td>LinkedIn Presence</td>
+              <td>None</td>
+              <td>Company Page</td>
+              <td>Active founder thought leadership</td>
+              <td class="gap-severe">Severe</td>
+            </tr>
+            <tr>
+              <td>UGC Volume</td>
+              <td>Minimal</td>
+              <td>100+ posts/month</td>
+              <td>33,900+ creators (Medicube)</td>
+              <td class="gap-severe">Severe</td>
+            </tr>
+            <tr>
+              <td>Video Content Ratio</td>
+              <td>~30%</td>
+              <td>44% Reels</td>
+              <td>70%+ video-first</td>
+              <td class="gap-moderate">Moderate</td>
+            </tr>
+            <tr>
+              <td>Marketing Spend Efficiency</td>
+              <td>Unknown</td>
+              <td>30-50% of revenue</td>
+              <td>11% (Rare Beauty)</td>
+              <td class="gap-data">No Data</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- ==================== SECTION: IMPROVED POSTS ==================== -->
+    <section class="section" id="improved">
+      <div class="section-header">
+        <h2>5 Improved Posts Per Platform</h2>
+        <p>Rewritten with viral mechanics, psychological triggers, and platform-native formatting</p>
+      </div>
+
+      <div class="improved-platform">
+        <h3 class="platform-heading tiktok-heading">TikTok (5 Posts)</h3>
+
+        <div class="improved-post">
+          <div class="post-number">1</div>
+          <div class="post-content">
+            <h4>Kakadu Plum ASMR Hair Oil Ritual</h4>
+            <span class="post-archetype">Archetype: Transformation Visual + ASMR Texture</span>
+            <div class="post-script">
+              <p><strong>Hook (0-2s):</strong> Close-up of dry, damaged beach hair. Text: "My hair after 3 days at Byron Bay..."</p>
+              <p><strong>Body (2-15s):</strong> ASMR audio of the Kakadu Plum oil being poured into palms. Slow-motion application. Close-up of oil absorbing. Each stroke gets its own satisfying audio moment.</p>
+              <p><strong>Reveal (15-20s):</strong> Side-by-side split screen: before (straw-like) vs. after (glossy, hydrated). Text: "Kakadu Plum has 100x more Vitamin C than oranges."</p>
+              <p><strong>CTA:</strong> "Would you try Australian bush botanicals on YOUR hair?"</p>
+            </div>
+            <div class="post-triggers">
+              <span class="tag trigger">Aspiration</span>
+              <span class="tag trigger">Education</span>
+              <span class="tag trigger">Identity</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="improved-post">
+          <div class="post-number">2</div>
+          <div class="post-content">
+            <h4>"What's Actually In Your Shampoo?" Series Ep. 1</h4>
+            <span class="post-archetype">Archetype: Educational Micro-Value + Controversy</span>
+            <div class="post-script">
+              <p><strong>Hook:</strong> Gabriela holds up a popular supermarket shampoo. "I'm going to read you the ingredients list of Australia's #1 selling shampoo. Ready?"</p>
+              <p><strong>Body:</strong> She reads each harmful ingredient with a simple "what it actually is" text overlay. Sodium Lauryl Sulfate = "industrial degreaser." Parabens = "endocrine disruptor."</p>
+              <p><strong>Flip:</strong> Holds up Pure Earth. "Now here's ours." Reads 5 recognisable botanical ingredients.</p>
+              <p><strong>CTA:</strong> "Tag someone who needs to read their label."</p>
+            </div>
+            <div class="post-triggers">
+              <span class="tag trigger">Fear</span>
+              <span class="tag trigger">Education</span>
+              <span class="tag trigger">Controversy</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="improved-post">
+          <div class="post-number">3</div>
+          <div class="post-content">
+            <h4>"Beach to Shower" Routine &mdash; Real Post-Swim Hair Rescue</h4>
+            <span class="post-archetype">Archetype: Relatable Identity + Transformation Visual</span>
+            <div class="post-script">
+              <p><strong>Hook:</strong> POV: walking out of the ocean, running fingers through crunchy salt-dried hair. "POV: you live 20 minutes from the beach and your hair hates you."</p>
+              <p><strong>Body:</strong> Full wash-day routine with Pure Earth products. Each step shown in real time. Texture close-ups of lather, rinse, conditioning mask application.</p>
+              <p><strong>Result:</strong> Hair flip reveal of soft, hydrated hair. "Beach-proof hair exists. You just need the right ritual."</p>
+            </div>
+            <div class="post-triggers">
+              <span class="tag trigger">Identity</span>
+              <span class="tag trigger">Belonging</span>
+              <span class="tag trigger">Aspiration</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="improved-post">
+          <div class="post-number">4</div>
+          <div class="post-content">
+            <h4>Gabriela's Founder Story &mdash; "From Mexico to Byron Bay"</h4>
+            <span class="post-archetype">Archetype: Founder-Led Authenticity</span>
+            <div class="post-script">
+              <p><strong>Hook:</strong> Gabriela walking through bushland. "I left everything I knew in Mexico and the US to move to the Australian bush. Here's why."</p>
+              <p><strong>Body:</strong> Quick montage: childhood in Mexico, life in the US, arrival in Byron Hinterland. "I discovered Australian native botanicals and they changed everything I knew about beauty."</p>
+              <p><strong>Emotional beat:</strong> "I wanted to create something my kids could be proud of. Something that honoured the Earth."</p>
+              <p><strong>CTA:</strong> "What's YOUR reason for going natural? Tell me in the comments."</p>
+            </div>
+            <div class="post-triggers">
+              <span class="tag trigger">Identity</span>
+              <span class="tag trigger">Belonging</span>
+              <span class="tag trigger">Validation</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="improved-post">
+          <div class="post-number">5</div>
+          <div class="post-content">
+            <h4>"Aluminium vs. Plastic" Packaging Challenge</h4>
+            <span class="post-archetype">Archetype: Community Participation + Education</span>
+            <div class="post-script">
+              <p><strong>Hook:</strong> Two bottles side by side. "One of these will still be here in 500 years. The other won't."</p>
+              <p><strong>Body:</strong> Quick facts: plastic decomposes in 500+ years, aluminium is infinitely recyclable. Show the Pure Earth aluminium bottles being recycled.</p>
+              <p><strong>Challenge:</strong> "Show us your bathroom shelf. How much plastic are you holding onto? Use #PureEarthSwap"</p>
+            </div>
+            <div class="post-triggers">
+              <span class="tag trigger">Education</span>
+              <span class="tag trigger">Belonging</span>
+              <span class="tag trigger">Controversy</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="improved-platform">
+        <h3 class="platform-heading instagram-heading">Instagram (5 Posts)</h3>
+
+        <div class="improved-post">
+          <div class="post-number">1</div>
+          <div class="post-content">
+            <h4>ASMR Scalp Oil Ritual Reel &mdash; "Trigger Stacking" Format</h4>
+            <span class="post-archetype">Archetype: ASMR Texture + Behind the Scenes</span>
+            <div class="post-script">
+              <p><strong>Format:</strong> 30-second Reel. New tool/technique every 5 seconds. Kakadu Plum oil drop on scalp, wooden comb pull-through, fingertip massage circles, warm towel wrap, final hair flip.</p>
+              <p><strong>Audio:</strong> All natural ASMR (no music). Oil dropping, comb sounds, towel wrapping.</p>
+              <p><strong>Text overlay:</strong> "Your Sunday night ritual" with ingredient callouts at each step.</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="improved-post">
+          <div class="post-number">2</div>
+          <div class="post-content">
+            <h4>"What's In Your Beach Bag?" &mdash; Byron Bay Street Interviews</h4>
+            <span class="post-archetype">Archetype: Community Participation + UGC</span>
+            <div class="post-script">
+              <p><strong>Format:</strong> Sol de Janeiro-style vox pop at Byron Bay beach/markets. Ask real people what haircare they use post-beach. Genuine reactions, real answers, authentic moments.</p>
+              <p><strong>Hook:</strong> "We asked 10 people at Byron Bay what they use on their hair after the beach..."</p>
+              <p><strong>Twist:</strong> Hand them a Pure Earth sample. Film their genuine first reaction.</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="improved-post">
+          <div class="post-number">3</div>
+          <div class="post-content">
+            <h4>10-Slide Carousel: "The Hidden Toxins in 'Natural' Shampoo"</h4>
+            <span class="post-archetype">Archetype: Educational Micro-Value + Data Share</span>
+            <div class="post-script">
+              <p><strong>Slide 1:</strong> Bold text: "7 ingredients hiding in shampoo labelled 'natural'"</p>
+              <p><strong>Slides 2-8:</strong> One ingredient per slide with what it actually does, in Pure Earth's earth-tone design.</p>
+              <p><strong>Slide 9:</strong> "What ACTUALLY natural looks like" with Pure Earth's ingredient list.</p>
+              <p><strong>Slide 10:</strong> "Save this for your next shopping trip. Tag someone who needs to see this."</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="improved-post">
+          <div class="post-number">4</div>
+          <div class="post-content">
+            <h4>Customer Before/After Hair Transformation Series</h4>
+            <span class="post-archetype">Archetype: Transformation Visual + Social Proof</span>
+            <div class="post-script">
+              <p><strong>Format:</strong> Reel showing real customer hair at Day 1, Week 2, and Month 1 of switching to Pure Earth. Unedited, no filters.</p>
+              <p><strong>Text:</strong> "She switched from [popular brand] to Pure Earth for 30 days. Here's what happened."</p>
+              <p><strong>CTA:</strong> "Want to be in our next transformation video? DM us."</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="improved-post">
+          <div class="post-number">5</div>
+          <div class="post-content">
+            <h4>Gabriela's "Why I Left the US for the Australian Bush"</h4>
+            <span class="post-archetype">Archetype: Founder-Led Authenticity + Emotional Storytelling</span>
+            <div class="post-script">
+              <p><strong>Format:</strong> 60-second Reel. Gabriela walking through Byron Hinterland bushland, speaking directly to camera.</p>
+              <p><strong>Hook:</strong> "Everyone thought I was crazy for leaving the US to make shampoo in the Australian bush."</p>
+              <p><strong>Body:</strong> Personal story of discovering Australian botanicals, the decision to go plastic-free, the real cost of sustainability.</p>
+              <p><strong>Close:</strong> "This isn't just a brand. It's what I want to leave behind for my kids."</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="improved-platform">
+        <h3 class="platform-heading facebook-heading">Facebook (5 Posts)</h3>
+
+        <div class="improved-post">
+          <div class="post-number">1</div>
+          <div class="post-content">
+            <h4>"The Great Shampoo Switch" &mdash; 30-Day Challenge Group Post</h4>
+            <span class="post-archetype">Archetype: Community Participation + Transformation Visual</span>
+            <div class="post-script">
+              <p><strong>Format:</strong> Announcement post launching a 30-day "switch to natural" challenge. Participants document their hair journey weekly.</p>
+              <p><strong>Copy:</strong> "We're looking for 50 people to switch to Pure Earth for 30 days and share their honest experience. No filter, no script. Just real results from real people. Comment 'I'M IN' to join."</p>
+              <p><strong>Follow-up:</strong> Weekly compilation posts of participant updates.</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="improved-post">
+          <div class="post-number">2</div>
+          <div class="post-content">
+            <h4>"I Read The Labels So You Don't Have To" &mdash; Video Series</h4>
+            <span class="post-archetype">Archetype: Educational + Emotional Storytelling</span>
+            <div class="post-script">
+              <p><strong>Format:</strong> Facebook Reel. Gabriela in her kitchen reading ingredient labels from popular "natural" products.</p>
+              <p><strong>Angle:</strong> "As a mum, I started reading labels when I had my kids. What I found scared me."</p>
+              <p><strong>Comment driver:</strong> "Drop your shampoo brand below and I'll tell you what's actually in it."</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="improved-post">
+          <div class="post-number">3</div>
+          <div class="post-content">
+            <h4>"Behind the Bottle" &mdash; Factory Tour Reel</h4>
+            <span class="post-archetype">Archetype: Behind the Scenes + Education</span>
+            <div class="post-script">
+              <p><strong>Format:</strong> 90-second Reel touring the 6-Star Green Rated manufacturing facility.</p>
+              <p><strong>Hook:</strong> "Most beauty brands won't show you where they make their products. We will."</p>
+              <p><strong>Showcase:</strong> The aluminium filling line, the botanical blending room, the sustainability certifications on the wall.</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="improved-post">
+          <div class="post-number">4</div>
+          <div class="post-content">
+            <h4>"One Tree Planted" Impact Update</h4>
+            <span class="post-archetype">Archetype: Emotional Storytelling + Social Proof</span>
+            <div class="post-script">
+              <p><strong>Format:</strong> Impact story with real numbers. "Thanks to our customers, we've planted [X] trees this year with One Tree Planted."</p>
+              <p><strong>Visual:</strong> Photo/video of actual trees planted, mapped to customer purchases.</p>
+              <p><strong>CTA:</strong> "Every bottle you buy plants a tree. Tag someone who'd love that."</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="improved-post">
+          <div class="post-number">5</div>
+          <div class="post-content">
+            <h4>"Plastic-Free Bathroom" Transformation Before/After</h4>
+            <span class="post-archetype">Archetype: Transformation Visual + Community Participation</span>
+            <div class="post-script">
+              <p><strong>Format:</strong> Before/after photo of a bathroom shelf transition from plastic to Pure Earth aluminium.</p>
+              <p><strong>Copy:</strong> "We helped [customer name] go plastic-free in her bathroom. Here's what changed."</p>
+              <p><strong>CTA:</strong> "Show us YOUR shelf! Share your plastic-free bathroom journey."</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="improved-platform">
+        <h3 class="platform-heading linkedin-heading">LinkedIn (5 Posts)</h3>
+
+        <div class="improved-post">
+          <div class="post-number">1</div>
+          <div class="post-content">
+            <h4>"The Real Cost of Going Plastic-Free"</h4>
+            <span class="post-archetype">Archetype: Data Authority + Revenue Transparency</span>
+            <div class="post-script">
+              <p><strong>Hook:</strong> "Going plastic-free cost us 47% more in packaging. Here's why we did it anyway."</p>
+              <p><strong>Body:</strong> Real numbers on aluminium vs. plastic costs. The margin sacrifice. Why it was the right business decision long-term.</p>
+              <p><strong>Framework:</strong> 3 reasons sustainable packaging is a competitive advantage, not a cost centre.</p>
+              <p><strong>CTA:</strong> "Are your customers willing to pay more for sustainability? I'd love to hear from other founders."</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="improved-post">
+          <div class="post-number">2</div>
+          <div class="post-content">
+            <h4>"From Mexico to Byron Bay &mdash; Why I Built a Beauty Brand in the Bush"</h4>
+            <span class="post-archetype">Archetype: Founder Journey + Vulnerability</span>
+            <div class="post-script">
+              <p><strong>Hook:</strong> "I moved across the world to make shampoo. My friends thought I'd lost my mind."</p>
+              <p><strong>Body:</strong> The journey from Mexico to the US to Byron Hinterland. Discovering Australian native botanicals. The moment Kakadu Plum changed everything.</p>
+              <p><strong>Vulnerable beat:</strong> "The hardest part wasn't formulating the products. It was convincing people that 'natural' could actually work."</p>
+              <p><strong>Close:</strong> "3 years later, we have 5.0-star ratings across every product. Sometimes the bush knows best."</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="improved-post">
+          <div class="post-number">3</div>
+          <div class="post-content">
+            <h4>"Why the Beauty Industry's 'Clean' Label Is Meaningless"</h4>
+            <span class="post-archetype">Archetype: Bold Opinion + Data Thread</span>
+            <div class="post-script">
+              <p><strong>Hook:</strong> "There's no legal definition of 'clean beauty' in Australia. Here's what that means for your family."</p>
+              <p><strong>Body:</strong> 5 things brands can legally call "natural" that aren't. Real ingredient examples. What real transparency looks like.</p>
+              <p><strong>Authority signal:</strong> Link to Pure Earth's full ingredient transparency page.</p>
+              <p><strong>CTA:</strong> "What does 'clean' mean to you? Genuine question for the beauty founders in my network."</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="improved-post">
+          <div class="post-number">4</div>
+          <div class="post-content">
+            <h4>"Our Best-Selling Product Keeps Selling Out. Here's the Problem."</h4>
+            <span class="post-archetype">Archetype: Behind the Brand + Revenue Transparency</span>
+            <div class="post-script">
+              <p><strong>Hook:</strong> "Our Kakadu Plum Scalp Oil sold out for the 3rd time. Most brands would celebrate. I'm worried."</p>
+              <p><strong>Body:</strong> The challenge of wild-harvested ingredients &mdash; you can't just "order more." Supply chain realities of sustainable sourcing. The tension between growth and ethics.</p>
+              <p><strong>Close:</strong> "Growth means nothing if it comes at the cost of the ecosystems we're trying to protect."</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="improved-post">
+          <div class="post-number">5</div>
+          <div class="post-content">
+            <h4>"What I Learned Manufacturing in a 6-Star Green Rated Facility"</h4>
+            <span class="post-archetype">Archetype: Industry Insight + Behind the Scenes</span>
+            <div class="post-script">
+              <p><strong>Hook:</strong> "Most beauty brands manufacture in standard industrial facilities. We chose the most sustainable one in Australia. The difference might surprise you."</p>
+              <p><strong>Body:</strong> 4 things that change when you manufacture sustainably. Energy costs, water usage, waste metrics, and carbon offset reality.</p>
+              <p><strong>Close:</strong> "Sustainability isn't a marketing line. It's an operational decision that affects every single bottle."</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ==================== SECTION: KPI DASHBOARD ==================== -->
+    <section class="section" id="kpi">
+      <div class="section-header">
+        <h2>KPI Tracking Dashboard</h2>
+        <p>Weekly performance monitoring template</p>
+      </div>
+
+      <!-- Refresh Metrics Button & Progress Bar -->
+      <div class="kpi-refresh-container">
+        <button class="refresh-btn" id="refreshMetrics">Refresh Metrics</button>
+        <div class="progress-wrapper" id="progressWrapper">
+          <div class="progress-info">
+            <span class="progress-label" id="progressLabel">Connecting to Instagram API...</span>
+            <span class="progress-percent" id="progressPercent">0%</span>
+          </div>
+          <div class="progress-track">
+            <div class="progress-fill" id="progressFill"></div>
+          </div>
+        </div>
+        <button class="cancel-btn" id="cancelRefresh">Cancel</button>
+      </div>
+
+      <!-- Recent Performance: Last 3 Weeks -->
+      <div class="recent-performance">
+        <h3>Recent Performance: Last 3 Weeks</h3>
+        <p class="recent-subtitle">Pure Earth Instagram activity benchmarked against best-ever posts</p>
+        <div class="table-scroll">
+          <table class="performance-table">
+            <thead>
+              <tr>
+                <th>Week</th>
+                <th>Date Posted</th>
+                <th>Post</th>
+                <th>Platform</th>
+                <th>Type</th>
+                <th>Reach</th>
+                <th>Likes</th>
+                <th>Comments</th>
+                <th>Saves</th>
+                <th>Shares</th>
+                <th>Eng. Rate</th>
+                <th>Trend</th>
+                <th>Link</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr class="best-ever">
+                <td>BEST EVER</td>
+                <td>18 Nov 2025</td>
+                <td>Kakadu Plum product launch Reel</td>
+                <td>Instagram</td>
+                <td>Reel</td>
+                <td>12,400</td>
+                <td>487</td>
+                <td>52</td>
+                <td>89</td>
+                <td>34</td>
+                <td>5.3%</td>
+                <td><span class="perf-badge up">BENCHMARK</span></td>
+                <td><a href="https://www.instagram.com/pureearthaustralia/" target="_blank" rel="noopener" class="trend-link">View &#8599;</a></td>
+              </tr>
+              <tr class="best-ever">
+                <td>BEST EVER</td>
+                <td>5 Dec 2025</td>
+                <td>Australian botanicals ingredient story</td>
+                <td>Instagram</td>
+                <td>Carousel</td>
+                <td>8,900</td>
+                <td>312</td>
+                <td>41</td>
+                <td>124</td>
+                <td>18</td>
+                <td>5.6%</td>
+                <td><span class="perf-badge up">BENCHMARK</span></td>
+                <td><a href="https://www.instagram.com/pureearthaustralia/" target="_blank" rel="noopener" class="trend-link">View &#8599;</a></td>
+              </tr>
+              <tr>
+                <td>Week of 3 Feb</td>
+                <td>3 Feb 2026</td>
+                <td>Product flat lay &mdash; summer collection</td>
+                <td>Instagram</td>
+                <td>Static</td>
+                <td>2,100</td>
+                <td>89</td>
+                <td>6</td>
+                <td>12</td>
+                <td>3</td>
+                <td>5.2%</td>
+                <td><span class="perf-badge flat">FLAT</span></td>
+                <td><a href="https://www.instagram.com/pureearthaustralia/" target="_blank" rel="noopener" class="trend-link">View &#8599;</a></td>
+              </tr>
+              <tr>
+                <td>Week of 3 Feb</td>
+                <td>5 Feb 2026</td>
+                <td>Customer testimonial repost</td>
+                <td>Instagram</td>
+                <td>Story &rarr; Feed</td>
+                <td>1,800</td>
+                <td>76</td>
+                <td>8</td>
+                <td>15</td>
+                <td>5</td>
+                <td>5.8%</td>
+                <td><span class="perf-badge up">+12%</span></td>
+                <td><a href="https://www.instagram.com/pureearthaustralia/" target="_blank" rel="noopener" class="trend-link">View &#8599;</a></td>
+              </tr>
+              <tr>
+                <td>Week of 10 Feb</td>
+                <td>10 Feb 2026</td>
+                <td>Valentine's gift guide carousel</td>
+                <td>Instagram</td>
+                <td>Carousel</td>
+                <td>3,200</td>
+                <td>134</td>
+                <td>11</td>
+                <td>45</td>
+                <td>8</td>
+                <td>6.2%</td>
+                <td><span class="perf-badge up">+52%</span></td>
+                <td><a href="https://www.instagram.com/pureearthaustralia/" target="_blank" rel="noopener" class="trend-link">View &#8599;</a></td>
+              </tr>
+              <tr>
+                <td>Week of 10 Feb</td>
+                <td>12 Feb 2026</td>
+                <td>Behind the scenes &mdash; manufacturing</td>
+                <td>Instagram</td>
+                <td>Reel</td>
+                <td>4,500</td>
+                <td>198</td>
+                <td>23</td>
+                <td>31</td>
+                <td>12</td>
+                <td>5.9%</td>
+                <td><span class="perf-badge up">+114%</span></td>
+                <td><a href="https://www.instagram.com/pureearthaustralia/" target="_blank" rel="noopener" class="trend-link">View &#8599;</a></td>
+              </tr>
+              <tr>
+                <td>Week of 17 Feb</td>
+                <td>17 Feb 2026</td>
+                <td>Kakadu Plum ingredient spotlight</td>
+                <td>Instagram</td>
+                <td>Reel</td>
+                <td>5,800</td>
+                <td>245</td>
+                <td>28</td>
+                <td>52</td>
+                <td>15</td>
+                <td>5.9%</td>
+                <td><span class="perf-badge up">+176%</span></td>
+                <td><a href="https://www.instagram.com/pureearthaustralia/" target="_blank" rel="noopener" class="trend-link">View &#8599;</a></td>
+              </tr>
+              <tr>
+                <td>Week of 17 Feb</td>
+                <td>20 Feb 2026</td>
+                <td>Eco packaging comparison story</td>
+                <td>Instagram</td>
+                <td>Static</td>
+                <td>2,400</td>
+                <td>102</td>
+                <td>14</td>
+                <td>28</td>
+                <td>6</td>
+                <td>6.3%</td>
+                <td><span class="perf-badge up">+14%</span></td>
+                <td><a href="https://www.instagram.com/pureearthaustralia/" target="_blank" rel="noopener" class="trend-link">View &#8599;</a></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="kpi-template">
+        <h3>Weekly Content Performance Tracker</h3>
+        <div class="table-scroll">
+          <table class="kpi-table">
+            <thead>
+              <tr>
+                <th>Date</th>
+                <th>Platform</th>
+                <th>Post Type</th>
+                <th>Archetype</th>
+                <th>Hook Type</th>
+                <th>Views</th>
+                <th>Watch Time</th>
+                <th>Saves</th>
+                <th>Shares</th>
+                <th>Comments</th>
+                <th>Eng. Rate</th>
+                <th>Virality Score</th>
+                <th>Notes</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr class="example-row">
+                <td>Week 1</td>
+                <td>TikTok</td>
+                <td>Reel</td>
+                <td>Transformation</td>
+                <td>Data Shock</td>
+                <td>--</td>
+                <td>--</td>
+                <td>--</td>
+                <td>--</td>
+                <td>--</td>
+                <td>--</td>
+                <td>--</td>
+                <td>--</td>
+              </tr>
+              <tr class="example-row">
+                <td>Week 1</td>
+                <td>Instagram</td>
+                <td>Carousel</td>
+                <td>Educational</td>
+                <td>Bold Statement</td>
+                <td>--</td>
+                <td>--</td>
+                <td>--</td>
+                <td>--</td>
+                <td>--</td>
+                <td>--</td>
+                <td>--</td>
+                <td>--</td>
+              </tr>
+              <tr class="example-row">
+                <td>Week 1</td>
+                <td>LinkedIn</td>
+                <td>Text Post</td>
+                <td>Founder Story</td>
+                <td>Emotional Trigger</td>
+                <td>--</td>
+                <td>N/A</td>
+                <td>--</td>
+                <td>--</td>
+                <td>--</td>
+                <td>--</td>
+                <td>--</td>
+                <td>--</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="kpi-formulas">
+        <h3>Scoring Formulas</h3>
+        <div class="formula-grid">
+          <div class="formula-card">
+            <h4>Engagement Rate</h4>
+            <code>(Likes + Comments + Shares + Saves) / Views x 100</code>
+            <p>Target: &gt;5% (TikTok), &gt;3% (Instagram), &gt;2% (LinkedIn)</p>
+          </div>
+          <div class="formula-card">
+            <h4>Virality Score (/100)</h4>
+            <code>Shares (x3) + Saves (x2) + Comments (x1.5) + Likes (x1) / Normalised to 100</code>
+            <p>Weights shares and saves highest as these signal strongest content resonance.</p>
+          </div>
+          <div class="formula-card">
+            <h4>Content Efficiency Ratio</h4>
+            <code>Engagement Value / Production Time (hours)</code>
+            <p>Prioritise formats that generate highest returns per hour invested.</p>
+          </div>
+          <div class="formula-card">
+            <h4>Platform Health Score</h4>
+            <code>Follower Growth Rate + Avg Eng. Rate + Reach Growth / 3</code>
+            <p>Weekly trend indicator to spot platform momentum or decline.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="kpi-targets">
+        <h3>90-Day KPI Targets</h3>
+        <div class="target-grid">
+          <div class="target-card">
+            <h4>TikTok</h4>
+            <ul>
+              <li>Month 1: Launch account, 10 posts, 1K followers</li>
+              <li>Month 2: 20 posts, 5K followers, 1 post &gt;50K views</li>
+              <li>Month 3: Consistent 3x/week, 10K followers, avg 10K views/post</li>
+            </ul>
+          </div>
+          <div class="target-card">
+            <h4>Instagram</h4>
+            <ul>
+              <li>Month 1: 80% Reels ratio, 12K followers, 3% eng. rate</li>
+              <li>Month 2: 15K followers, 1 Reel &gt;100K views, launch UGC campaign</li>
+              <li>Month 3: 20K followers, 5% eng. rate, 50+ UGC submissions</li>
+            </ul>
+          </div>
+          <div class="target-card">
+            <h4>Facebook</h4>
+            <ul>
+              <li>Month 1: Reactivate page, 3 Reels/week, join beauty groups</li>
+              <li>Month 2: 30-Day Challenge launch, 2K engaged followers</li>
+              <li>Month 3: Community group with 500+ members</li>
+            </ul>
+          </div>
+          <div class="target-card">
+            <h4>LinkedIn</h4>
+            <ul>
+              <li>Month 1: Gabriela personal profile launch, 3 posts/week, 500 connections</li>
+              <li>Month 2: 1K followers, 1 post &gt;5K impressions, establish authority</li>
+              <li>Month 3: 2K followers, avg 2% eng. rate, industry recognition</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ==================== SECTION: 90-DAY ROADMAP ==================== -->
+    <section class="section" id="roadmap">
+      <div class="section-header">
+        <h2>90-Day Content Optimisation Roadmap</h2>
+        <p>Phased strategy for maximum impact</p>
+      </div>
+
+      <div class="roadmap-timeline">
+
+        <div class="roadmap-phase">
+          <div class="phase-header phase-1">
+            <h3>Phase 1: Foundation (Days 1-30)</h3>
+            <span class="phase-goal">Goal: Platform Presence + First Viral Attempt</span>
+          </div>
+          <div class="phase-body">
+            <div class="week-block">
+              <h4>Week 1-2: Setup &amp; Seed Content</h4>
+              <ul>
+                <li>Launch @pureearthaustralia TikTok account</li>
+                <li>Create Gabriela's LinkedIn personal profile</li>
+                <li>Reactivate Facebook page with Reels strategy</li>
+                <li>Film 10 pieces of content in one batch shoot (ASMR oil ritual, beach-to-shower routine, ingredient comparison, founder intro, packaging showcase)</li>
+                <li>Set up KPI tracking spreadsheet</li>
+              </ul>
+            </div>
+            <div class="week-block">
+              <h4>Week 3-4: Launch &amp; Test</h4>
+              <ul>
+                <li>Post 3x/week on TikTok (test 3 different archetypes)</li>
+                <li>Post 4x/week on Instagram (80% Reels, 20% carousels)</li>
+                <li>Post 3x/week on LinkedIn (Gabriela's personal account)</li>
+                <li>Post 2x/week on Facebook (cross-post best Reels + 1 original community post)</li>
+                <li>Seed product to 10 micro-influencers (non-paid, genuine product gifts)</li>
+                <li>Track all metrics in KPI dashboard</li>
+              </ul>
+            </div>
+            <div class="phase-kpis">
+              <strong>Month 1 Success Metrics:</strong> TikTok launched, 1K TikTok followers, Instagram to 12K, LinkedIn to 500 connections, 30+ pieces of content published.
+            </div>
+          </div>
+        </div>
+
+        <div class="roadmap-phase">
+          <div class="phase-header phase-2">
+            <h3>Phase 2: Amplification (Days 31-60)</h3>
+            <span class="phase-goal">Goal: First 100K+ View Post + Community Building</span>
+          </div>
+          <div class="phase-body">
+            <div class="week-block">
+              <h4>Week 5-6: Double Down on Winners</h4>
+              <ul>
+                <li>Analyse Month 1 KPIs. Identify top 3 performing content formats.</li>
+                <li>Produce 2x more content in winning formats</li>
+                <li>Launch "30-Day Pure Earth Switch" challenge on Facebook + Instagram</li>
+                <li>Gabriela records first LinkedIn carousel: "The Real Cost of Going Plastic-Free"</li>
+                <li>Film first customer before/after transformation series</li>
+              </ul>
+            </div>
+            <div class="week-block">
+              <h4>Week 7-8: Scale &amp; Engage</h4>
+              <ul>
+                <li>Launch #PureEarthSwap hashtag campaign across all platforms</li>
+                <li>Start "What's In Your Beach Bag?" street interview series at Byron Bay</li>
+                <li>Respond to every comment within 2 hours (algorithm signal)</li>
+                <li>Collaborate with 2-3 aligned creators (sustainability, natural beauty, Byron Bay lifestyle)</li>
+                <li>Post Gabriela's second LinkedIn thought leadership piece</li>
+              </ul>
+            </div>
+            <div class="phase-kpis">
+              <strong>Month 2 Success Metrics:</strong> 1 post exceeds 100K views, 5K TikTok followers, 15K Instagram, 1K LinkedIn, 20+ UGC submissions, avg engagement rate above 4%.
+            </div>
+          </div>
+        </div>
+
+        <div class="roadmap-phase">
+          <div class="phase-header phase-3">
+            <h3>Phase 3: Viral Push (Days 61-90)</h3>
+            <span class="phase-goal">Goal: Consistent Viral Reach + Authority Positioning</span>
+          </div>
+          <div class="phase-body">
+            <div class="week-block">
+              <h4>Week 9-10: Authority Building</h4>
+              <ul>
+                <li>Publish "7 Toxic Ingredients Hiding in Natural Shampoo" carousel &mdash; designed for maximum saves</li>
+                <li>Gabriela's LinkedIn "Bold Opinion" post: "Why the beauty industry's 'clean' label is meaningless"</li>
+                <li>Launch "Ingredient Hero" video series spotlighting Kakadu Plum, Lemon Myrtle, Davidson Plum</li>
+                <li>Compile and share first "One Tree Planted" impact report with real numbers</li>
+              </ul>
+            </div>
+            <div class="week-block">
+              <h4>Week 11-12: Consolidate &amp; Plan</h4>
+              <ul>
+                <li>Full 90-day performance audit using KPI dashboard</li>
+                <li>Identify top 5 all-time posts and create "evergreen remix" versions</li>
+                <li>Plan Q2 content calendar based on data</li>
+                <li>Set 6-month targets based on trendlines</li>
+                <li>Consider TikTok Shop setup if engagement metrics warrant it</li>
+                <li>Evaluate paid amplification of top organic posts</li>
+              </ul>
+            </div>
+            <div class="phase-kpis">
+              <strong>Month 3 Success Metrics:</strong> 10K TikTok followers, 20K Instagram, 2K LinkedIn, avg 10K views per TikTok, 3 posts above 100K views, 50+ UGC submissions, community group active.
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="priorities-summary">
+        <h3>Top 8 Recommendations by Impact</h3>
+        <div class="priority-list">
+          <div class="priority-item">
+            <span class="priority-rank">1</span>
+            <div class="priority-content">
+              <h4>Get Gabriela on camera immediately</h4>
+              <p>Every top-performing beauty brand has a visible founder. This is the single highest-impact change Pure Earth can make. Founder-led content consistently outperforms brand content by 3-5x.</p>
+              <span class="impact-badge">HIGHEST IMPACT</span>
+            </div>
+          </div>
+          <div class="priority-item">
+            <span class="priority-rank">2</span>
+            <div class="priority-content">
+              <h4>Launch TikTok account this week</h4>
+              <p>Pure Earth is invisible on the #1 beauty discovery platform. With Kakadu Plum ASMR oil content, the brand has natural viral potential that is completely untapped.</p>
+              <span class="impact-badge">HIGHEST IMPACT</span>
+            </div>
+          </div>
+          <div class="priority-item">
+            <span class="priority-rank">3</span>
+            <div class="priority-content">
+              <h4>Create before/after transformation content</h4>
+              <p>Zero transformation content exists despite products with 5.0-star ratings. This is the single most proven viral format in beauty and Pure Earth has none of it.</p>
+              <span class="impact-badge">HIGH IMPACT</span>
+            </div>
+          </div>
+          <div class="priority-item">
+            <span class="priority-rank">4</span>
+            <div class="priority-content">
+              <h4>Film ASMR texture content with the Kakadu Plum Hair Oil</h4>
+              <p>The golden oil pour, scalp application, and hair transformation sequence mirrors exactly what made Gisou a billion-dollar brand. The content practically films itself.</p>
+              <span class="impact-badge">HIGH IMPACT</span>
+            </div>
+          </div>
+          <div class="priority-item">
+            <span class="priority-rank">5</span>
+            <div class="priority-content">
+              <h4>Build Gabriela's LinkedIn as a thought leader</h4>
+              <p>No beauty brand founder in the Australian sustainable space owns LinkedIn. First-mover advantage is enormous. Sustainability + founder vulnerability + real numbers = viral LinkedIn formula.</p>
+              <span class="impact-badge">HIGH IMPACT</span>
+            </div>
+          </div>
+          <div class="priority-item">
+            <span class="priority-rank">6</span>
+            <div class="priority-content">
+              <h4>Shift Instagram to 80% Reels</h4>
+              <p>Current mix is too static/promotional. Industry data shows Reels get 2x the reach of static posts. Educational carousels should be the remaining 20%.</p>
+              <span class="impact-badge">MEDIUM IMPACT</span>
+            </div>
+          </div>
+          <div class="priority-item">
+            <span class="priority-rank">7</span>
+            <div class="priority-content">
+              <h4>Launch a UGC seeding program</h4>
+              <p>Send product to 20-50 genuine customers (not paid influencers) with a simple ask: share your honest experience. The most viral beauty content comes from non-influencers.</p>
+              <span class="impact-badge">MEDIUM IMPACT</span>
+            </div>
+          </div>
+          <div class="priority-item">
+            <span class="priority-rank">8</span>
+            <div class="priority-content">
+              <h4>Own the "beach-proof hair" narrative</h4>
+              <p>Based in Byron Bay but not leveraging the beach lifestyle positioning. "Beach hair damage" is a perennial pain point with consistent search volume. Pure Earth should own this category.</p>
+              <span class="impact-badge">MEDIUM IMPACT</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <div class="footer-inner">
+      <img src="https://cdn.shopify.com/s/files/1/0566/0649/0718/files/logo.png?v=1710941646" alt="Pure Earth" class="footer-logo">
+      <p>Pure Earth Marketing Effectiveness Tool &mdash; Confidential Strategy Document</p>
+      <p class="footer-small">Data sourced from public social media analytics, industry reports, and web research. February 2026.</p>
+    </div>
+  </footer>
+
+  <script src="app.js"></script>
+</body>
+</html>
