@@ -16,6 +16,50 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
+  // ===== Refresh Button =====
+  const refreshBtn = document.getElementById('refreshBtn');
+  if (refreshBtn) {
+    refreshBtn.addEventListener('click', () => {
+      refreshBtn.classList.add('spinning');
+      setTimeout(() => {
+        location.reload();
+      }, 600);
+    });
+  }
+
+  // ===== Midnight Auto-Refresh =====
+  function getMsUntilMidnight() {
+    const now = new Date();
+    const midnight = new Date(now);
+    midnight.setHours(24, 0, 0, 0);
+    return midnight - now;
+  }
+
+  function formatCountdown(ms) {
+    const totalSec = Math.floor(ms / 1000);
+    const h = Math.floor(totalSec / 3600);
+    const m = Math.floor((totalSec % 3600) / 60);
+    const s = totalSec % 60;
+    return String(h).padStart(2, '0') + ':' + String(m).padStart(2, '0') + ':' + String(s).padStart(2, '0');
+  }
+
+  const countdownEl = document.getElementById('refreshCountdown');
+  const refreshStatusEl = document.getElementById('refreshStatus');
+
+  // Update countdown every second
+  function updateCountdown() {
+    const ms = getMsUntilMidnight();
+    if (countdownEl) countdownEl.textContent = formatCountdown(ms);
+  }
+  updateCountdown();
+  setInterval(updateCountdown, 1000);
+
+  // Schedule actual page reload at midnight
+  setTimeout(() => {
+    if (refreshStatusEl) refreshStatusEl.textContent = 'Refreshing...';
+    location.reload();
+  }, getMsUntilMidnight());
+
   // ===== Section Navigation =====
   const navBtns = document.querySelectorAll('.nav-btn');
   const sections = document.querySelectorAll('.section');

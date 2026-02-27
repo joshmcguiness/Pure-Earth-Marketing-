@@ -19,7 +19,22 @@
         <h1>Marketing Effectiveness Tool</h1>
         <p class="subtitle">Viral Growth Benchmarking System &mdash; TikTok &bull; Instagram &bull; Facebook &bull; LinkedIn</p>
       </div>
-      <div class="header-date" id="currentDate"></div>
+      <div class="header-right">
+        <div class="header-date" id="currentDate"></div>
+        <div class="daily-refresh-info" id="dailyRefreshInfo">
+          <span class="refresh-dot"></span>
+          <span class="refresh-status" id="refreshStatus">Next refresh: midnight</span>
+          <span class="refresh-countdown" id="refreshCountdown"></span>
+        </div>
+      </div>
+      <button class="refresh-btn" id="refreshBtn" title="Refresh dashboard">
+        <svg class="refresh-icon" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <polyline points="23 4 23 10 17 10"></polyline>
+          <polyline points="1 20 1 14 7 14"></polyline>
+          <path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"></path>
+        </svg>
+        <span class="refresh-label">Refresh</span>
+      </button>
     </div>
   </header>
 

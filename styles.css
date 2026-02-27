@@ -90,11 +90,80 @@ body {
   text-transform: uppercase;
 }
 
-.header-date {
+.header-right {
   margin-left: auto;
+  text-align: right;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 4px;
+}
+.header-date {
   font-size: 0.8rem;
   opacity: 0.6;
   white-space: nowrap;
+}
+.daily-refresh-info {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.68rem;
+  opacity: 0.55;
+  white-space: nowrap;
+}
+.refresh-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: #4ade80;
+  display: inline-block;
+  animation: pulse-dot 2s ease-in-out infinite;
+}
+@keyframes pulse-dot {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.4; }
+}
+.refresh-countdown {
+  font-variant-numeric: tabular-nums;
+}
+
+.refresh-btn {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-left: 16px;
+  padding: 7px 16px;
+  background: rgba(255,255,255,0.12);
+  color: #fff;
+  border: 1px solid rgba(255,255,255,0.25);
+  border-radius: 6px;
+  cursor: pointer;
+  font-family: var(--font-body);
+  font-size: 0.78rem;
+  font-weight: 500;
+  letter-spacing: 0.03em;
+  transition: background 0.2s, border-color 0.2s, transform 0.15s;
+  white-space: nowrap;
+}
+.refresh-btn:hover {
+  background: rgba(255,255,255,0.22);
+  border-color: rgba(255,255,255,0.45);
+}
+.refresh-btn:active {
+  transform: scale(0.96);
+}
+.refresh-btn .refresh-icon {
+  transition: transform 0.5s ease;
+}
+.refresh-btn.spinning .refresh-icon {
+  animation: spin-refresh 0.7s ease;
+}
+@keyframes spin-refresh {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+.refresh-label {
+  line-height: 1;
 }
 
 /* ===== NAVIGATION ===== */
@@ -2475,6 +2544,9 @@ body {
   .header { padding: 16px 20px; }
   .header-inner { flex-wrap: wrap; }
   .header-date { display: none; }
+  .daily-refresh-info { display: none; }
+  .refresh-btn .refresh-label { display: none; }
+  .refresh-btn { margin-left: auto; padding: 7px 10px; }
   .nav { padding: 0 20px; }
   .main { padding: 20px; }
   .trend-grid { grid-template-columns: 1fr; }
