@@ -17,10 +17,10 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   // ===== Refresh Button =====
-  const refreshBtn = document.getElementById('refreshBtn');
-  if (refreshBtn) {
-    refreshBtn.addEventListener('click', () => {
-      refreshBtn.classList.add('spinning');
+  const headerRefreshBtn = document.getElementById('refreshBtn');
+  if (headerRefreshBtn) {
+    headerRefreshBtn.addEventListener('click', () => {
+      headerRefreshBtn.classList.add('spinning');
       setTimeout(() => {
         location.reload();
       }, 600);
