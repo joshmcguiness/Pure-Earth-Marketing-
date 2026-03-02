@@ -67,27 +67,64 @@ document.addEventListener('DOMContentLoaded', () => {
     stepQuestions.classList.remove('hidden');
   });
 
-  // Settings toggle
-  document.getElementById('settingsToggle').addEventListener('click', () => {
-    document.getElementById('settingsPanel').classList.toggle('hidden');
-  });
+  // ===== LOGIN GATE =====
+  const loginGate = document.getElementById('loginGate');
+  const loginPassword = document.getElementById('loginPassword');
+  const loginBtn = document.getElementById('loginBtn');
+  const loginError = document.getElementById('loginError');
 
-  // Save API key
-  document.getElementById('saveKeyBtn').addEventListener('click', () => {
-    const input = document.getElementById('apiKeyInput');
-    const key = input.value.trim();
-    if (key) {
-      saveApiKey(key);
-      input.value = '';
-      input.placeholder = 'Key saved ✓';
-      setTimeout(() => { input.placeholder = 'sk-ant-api03-...'; }, 2000);
-    }
-  });
-
-  // Load saved API key indicator
-  if (getApiKey()) {
-    document.getElementById('apiKeyInput').placeholder = 'Key saved ✓ (enter new to replace)';
+  // Show/hide login gate based on stored password
+  if (isLoggedIn()) {
+    loginGate.classList.add('hidden');
   }
+
+  loginBtn.addEventListener('click', handleLogin);
+  loginPassword.addEventListener('keydown', e => {
+    if (e.key === 'Enter') handleLogin();
+  });
+
+  async function handleLogin() {
+    const password = loginPassword.value.trim();
+    if (!password) { loginPassword.focus(); return; }
+
+    loginBtn.disabled = true;
+    loginBtn.textContent = 'Verifying...';
+    loginError.classList.add('hidden');
+
+    try {
+      const verifyUrl = WORKER_URL.replace('/api/analyze', '/api/verify');
+      const response = await fetch(verifyUrl, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'X-Access-Password': password
+        }
+      });
+
+      if (response.ok) {
+        saveAccessPassword(password);
+        loginGate.classList.add('hidden');
+        loginPassword.value = '';
+      } else {
+        loginError.classList.remove('hidden');
+        loginError.textContent = 'Incorrect password. Please try again.';
+        loginPassword.value = '';
+        loginPassword.focus();
+      }
+    } catch (err) {
+      loginError.textContent = 'Connection error. Please try again.';
+      loginError.classList.remove('hidden');
+    }
+
+    loginBtn.disabled = false;
+    loginBtn.textContent = 'Sign In';
+  }
+
+  // Logout button
+  document.getElementById('logoutBtn').addEventListener('click', () => {
+    clearAccessPassword();
+    loginGate.classList.remove('hidden');
+  });
 
   // Load saved analyses list
   renderSavedList();
@@ -107,10 +144,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
     if (!url) { document.getElementById('businessUrl').focus(); return; }
     if (!industry) { alert('Please select an industry.'); return; }
-    if (!getApiKey()) {
-      document.getElementById('settingsPanel').classList.remove('hidden');
-      document.getElementById('apiKeyInput').focus();
-      alert('Please add your Anthropic API key in Settings first.');
+    if (!isLoggedIn()) {
+      loginGate.classList.remove('hidden');
       return;
     }
 
@@ -136,6 +171,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
     } catch (err) {
       loadingEl.classList.add('hidden');
+      if (err.message === 'INVALID_PASSWORD' || err.message === 'NOT_LOGGED_IN') {
+        loginGate.classList.remove('hidden');
+        return;
+      }
       errorEl.classList.remove('hidden');
       errorMsg.textContent = err.message || 'Analysis failed. Please try again.';
     }

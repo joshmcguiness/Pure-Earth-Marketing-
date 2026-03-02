@@ -1,0 +1,10 @@
+name = "marketing-tool-proxy"
+main = "worker.js"
+compatibility_date = "2024-01-01"
+
+[vars]
+ALLOWED_ORIGIN = "https://joshmcguiness.github.io"
+
+# Secrets (set via CLI — never stored in this file):
+# wrangler secret put ANTHROPIC_API_KEY
+# wrangler secret put ACCESS_PASSWORD

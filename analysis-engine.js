@@ -3,15 +3,24 @@
 // Calls Claude API to generate business analysis
 // ============================================
 
-const ANTHROPIC_API_URL = 'https://api.anthropic.com/v1/messages';
+// UPDATE THIS after deploying your Cloudflare Worker:
+const WORKER_URL = 'https://marketing-tool-proxy.YOUR_SUBDOMAIN.workers.dev/api/analyze';
 const CLAUDE_MODEL = 'claude-sonnet-4-20250514';
 
-function getApiKey() {
-  return localStorage.getItem('anthropic_api_key') || '';
+function getAccessPassword() {
+  return localStorage.getItem('access_password') || '';
 }
 
-function saveApiKey(key) {
-  localStorage.setItem('anthropic_api_key', key.trim());
+function saveAccessPassword(password) {
+  localStorage.setItem('access_password', password.trim());
+}
+
+function clearAccessPassword() {
+  localStorage.removeItem('access_password');
+}
+
+function isLoggedIn() {
+  return !!getAccessPassword();
 }
 
 function buildAnalysisPrompt(url, industry, size, platforms, audience) {
@@ -55,9 +64,9 @@ ${SCHEMA_PROMPT}`;
 }
 
 async function analyzeBusiness(url, industry, size, platforms, audience, onProgress) {
-  const apiKey = getApiKey();
-  if (!apiKey) {
-    throw new Error('No API key configured. Please add your Anthropic API key in Settings.');
+  const password = getAccessPassword();
+  if (!password) {
+    throw new Error('NOT_LOGGED_IN');
   }
 
   // Progress updates
@@ -65,16 +74,14 @@ async function analyzeBusiness(url, industry, size, platforms, audience, onProgr
 
   const prompt = buildAnalysisPrompt(url, industry, size, platforms, audience);
 
-  if (onProgress) onProgress(10, 'Connecting to Claude AI...');
+  if (onProgress) onProgress(10, 'Connecting to analysis engine...');
 
   try {
-    const response = await fetch(ANTHROPIC_API_URL, {
+    const response = await fetch(WORKER_URL, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        'x-api-key': apiKey,
-        'anthropic-version': '2023-06-01',
-        'anthropic-dangerous-direct-browser-access': 'true'
+        'X-Access-Password': password
       },
       body: JSON.stringify({
         model: CLAUDE_MODEL,
@@ -88,12 +95,13 @@ async function analyzeBusiness(url, industry, size, platforms, audience, onProgr
       })
     });
 
-    if (onProgress) onProgress(30, 'Claude is analyzing the business...');
+    if (onProgress) onProgress(30, 'Analyzing the business...');
 
     if (!response.ok) {
       const errorData = await response.json().catch(() => ({}));
       if (response.status === 401) {
-        throw new Error('Invalid API key. Please check your Anthropic API key in Settings.');
+        clearAccessPassword();
+        throw new Error('INVALID_PASSWORD');
       }
       if (response.status === 429) {
         throw new Error('Rate limited. Please wait a moment and try again.');
