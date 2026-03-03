@@ -228,20 +228,52 @@ async function analyzeBusiness(url, industry, size, platforms, audience, onProgr
       // Stop simulated progress
       clearInterval(simInterval);
 
-      // Parse SSE text to extract content
-      const lines = responseText.split('\n');
-      for (const line of lines) {
-        const trimmed = line.trim();
-        if (trimmed.startsWith('data: ')) {
-          const data = trimmed.slice(6).trim();
-          if (data === '[DONE]') continue;
-          try {
-            const event = JSON.parse(data);
-            if (event.type === 'content_block_delta' && event.delta?.type === 'text_delta') {
-              fullText += event.delta.text;
-            }
-          } catch {}
+      console.log('Response text length:', responseText.length);
+      console.log('Response content-type:', response.headers.get('content-type'));
+
+      // Check if the response is SSE (streaming) or plain JSON (non-streaming)
+      const contentType = response.headers.get('content-type') || '';
+
+      if (contentType.includes('text/event-stream') || responseText.trimStart().startsWith('event:') || responseText.trimStart().startsWith('data:')) {
+        // Parse SSE text to extract content
+        const lines = responseText.split('\n');
+        let deltaCount = 0;
+        for (const line of lines) {
+          const trimmed = line.trim();
+          if (trimmed.startsWith('data: ')) {
+            const data = trimmed.slice(6).trim();
+            if (data === '[DONE]') continue;
+            try {
+              const event = JSON.parse(data);
+              if (event.type === 'content_block_delta' && event.delta?.type === 'text_delta') {
+                fullText += event.delta.text;
+                deltaCount++;
+              }
+            } catch {}
+          }
         }
+        console.log('SSE deltas extracted:', deltaCount, 'Full text length:', fullText.length);
+      } else {
+        // Response might be plain JSON (non-streaming fallback)
+        console.log('Non-SSE response detected, trying direct JSON parse');
+        try {
+          const jsonResp = JSON.parse(responseText);
+          // Anthropic Messages API response format
+          if (jsonResp.content && Array.isArray(jsonResp.content)) {
+            for (const block of jsonResp.content) {
+              if (block.type === 'text') {
+                fullText += block.text;
+              }
+            }
+          } else {
+            // Unknown format — use the raw text
+            fullText = responseText;
+          }
+        } catch {
+          // Not JSON either — use raw text
+          fullText = responseText;
+        }
+        console.log('Extracted text length:', fullText.length);
       }
 
       if (onProgress) onProgress(95, 'Generating report...', 'Processing data');
@@ -260,25 +292,42 @@ async function analyzeBusiness(url, industry, size, platforms, audience, onProgr
 
     if (onProgress) onProgress(97, 'Processing marketing data...', 'Parsing response');
 
-    // Parse JSON from response — handle potential markdown wrapping
-    let jsonStr = content.trim();
-    if (jsonStr.startsWith('```json')) {
-      jsonStr = jsonStr.slice(7);
-    }
-    if (jsonStr.startsWith('```')) {
-      jsonStr = jsonStr.slice(3);
-    }
-    if (jsonStr.endsWith('```')) {
-      jsonStr = jsonStr.slice(0, -3);
-    }
-    jsonStr = jsonStr.trim();
+    // Log raw content for debugging
+    console.log('Raw AI response length:', content.length);
+    console.log('Raw AI response start:', content.substring(0, 300));
+    console.log('Raw AI response end:', content.substring(content.length - 200));
 
+    // Robust JSON extraction — handles markdown wrapping, leading/trailing text, etc.
     let analysisData;
+    let jsonStr = content.trim();
+
+    // Step 1: Strip markdown code fences if present
+    const fenceMatch = jsonStr.match(/```(?:json)?\s*([\s\S]*?)```/);
+    if (fenceMatch) {
+      jsonStr = fenceMatch[1].trim();
+    }
+
+    // Step 2: Try direct parse first
     try {
       analysisData = JSON.parse(jsonStr);
-    } catch (parseErr) {
-      console.error('JSON parse error:', parseErr, 'Raw response:', content.substring(0, 500));
-      throw new Error('Failed to parse analysis data. The AI response was not valid JSON. Please try again.');
+    } catch {
+      // Step 3: Find the outermost JSON object by locating first { and last }
+      const firstBrace = jsonStr.indexOf('{');
+      const lastBrace = jsonStr.lastIndexOf('}');
+      if (firstBrace !== -1 && lastBrace > firstBrace) {
+        const extracted = jsonStr.substring(firstBrace, lastBrace + 1);
+        try {
+          analysisData = JSON.parse(extracted);
+        } catch (parseErr2) {
+          console.error('JSON parse error (extracted):', parseErr2);
+          console.error('Extracted JSON start:', extracted.substring(0, 500));
+          console.error('Extracted JSON end:', extracted.substring(extracted.length - 500));
+          throw new Error('Failed to parse analysis data. The AI response was not valid JSON. Please try again.');
+        }
+      } else {
+        console.error('No JSON object found in response. Content start:', content.substring(0, 500));
+        throw new Error('Failed to parse analysis data. No JSON found in response. Please try again.');
+      }
     }
 
     if (onProgress) onProgress(98, 'Finalizing report...', 'Validating data');
