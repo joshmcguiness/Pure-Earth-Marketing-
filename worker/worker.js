@@ -63,7 +63,8 @@ function corsHeaders(origin) {
   return {
     'Access-Control-Allow-Origin': origin,
     'Access-Control-Allow-Methods': 'POST, OPTIONS',
-    'Access-Control-Allow-Headers': 'Content-Type, X-Session-Token'
+    'Access-Control-Allow-Headers': 'Content-Type, X-Session-Token',
+    'Access-Control-Expose-Headers': 'Content-Type'
   };
 }
 
