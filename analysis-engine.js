@@ -150,7 +150,18 @@ async function analyzeBusiness(url, industry, size, platforms, audience, onProgr
     });
 
     if (!response.ok) {
-      const errorData = await response.json().catch(() => ({}));
+      let errorMsg = `API error: ${response.status}`;
+      try {
+        const errorText = await response.text();
+        try {
+          const errorData = JSON.parse(errorText);
+          // Handle Anthropic error format: { "type": "error", "error": { "message": "..." } }
+          errorMsg = errorData.error?.message || errorData.error || errorMsg;
+          if (typeof errorMsg === 'object') errorMsg = JSON.stringify(errorMsg);
+        } catch {
+          if (errorText && errorText.length < 500) errorMsg = errorText;
+        }
+      } catch {}
       if (response.status === 401) {
         clearSession();
         throw new Error('SESSION_EXPIRED');
@@ -158,7 +169,8 @@ async function analyzeBusiness(url, industry, size, platforms, audience, onProgr
       if (response.status === 429) {
         throw new Error('Rate limited. Please wait a moment and try again.');
       }
-      throw new Error(errorData.error?.message || errorData.error || `API error: ${response.status}`);
+      console.error('API error response:', response.status, errorMsg);
+      throw new Error(errorMsg);
     }
 
     if (onProgress) onProgress(5, 'Connecting to AI...', '');
@@ -180,25 +192,19 @@ async function analyzeBusiness(url, industry, size, platforms, audience, onProgr
     ];
     let currentSectionIdx = -1;
 
-    // Read streaming response from Anthropic via Worker
-    const reader = response.body.getReader();
-    const decoder = new TextDecoder();
+    // Read streaming response — with fallback for browsers that don't support ReadableStream
     let fullText = '';
-    let buffer = '';
 
-    while (true) {
-      const { done, value } = await reader.read();
-      if (done) break;
+    try {
+      // Try streaming approach first
+      const responseText = await response.text();
 
-      buffer += decoder.decode(value, { stream: true });
-
-      // Parse SSE events from buffer
-      const lines = buffer.split('\n');
-      buffer = lines.pop() || ''; // Keep incomplete line in buffer
-
+      // Parse SSE text to extract content
+      const lines = responseText.split('\n');
       for (const line of lines) {
-        if (line.startsWith('data: ')) {
-          const data = line.slice(6).trim();
+        const trimmed = line.trim();
+        if (trimmed.startsWith('data: ')) {
+          const data = trimmed.slice(6).trim();
           if (data === '[DONE]') continue;
           try {
             const event = JSON.parse(data);
@@ -209,32 +215,26 @@ async function analyzeBusiness(url, industry, size, platforms, audience, onProgr
         }
       }
 
-      // Detect which section is currently being generated
-      for (let i = currentSectionIdx + 1; i < SECTION_MAP.length; i++) {
+      // Detect sections from the completed text for final progress update
+      for (let i = 0; i < SECTION_MAP.length; i++) {
         if (fullText.includes(SECTION_MAP[i].key)) {
           currentSectionIdx = i;
         }
       }
 
-      // Calculate progress: use section-based progress if detected, otherwise estimate by length
-      let pct, sectionName;
-      if (currentSectionIdx >= 0) {
-        const section = SECTION_MAP[currentSectionIdx];
-        const nextPct = currentSectionIdx < SECTION_MAP.length - 1 ? SECTION_MAP[currentSectionIdx + 1].pct : 98;
-        // Interpolate within current section based on text growth
-        pct = Math.min(nextPct - 1, section.pct);
-        sectionName = section.name;
-      } else {
-        pct = Math.min(10, 5 + Math.floor(fullText.length / 500));
-        sectionName = 'Starting analysis...';
+      if (onProgress) {
+        const sectionName = currentSectionIdx >= 0 ? SECTION_MAP[currentSectionIdx].name : 'Processing...';
+        onProgress(95, 'Generating report...', sectionName);
       }
-
-      if (onProgress) onProgress(pct, 'Generating report...', sectionName);
+    } catch (streamErr) {
+      console.error('Stream reading error:', streamErr);
+      throw new Error('Failed to read analysis response. Please try again. (' + streamErr.message + ')');
     }
 
     const content = fullText;
 
     if (!content) {
+      console.error('Empty content. Response type:', response.headers.get('content-type'));
       throw new Error('Empty response from Claude. Please try again.');
     }
 
