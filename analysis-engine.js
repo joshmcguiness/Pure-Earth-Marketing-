@@ -188,31 +188,45 @@ async function analyzeBusiness(url, industry, size, platforms, audience, onProgr
       throw new Error(errorMsg);
     }
 
-    if (onProgress) onProgress(5, 'Connecting to AI...', '');
+    if (onProgress) onProgress(5, 'AI is generating your report...', 'Business Profile');
 
-    // Section detection: maps JSON keys to human-readable section names + progress %
-    const SECTION_MAP = [
-      { key: '"business"',          name: 'Business Profile',         pct: 5 },
-      { key: '"trends"',            name: 'Industry Trends',          pct: 12 },
-      { key: '"viralPosts"',        name: 'Viral Post Database',      pct: 25 },
-      { key: '"competitors"',       name: 'Competitor Analysis',      pct: 40 },
-      { key: '"archetypes"',        name: 'Content Archetypes',       pct: 50 },
-      { key: '"gapAnalysis"',       name: 'Gap Analysis',             pct: 56 },
-      { key: '"scorecard"',         name: 'Virality Scorecard',       pct: 62 },
-      { key: '"improvedPosts"',     name: 'Improved Posts',           pct: 72 },
-      { key: '"kpi"',               name: 'KPI Dashboard',            pct: 82 },
-      { key: '"roadmap"',           name: '90-Day Roadmap',           pct: 88 },
-      { key: '"seo"',               name: 'SEO Opportunities',        pct: 92 },
-      { key: '"llmOpportunities"',  name: 'AI & LLM Opportunities',  pct: 96 }
+    // Simulated progress stages — shown while waiting for the full response
+    const PROGRESS_STAGES = [
+      { pct: 8,  name: 'Business Profile',       label: 'AI is generating your report...' },
+      { pct: 14, name: 'Industry Trends',         label: 'Analysing industry trends...' },
+      { pct: 22, name: 'Viral Post Database',     label: 'Scanning viral content...' },
+      { pct: 32, name: 'Viral Post Database',     label: 'Scanning viral content...' },
+      { pct: 42, name: 'Competitor Analysis',      label: 'Researching competitors...' },
+      { pct: 50, name: 'Content Archetypes',       label: 'Evaluating content archetypes...' },
+      { pct: 56, name: 'Gap Analysis',             label: 'Identifying gaps...' },
+      { pct: 62, name: 'Virality Scorecard',       label: 'Calculating virality score...' },
+      { pct: 70, name: 'Improved Posts',           label: 'Writing improved posts...' },
+      { pct: 76, name: 'Improved Posts',           label: 'Writing improved posts...' },
+      { pct: 82, name: 'KPI Dashboard',            label: 'Building KPI dashboard...' },
+      { pct: 86, name: '90-Day Roadmap',           label: 'Creating 90-day roadmap...' },
+      { pct: 89, name: 'SEO Opportunities',        label: 'Finding SEO opportunities...' },
+      { pct: 91, name: 'AI & LLM Opportunities',   label: 'Discovering AI opportunities...' },
+      { pct: 93, name: 'Finishing up...',           label: 'Almost done...' }
     ];
-    let currentSectionIdx = -1;
 
-    // Read streaming response — with fallback for browsers that don't support ReadableStream
+    // Start simulated progress timer (advances every ~5 seconds over ~75 seconds)
+    let simStageIdx = 0;
+    const simInterval = setInterval(() => {
+      if (simStageIdx < PROGRESS_STAGES.length) {
+        const stage = PROGRESS_STAGES[simStageIdx];
+        if (onProgress) onProgress(stage.pct, stage.label, stage.name);
+        simStageIdx++;
+      }
+    }, 5000);
+
+    // Read the full response (blocks until complete)
     let fullText = '';
 
     try {
-      // Try streaming approach first
       const responseText = await response.text();
+
+      // Stop simulated progress
+      clearInterval(simInterval);
 
       // Parse SSE text to extract content
       const lines = responseText.split('\n');
@@ -230,18 +244,9 @@ async function analyzeBusiness(url, industry, size, platforms, audience, onProgr
         }
       }
 
-      // Detect sections from the completed text for final progress update
-      for (let i = 0; i < SECTION_MAP.length; i++) {
-        if (fullText.includes(SECTION_MAP[i].key)) {
-          currentSectionIdx = i;
-        }
-      }
-
-      if (onProgress) {
-        const sectionName = currentSectionIdx >= 0 ? SECTION_MAP[currentSectionIdx].name : 'Processing...';
-        onProgress(95, 'Generating report...', sectionName);
-      }
+      if (onProgress) onProgress(95, 'Generating report...', 'Processing data');
     } catch (streamErr) {
+      clearInterval(simInterval);
       console.error('Stream reading error:', streamErr);
       throw new Error('Failed to read analysis response. Please try again. (' + streamErr.message + ')');
     }
