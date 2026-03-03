@@ -453,178 +453,668 @@ async function exportToPDF(data) {
   }
 
   const doc = new jsPDF('p', 'mm', 'a4');
-  const pageWidth = 210;
-  const margin = 15;
-  const contentWidth = pageWidth - margin * 2;
+  const pw = 210; // page width
+  const ph = 297; // page height
+  const m = 18;   // margin
+  const cw = pw - m * 2; // content width
   let y = 20;
 
-  function addPage() {
-    doc.addPage();
-    y = 20;
-  }
+  // Color palette
+  const green = [89, 102, 85];
+  const darkGreen = [55, 65, 52];
+  const white = [255, 255, 255];
+  const black = [30, 30, 30];
+  const grey = [100, 100, 100];
+  const lightGrey = [230, 230, 230];
+  const veryLightGrey = [245, 245, 245];
 
-  function checkSpace(needed) {
-    if (y + needed > 275) addPage();
-  }
+  // TOC entries collected during rendering
+  const tocEntries = [];
+  const tocPageNum = 2; // TOC is always page 2
 
-  function heading(text, size) {
-    checkSpace(15);
-    doc.setFontSize(size || 16);
+  // --- Helpers ---
+  function newPage() { doc.addPage(); y = 25; }
+  function checkSpace(needed) { if (y + needed > 272) newPage(); }
+
+  function setColor(rgb) { doc.setTextColor(rgb[0], rgb[1], rgb[2]); }
+  function setFill(rgb) { doc.setFillColor(rgb[0], rgb[1], rgb[2]); }
+
+  function heading(text) {
+    checkSpace(18);
+    setFill(green);
+    doc.rect(m, y - 1, cw, 10, 'F');
+    doc.setFontSize(13);
     doc.setFont('helvetica', 'bold');
-    doc.setTextColor(89, 102, 85); // Forest green
-    doc.text(text, margin, y);
-    y += (size || 16) * 0.5 + 3;
+    setColor(white);
+    doc.text(text, m + 4, y + 6);
+    y += 14;
+    setColor(black);
   }
 
-  function subheading(text) {
+  function sectionStart(title) {
+    newPage();
+    tocEntries.push({ title, page: doc.internal.getNumberOfPages() });
+    heading(title);
+  }
+
+  function sub(text) {
     checkSpace(10);
     doc.setFontSize(11);
     doc.setFont('helvetica', 'bold');
-    doc.setTextColor(18, 18, 18);
-    doc.text(text, margin, y);
+    setColor(darkGreen);
+    doc.text(text, m, y);
     y += 6;
+    setColor(black);
   }
 
-  function bodyText(text, indent) {
-    checkSpace(8);
+  function txt(text, indent) {
+    if (!text) return;
+    checkSpace(6);
     doc.setFontSize(9);
     doc.setFont('helvetica', 'normal');
-    doc.setTextColor(60, 60, 60);
-    const lines = doc.splitTextToSize(text, contentWidth - (indent || 0));
+    setColor(grey);
+    const lines = doc.splitTextToSize(String(text), cw - (indent || 0));
     lines.forEach(line => {
-      checkSpace(5);
-      doc.text(line, margin + (indent || 0), y);
-      y += 4.5;
+      checkSpace(4.5);
+      doc.text(line, m + (indent || 0), y);
+      y += 4.2;
     });
+    y += 1.5;
+  }
+
+  function label(lbl, val, indent) {
+    checkSpace(6);
+    doc.setFontSize(9);
+    doc.setFont('helvetica', 'bold');
+    setColor(black);
+    doc.text(lbl, m + (indent || 0), y);
+    const lblW = doc.getTextWidth(lbl);
+    doc.setFont('helvetica', 'normal');
+    setColor(grey);
+    doc.text(String(val || 'N/A'), m + (indent || 0) + lblW + 2, y);
+    y += 5;
+  }
+
+  function scoreBar(x, yPos, width, score, max) {
+    setFill(lightGrey);
+    doc.rect(x, yPos, width, 4, 'F');
+    const fillW = Math.max(1, (score / max) * width);
+    setFill(green);
+    doc.rect(x, yPos, fillW, 4, 'F');
+  }
+
+  function sep() {
     y += 2;
+    doc.setDrawColor(210, 210, 210);
+    doc.line(m, y, pw - m, y);
+    y += 4;
   }
 
-  function separator() {
-    checkSpace(8);
-    doc.setDrawColor(200, 200, 200);
-    doc.line(margin, y, pageWidth - margin, y);
-    y += 6;
+  function link(text, url, x, yPos) {
+    doc.setFontSize(9);
+    doc.setFont('helvetica', 'normal');
+    doc.setTextColor(30, 90, 160);
+    doc.textWithLink(text, x, yPos, { url: url });
+    doc.setTextColor(30, 30, 30);
   }
 
-  // === COVER ===
-  doc.setFillColor(89, 102, 85);
-  doc.rect(0, 0, pageWidth, 60, 'F');
-  doc.setTextColor(255, 255, 255);
-  doc.setFontSize(24);
+  // ===== PAGE 1: COVER =====
+  // Full green background
+  setFill(green);
+  doc.rect(0, 0, pw, ph, 'F');
+
+  // Accent bar
+  setFill(darkGreen);
+  doc.rect(0, 0, pw, 8, 'F');
+
+  // Title block
+  setColor(white);
+  doc.setFontSize(32);
   doc.setFont('helvetica', 'bold');
-  doc.text('Marketing Effectiveness Report', margin, 30);
-  doc.setFontSize(14);
+  doc.text('Marketing', m, 80);
+  doc.text('Effectiveness', m, 95);
+  doc.text('Report', m, 110);
+
+  // Separator line
+  doc.setDrawColor(255, 255, 255);
+  doc.setLineWidth(0.5);
+  doc.line(m, 120, m + 60, 120);
+  doc.setLineWidth(0.2);
+
+  // Business name
+  doc.setFontSize(20);
   doc.setFont('helvetica', 'normal');
-  doc.text(data.business?.name || 'Business Analysis', margin, 42);
-  doc.setFontSize(10);
-  doc.text(new Date().toLocaleDateString('en-AU', { year: 'numeric', month: 'long', day: 'numeric' }), margin, 52);
-  y = 75;
+  doc.text(data.business?.name || 'Business Analysis', m, 135);
 
-  // Business overview
-  doc.setTextColor(18, 18, 18);
-  heading('Business Overview', 14);
-  bodyText(`Website: ${data.business?.url || 'N/A'}`);
-  bodyText(`Industry: ${data.business?.industry || 'N/A'}`);
-  bodyText(data.business?.description || '');
-  separator();
+  // Details
+  doc.setFontSize(11);
+  const dateStr = new Date().toLocaleDateString('en-AU', { year: 'numeric', month: 'long', day: 'numeric' });
+  doc.text(dateStr, m, 150);
+  if (data.business?.industry) {
+    doc.text('Industry: ' + data.business.industry, m, 160);
+  }
+  if (data.business?.url) {
+    doc.text(data.business.url, m, 170);
+  }
 
-  // === SCORECARD ===
+  // Score badge
+  if (data.scorecard?.overall != null) {
+    const score = data.scorecard.overall;
+    setFill(darkGreen);
+    doc.rect(pw - m - 50, 75, 50, 50, 'F');
+    setColor(white);
+    doc.setFontSize(28);
+    doc.setFont('helvetica', 'bold');
+    doc.text(String(score), pw - m - 25, 100, { align: 'center' });
+    doc.setFontSize(9);
+    doc.setFont('helvetica', 'normal');
+    doc.text('VIRALITY', pw - m - 25, 110, { align: 'center' });
+    doc.text('SCORE', pw - m - 25, 116, { align: 'center' });
+  }
+
+  // Footer on cover
+  doc.setFontSize(9);
+  setColor([200, 210, 200]);
+  doc.text('AI-Powered Marketing Analysis', m, ph - 20);
+
+  // ===== PAGE 2: TABLE OF CONTENTS (placeholder — filled in second pass) =====
+  newPage();
+  // We'll fill this in after rendering all content
+
+  // ===== CONTENT SECTIONS =====
+
+  // --- Business Overview ---
+  sectionStart('Business Overview');
+  label('Business: ', data.business?.name || 'N/A');
+  if (data.business?.url) {
+    checkSpace(6);
+    doc.setFontSize(9);
+    doc.setFont('helvetica', 'bold');
+    setColor(black);
+    doc.text('Website: ', m, y);
+    link(data.business.url, data.business.url, m + doc.getTextWidth('Website: ') + 2, y);
+    y += 5;
+  }
+  label('Industry: ', data.business?.industry || 'N/A');
+  label('Tagline: ', data.business?.tagline || '');
+  y += 2;
+  txt(data.business?.description || '');
+
+  // --- Virality Scorecard ---
   if (data.scorecard) {
-    heading('Virality Scorecard');
-    subheading(`Overall Score: ${data.scorecard.overall}/100 — ${data.scorecard.assessment}`);
-    bodyText(data.scorecard.assessmentDetail || '');
-    y += 3;
+    sectionStart('Virality Scorecard');
+
+    // Score hero
+    checkSpace(30);
+    setFill(veryLightGrey);
+    doc.rect(m, y, cw, 22, 'F');
+    doc.setFontSize(22);
+    doc.setFont('helvetica', 'bold');
+    setColor(green);
+    doc.text(data.scorecard.overall + '/100', m + 6, y + 12);
+    doc.setFontSize(10);
+    doc.setFont('helvetica', 'normal');
+    setColor(black);
+    doc.text(data.scorecard.assessment || '', m + 50, y + 10);
+    doc.setFontSize(8);
+    setColor(grey);
+    const assessLines = doc.splitTextToSize(data.scorecard.assessmentDetail || '', cw - 58);
+    assessLines.slice(0, 2).forEach((l, i) => {
+      doc.text(l, m + 50, y + 16 + i * 3.5);
+    });
+    y += 28;
+
+    // Category scores
     (data.scorecard.categories || []).forEach(c => {
-      checkSpace(12);
+      checkSpace(14);
       doc.setFontSize(9);
       doc.setFont('helvetica', 'bold');
-      doc.text(`${c.name}: ${c.score}/100`, margin, y);
-      y += 4;
+      setColor(black);
+      doc.text(c.name, m, y);
       doc.setFont('helvetica', 'normal');
-      const lines = doc.splitTextToSize(c.description, contentWidth - 5);
-      lines.forEach(l => { checkSpace(4); doc.text(l, margin + 5, y); y += 4; });
+      doc.text(c.score + '/100', m + cw - 15, y);
       y += 2;
+      scoreBar(m, y, cw - 20, c.score, 100);
+      y += 5;
+      doc.setFontSize(7.5);
+      setColor(grey);
+      const descLines = doc.splitTextToSize(c.description, cw - 5);
+      descLines.slice(0, 2).forEach(l => { doc.text(l, m + 2, y); y += 3.2; });
+      y += 3;
     });
-    separator();
-  }
 
-  // === TRENDS ===
-  if (data.trends?.length) {
-    heading('Current Trends');
-    data.trends.forEach(t => {
-      subheading(`${t.status}: ${t.title}`);
-      bodyText(t.description, 5);
-      bodyText(`Growth: ${t.growth} | Relevance: ${t.relevance}%`, 5);
-      y += 2;
-    });
-    separator();
-  }
-
-  // === COMPETITORS ===
-  if (data.competitors?.products?.length) {
-    heading('Competitor Analysis');
-    data.competitors.products.forEach(p => {
-      subheading(`${p.name} (${p.price})`);
-      (p.competitors || []).forEach(c => {
-        bodyText(`vs ${c.name} (${c.type})`, 5);
-        bodyText(`Action: ${c.action}`, 10);
+    // Benchmarks table
+    if (data.scorecard.benchmarks?.length) {
+      checkSpace(20);
+      y += 4;
+      sub('Industry Benchmarks');
+      const headers = ['Metric', 'You', 'Average', 'Top Performer', 'Gap'];
+      const colW = [40, 28, 30, 42, 30];
+      let tx = m;
+      // Header row
+      setFill([70, 80, 68]);
+      doc.rect(m, y - 1, cw, 7, 'F');
+      doc.setFontSize(8);
+      doc.setFont('helvetica', 'bold');
+      setColor(white);
+      headers.forEach((h, i) => { doc.text(h, tx + 2, y + 4); tx += colW[i]; });
+      y += 8;
+      // Data rows
+      data.scorecard.benchmarks.forEach((b, idx) => {
+        checkSpace(8);
+        if (idx % 2 === 0) { setFill(veryLightGrey); doc.rect(m, y - 1, cw, 7, 'F'); }
+        doc.setFontSize(8);
+        doc.setFont('helvetica', 'normal');
+        setColor(black);
+        tx = m;
+        [b.metric, b.business, b.average, b.topPerformer, b.gap].forEach((v, i) => {
+          doc.text(String(v || '').substring(0, 25), tx + 2, y + 4);
+          tx += colW[i];
+        });
+        y += 7;
       });
-      y += 2;
-    });
-    separator();
+      y += 4;
+    }
   }
 
-  // === ARCHETYPES ===
+  // --- Current Trends ---
+  if (data.trends?.length) {
+    sectionStart('Current Industry Trends');
+    data.trends.forEach((t, idx) => {
+      checkSpace(22);
+      // Card background
+      setFill(idx % 2 === 0 ? veryLightGrey : white);
+      doc.rect(m, y - 1, cw, 18, 'F');
+      // Status badge
+      doc.setFontSize(7);
+      doc.setFont('helvetica', 'bold');
+      setFill(t.tier === 'hot' ? [180, 60, 40] : green);
+      const badgeW = doc.getTextWidth(t.status || 'TREND') + 6;
+      doc.rect(m + 2, y, badgeW, 5, 'F');
+      setColor(white);
+      doc.text(t.status || '', m + 5, y + 3.5);
+      // Title
+      doc.setFontSize(10);
+      doc.setFont('helvetica', 'bold');
+      setColor(black);
+      doc.text(t.title || '', m + 2, y + 10);
+      // Stats
+      doc.setFontSize(8);
+      doc.setFont('helvetica', 'normal');
+      setColor(grey);
+      doc.text(`Growth: ${t.growth || ''} | Relevance: ${t.relevance || 0}% | Platforms: ${(t.platforms || []).join(', ')}`, m + 2, y + 15);
+      y += 20;
+      txt(t.description, 2);
+      y += 1;
+    });
+  }
+
+  // --- Competitor Analysis ---
+  if (data.competitors?.products?.length) {
+    sectionStart('Competitor Analysis');
+    data.competitors.products.forEach(p => {
+      checkSpace(15);
+      sub(p.name + ' — ' + p.price);
+      (p.competitors || []).forEach(c => {
+        checkSpace(16);
+        doc.setFontSize(9);
+        doc.setFont('helvetica', 'bold');
+        setColor(darkGreen);
+        doc.text('vs ' + c.name, m + 3, y);
+        doc.setFont('helvetica', 'normal');
+        setColor(grey);
+        doc.text(' (' + c.type + ')', m + 3 + doc.getTextWidth('vs ' + c.name) + 1, y);
+        y += 5;
+        // Metrics
+        (c.metrics || []).forEach(metric => {
+          label('  ' + metric.label + ': ', metric.pe + ' vs ' + metric.comp, 3);
+        });
+        txt('Action: ' + c.action, 6);
+        y += 2;
+      });
+      sep();
+    });
+  }
+
+  // --- Content Archetypes ---
   if (data.archetypes?.length) {
-    heading('Content Archetypes');
+    sectionStart('Content Archetypes & Gap Analysis');
     data.archetypes.forEach(a => {
-      bodyText(`${a.number}. ${a.title} — Usage: ${a.usageLabel} (${a.usage}%) — ${a.status}`);
+      checkSpace(14);
+      doc.setFontSize(9);
+      doc.setFont('helvetica', 'bold');
+      setColor(black);
+      doc.text(a.number + '. ' + a.title, m, y);
+      // Score bar
+      scoreBar(m + 90, y - 3, 50, a.usage, 100);
+      doc.setFontSize(8);
+      doc.setFont('helvetica', 'normal');
+      setColor(grey);
+      doc.text(a.usage + '% — ' + a.status, m + 142, y);
+      y += 5;
+      txt(a.description, 5);
     });
-    separator();
+
+    // Gap Analysis
+    if (data.gapAnalysis) {
+      y += 3;
+      sub('Gap Analysis Summary');
+      if (data.gapAnalysis.missingTriggers?.length) {
+        label('Missing Triggers: ', data.gapAnalysis.missingTriggers.map(t => t.name).join(', '));
+      }
+      if (data.gapAnalysis.underusedArchetypes?.length) {
+        label('Underused: ', data.gapAnalysis.underusedArchetypes.map(a => a.name).join(', '));
+      }
+      if (data.gapAnalysis.overusedArchetypes?.length) {
+        label('Overused: ', data.gapAnalysis.overusedArchetypes.map(a => a.name).join(', '));
+      }
+    }
   }
 
-  // === IMPROVED POSTS ===
+  // --- Viral Post Database ---
+  if (data.viralPosts) {
+    sectionStart('Viral Post Database');
+    ['tiktok', 'instagram', 'facebook', 'linkedin'].forEach(platform => {
+      const posts = data.viralPosts[platform];
+      if (!posts?.length) return;
+      sub(capitalize(platform));
+      posts.forEach(p => {
+        checkSpace(14);
+        doc.setFontSize(9);
+        doc.setFont('helvetica', 'bold');
+        setColor(black);
+        doc.text('#' + p.rank + ' ' + (p.title || ''), m + 2, y);
+        doc.setFont('helvetica', 'normal');
+        setColor(grey);
+        doc.text('Score: ' + (p.viralityScore || 0) + '/100', m + cw - 30, y);
+        y += 4.5;
+        doc.setFontSize(8);
+        doc.text(p.creator || '', m + 5, y);
+        y += 4;
+        txt(p.coreLearning, 5);
+      });
+    });
+  }
+
+  // --- Improved Post Scripts ---
   if (data.improvedPosts) {
-    heading('Improved Post Scripts');
+    sectionStart('Improved Post Scripts');
     ['tiktok', 'instagram', 'facebook', 'linkedin'].forEach(platform => {
       const posts = data.improvedPosts[platform];
       if (!posts?.length) return;
-      subheading(capitalize(platform));
+      sub(capitalize(platform));
       posts.forEach(p => {
-        bodyText(`#${p.number}: ${p.title} (${p.archetype})`, 3);
-        bodyText(`Hook: ${p.script?.hook}`, 8);
-        bodyText(`CTA: ${p.script?.cta}`, 8);
-        y += 1;
+        checkSpace(28);
+        doc.setFontSize(9);
+        doc.setFont('helvetica', 'bold');
+        setColor(black);
+        doc.text('#' + p.number + ': ' + (p.title || ''), m + 2, y);
+        doc.setFontSize(8);
+        doc.setFont('helvetica', 'normal');
+        setColor(green);
+        doc.text(p.archetype || '', m + 2, y + 4);
+        y += 7;
+        setColor(grey);
+        // Script sections
+        if (p.script) {
+          ['hook', 'body', 'reveal', 'cta'].forEach(section => {
+            if (!p.script[section]) return;
+            checkSpace(8);
+            doc.setFont('helvetica', 'bold');
+            setColor(darkGreen);
+            doc.text(section.toUpperCase() + ':', m + 5, y);
+            doc.setFont('helvetica', 'normal');
+            setColor(grey);
+            const scriptLines = doc.splitTextToSize(p.script[section], cw - 30);
+            scriptLines.forEach(l => { checkSpace(4); doc.text(l, m + 22, y); y += 4; });
+            y += 1;
+          });
+        }
+        y += 3;
       });
     });
-    separator();
   }
 
-  // === ROADMAP ===
-  if (data.roadmap?.recommendations?.length) {
-    heading('Top Recommendations');
-    data.roadmap.recommendations.forEach(r => {
-      bodyText(`${r.rank}. ${r.title} [${r.impact}]`);
-      bodyText(r.description, 8);
+  // --- KPI Dashboard ---
+  if (data.kpi) {
+    sectionStart('KPI Tracking Dashboard');
+
+    // Recent performance table
+    if (data.kpi.recentPerformance?.length) {
+      sub('Recent Performance');
+      const kpiHeaders = ['Wk', 'Date', 'Post', 'Platform', 'Reach', 'Likes', 'Eng%', 'Trend'];
+      const kpiColW = [10, 18, 50, 22, 20, 16, 16, 22];
+      let tx = m;
+      setFill([70, 80, 68]);
+      doc.rect(m, y - 1, cw, 6, 'F');
+      doc.setFontSize(7);
+      doc.setFont('helvetica', 'bold');
+      setColor(white);
+      kpiHeaders.forEach((h, i) => { doc.text(h, tx + 1, y + 3); tx += kpiColW[i]; });
+      y += 7;
+
+      data.kpi.recentPerformance.forEach((r, idx) => {
+        checkSpace(7);
+        if (idx % 2 === 0) { setFill(veryLightGrey); doc.rect(m, y - 1, cw, 6, 'F'); }
+        doc.setFontSize(7);
+        doc.setFont('helvetica', 'normal');
+        setColor(black);
+        tx = m;
+        [r.week, r.date, (r.description || '').substring(0, 30), r.platform, r.reach, r.likes, r.engRate, r.trend].forEach((v, i) => {
+          doc.text(String(v || ''), tx + 1, y + 3);
+          tx += kpiColW[i];
+        });
+        y += 6;
+      });
+      y += 5;
+    }
+
+    // Targets
+    if (data.kpi.targets) {
+      sub('90-Day Targets');
+      ['tiktok', 'instagram', 'facebook', 'linkedin'].forEach(platform => {
+        const targets = data.kpi.targets[platform];
+        if (!targets?.length) return;
+        checkSpace(12);
+        doc.setFontSize(9);
+        doc.setFont('helvetica', 'bold');
+        setColor(darkGreen);
+        doc.text(capitalize(platform), m + 2, y);
+        y += 5;
+        targets.forEach(t => {
+          label('  Month ' + t.month + ': ', t.target, 3);
+        });
+        y += 2;
+      });
+    }
+
+    // Formulas
+    if (data.kpi.formulas?.length) {
+      y += 3;
+      sub('Key Formulas');
+      data.kpi.formulas.forEach(f => {
+        label(f.name + ': ', f.formula + ' (Target: ' + f.target + ')');
+      });
+    }
+  }
+
+  // --- 90-Day Roadmap ---
+  if (data.roadmap) {
+    sectionStart('90-Day Marketing Roadmap');
+
+    // Phases
+    (data.roadmap.phases || []).forEach(phase => {
+      checkSpace(20);
+      sub(phase.title + ' — ' + phase.subtitle);
+      (phase.weeks || []).forEach(w => {
+        checkSpace(10);
+        doc.setFontSize(8.5);
+        doc.setFont('helvetica', 'bold');
+        setColor(black);
+        doc.text(w.label, m + 3, y);
+        y += 4;
+        (w.items || []).forEach(item => {
+          checkSpace(5);
+          doc.setFontSize(8);
+          doc.setFont('helvetica', 'normal');
+          setColor(grey);
+          const itemLines = doc.splitTextToSize('• ' + item, cw - 12);
+          itemLines.forEach(l => { doc.text(l, m + 6, y); y += 3.8; });
+        });
+        y += 2;
+      });
+      if (phase.successMetrics?.length) {
+        doc.setFontSize(8);
+        doc.setFont('helvetica', 'bold');
+        setColor(darkGreen);
+        doc.text('Success Metrics:', m + 3, y);
+        y += 4;
+        phase.successMetrics.forEach(metric => {
+          checkSpace(5);
+          doc.setFont('helvetica', 'normal');
+          setColor(grey);
+          doc.text('✓ ' + metric, m + 6, y);
+          y += 3.8;
+        });
+      }
+      y += 4;
     });
-    separator();
+
+    // Top Recommendations
+    if (data.roadmap.recommendations?.length) {
+      sub('Top 8 Priority Recommendations');
+      data.roadmap.recommendations.forEach(r => {
+        checkSpace(12);
+        setFill(veryLightGrey);
+        doc.rect(m, y - 1, cw, 9, 'F');
+        doc.setFontSize(9);
+        doc.setFont('helvetica', 'bold');
+        setColor(black);
+        doc.text(r.rank + '. ' + r.title, m + 3, y + 4);
+        // Impact badge
+        const impactColor = r.impact?.includes('HIGHEST') ? [180, 60, 40] : r.impact?.includes('HIGH') ? [200, 140, 30] : green;
+        setFill(impactColor);
+        const impactText = r.impact || '';
+        const impactW = doc.getTextWidth(impactText) + 6;
+        doc.rect(m + cw - impactW - 2, y + 1, impactW, 5, 'F');
+        doc.setFontSize(6.5);
+        setColor(white);
+        doc.text(impactText, m + cw - impactW + 1, y + 4.5);
+        y += 10;
+        txt(r.description, 5);
+      });
+    }
   }
 
-  // === SEO ===
+  // --- SEO Opportunities ---
   if (data.seo?.length) {
-    heading('SEO Opportunities');
-    data.seo.forEach(s => {
-      bodyText(`"${s.term}" — ${s.volume}, ${s.difficulty} difficulty`);
-      bodyText(`Impact: ${s.impact} | Cost: ${s.cost}`, 8);
+    sectionStart('Google Search Opportunities');
+    data.seo.forEach((s, idx) => {
+      checkSpace(22);
+      setFill(idx % 2 === 0 ? veryLightGrey : white);
+      doc.rect(m, y - 1, cw, 16, 'F');
+      doc.setFontSize(10);
+      doc.setFont('helvetica', 'bold');
+      setColor(black);
+      doc.text('"' + s.term + '"', m + 3, y + 5);
+      doc.setFontSize(8);
+      doc.setFont('helvetica', 'normal');
+      setColor(grey);
+      doc.text(s.volume + '  |  ' + s.difficulty + ' difficulty  |  ' + s.currentRank, m + 3, y + 11);
+      y += 18;
+      if (s.strategy?.length) {
+        s.strategy.forEach((step, i) => {
+          checkSpace(5);
+          txt((i + 1) + '. ' + step, 5);
+        });
+      }
+      label('Cost: ', s.cost + '  |  Impact: ' + s.impact, 3);
+      y += 3;
     });
   }
 
-  // Footer on last page
-  doc.setFontSize(8);
-  doc.setTextColor(150, 150, 150);
-  doc.text('Generated by Marketing Analysis Tool — Powered by Claude AI', margin, 287);
+  // --- AI & LLM Opportunities ---
+  if (data.llmOpportunities?.length) {
+    sectionStart('AI & LLM Marketing Opportunities');
+    data.llmOpportunities.forEach(o => {
+      checkSpace(18);
+      // Badge
+      const badgeColor = o.badgeType === 'critical' ? [180, 60, 40] : o.badgeType === 'new' ? [40, 120, 180] : green;
+      setFill(badgeColor);
+      const badgeText = o.badge || 'OPPORTUNITY';
+      const bw = doc.getTextWidth(badgeText) + 8;
+      doc.setFontSize(7);
+      doc.setFont('helvetica', 'bold');
+      doc.rect(m, y, bw, 5, 'F');
+      setColor(white);
+      doc.text(badgeText, m + 3, y + 3.5);
+      y += 7;
+      doc.setFontSize(10);
+      doc.setFont('helvetica', 'bold');
+      setColor(black);
+      doc.text(o.title || '', m + 2, y);
+      y += 5;
+      txt(o.description, 2);
+      label('Action: ', o.action, 2);
+      label('Cost: ', o.cost, 2);
+      y += 3;
+    });
+  }
 
-  // Download
+  // ===== SECOND PASS: Fill Table of Contents =====
+  doc.setPage(tocPageNum);
+  let tocY = 25;
+
+  // TOC header
+  setFill(green);
+  doc.rect(0, 0, pw, 8, 'F');
+  doc.setFontSize(22);
+  doc.setFont('helvetica', 'bold');
+  setColor(black);
+  doc.text('Table of Contents', m, tocY + 10);
+  tocY += 20;
+  doc.setDrawColor(89, 102, 85);
+  doc.line(m, tocY, m + 40, tocY);
+  tocY += 10;
+
+  tocEntries.forEach((entry, idx) => {
+    doc.setFontSize(11);
+    doc.setFont('helvetica', 'normal');
+    setColor(black);
+    doc.text((idx + 1) + '.  ' + entry.title, m + 5, tocY);
+    // Page number
+    doc.setFont('helvetica', 'bold');
+    setColor(green);
+    doc.text(String(entry.page), pw - m - 5, tocY);
+    // Dotted line
+    doc.setFontSize(8);
+    setColor(lightGrey);
+    const textEnd = m + 10 + doc.getTextWidth(entry.title) + 5;
+    const numStart = pw - m - 10;
+    for (let dx = textEnd; dx < numStart; dx += 3) {
+      doc.text('.', dx, tocY);
+    }
+    // Internal link
+    doc.link(m, tocY - 5, cw, 8, { pageNumber: entry.page });
+    tocY += 10;
+  });
+
+  // ===== THIRD PASS: Add page numbers + footer to all pages =====
+  const totalPages = doc.internal.getNumberOfPages();
+  for (let i = 2; i <= totalPages; i++) {
+    doc.setPage(i);
+    doc.setFontSize(7.5);
+    doc.setFont('helvetica', 'normal');
+    doc.setTextColor(160, 160, 160);
+    doc.text('Page ' + (i - 1) + ' of ' + (totalPages - 1), pw / 2, 290, { align: 'center' });
+    doc.text(data.business?.name || '', m, 290);
+    doc.text('Marketing Analysis Report', pw - m, 290, { align: 'right' });
+    // Thin line above footer
+    doc.setDrawColor(220, 220, 220);
+    doc.line(m, 286, pw - m, 286);
+  }
+
+  // ===== DOWNLOAD =====
   const filename = `${(data.business?.name || 'analysis').replace(/[^a-zA-Z0-9]/g, '-')}-marketing-report.pdf`;
   doc.save(filename);
   return filename;

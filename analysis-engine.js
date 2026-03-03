@@ -1,6 +1,7 @@
 // ============================================
 // MARKETING ANALYSIS TOOL — AI ENGINE
 // Calls Claude API to generate business analysis
+// Split into 2 API calls to stay within token limits
 // ============================================
 
 // UPDATE THIS after deploying your Cloudflare Worker:
@@ -77,10 +78,12 @@ async function logoutUser() {
   clearSession();
 }
 
-function buildAnalysisPrompt(url, industry, size, platforms, audience) {
+// ===== PROMPT BUILDERS =====
+
+function buildPromptPart1(url, industry, size, platforms, audience) {
   const today = new Date().toLocaleDateString('en-AU', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
 
-  return `You are an expert marketing strategist and social media analyst. Analyze the business at ${url} and generate a comprehensive marketing effectiveness report.
+  return `You are an expert marketing strategist and social media analyst. Analyze the business at ${url} and generate Part 1 of a marketing effectiveness report.
 
 Business details provided by the user:
 - Website: ${url}
@@ -90,7 +93,7 @@ Business details provided by the user:
 - Target audience: ${audience}
 - Analysis date: ${today}
 
-Generate a COMPLETE marketing effectiveness analysis. Be specific, actionable, and realistic. Use real competitor names, real platform data estimates, and specific strategic recommendations tailored to this exact business and industry.
+Generate the CORE ANALYSIS sections. Be specific, actionable, and realistic. Use real competitor names, real platform data estimates, and specific strategic recommendations tailored to this exact business and industry.
 
 For the "trends" section: Identify 8 real, current trends in this business's industry (4 "day" timeframe, 4 "week" timeframe). Use actual trending topics, not generic ones. Include realistic view count estimates.
 
@@ -102,26 +105,45 @@ For "archetypes": Score how well this business uses each of 8 viral content arch
 
 For "scorecard": Give an honest overall virality score (most small businesses score 15-45). Don't inflate scores.
 
-For "improvedPosts": Write 5 ready-to-use post scripts per platform, tailored to this specific business.
+IMPORTANT: Return ONLY valid JSON. No markdown, no code blocks, no explanation text. Just the JSON object.
 
-For "kpi": Estimate recent performance and set realistic 90-day targets.
+${SCHEMA_PROMPT_PART1}`;
+}
 
-For "roadmap": Create a specific 90-day action plan with weekly tasks.
+function buildPromptPart2(url, industry, size, platforms, audience, businessContext) {
+  const today = new Date().toLocaleDateString('en-AU', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
 
-For "seo": Identify 6 high-value search terms this business should target.
+  return `You are an expert marketing strategist. You are generating Part 2 of a marketing effectiveness report for the following business:
+
+- Business name: ${businessContext.name}
+- Website: ${url}
+- Industry: ${industry}
+- Business size: ${size}
+- Active/target platforms: ${platforms.join(', ')}
+- Target audience: ${audience}
+- Current virality score: ${businessContext.score}/100
+- Analysis date: ${today}
+
+Generate the STRATEGY & CONTENT sections. Be specific, actionable, and realistic. Tailor everything to this exact business.
+
+For "improvedPosts": Write 5 ready-to-use post scripts per platform, tailored to this specific business. Include compelling hooks and clear CTAs.
+
+For "kpi": Estimate recent performance and set realistic 90-day targets for each platform.
+
+For "roadmap": Create a specific 90-day action plan with 3 phases and weekly tasks. Include 8 prioritized recommendations.
+
+For "seo": Identify 6 high-value search terms this business should target with volume estimates and ranking strategies.
 
 For "llmOpportunities": Identify 6 AI/LLM marketing opportunities relevant to this business.
 
 IMPORTANT: Return ONLY valid JSON. No markdown, no code blocks, no explanation text. Just the JSON object.
 
-${SCHEMA_PROMPT}`;
+${SCHEMA_PROMPT_PART2}`;
 }
 
 // ===== JSON REPAIR FOR TRUNCATED RESPONSES =====
 
 function repairTruncatedJSON(str) {
-  // Attempts to fix JSON that was truncated mid-stream (e.g., due to max_tokens limit).
-  // Strategy: close any open string, strip trailing incomplete tokens, close open delimiters.
   try {
     let s = str;
 
@@ -136,10 +158,8 @@ function repairTruncatedJSON(str) {
 
     // Step 2: Try progressively stripping trailing incomplete tokens until we can close delimiters
     for (let attempts = 0; attempts < 100; attempts++) {
-      // Remove trailing commas, colons, whitespace
       s = s.replace(/[,:\s]+$/, '');
 
-      // Count open delimiters
       inStr = false; esc = false;
       const stack = [];
       for (let i = 0; i < s.length; i++) {
@@ -154,17 +174,15 @@ function repairTruncatedJSON(str) {
         }
       }
 
-      // Close all open delimiters
       let candidate = s;
       while (stack.length) candidate += stack.pop();
 
       try {
         JSON.parse(candidate);
-        return candidate; // Success!
+        return candidate;
       } catch {
-        // Strip the last token (a string, number, boolean, null, or closing delimiter)
         const stripped = s.replace(/(?:"(?:[^"\\]|\\.)*"|\d+(?:\.\d+)?(?:[eE][+-]?\d+)?|true|false|null|[}\]])\s*$/, '');
-        if (stripped === s || stripped.length < 2) return null; // Can't strip any further
+        if (stripped === s || stripped.length < 2) return null;
         s = stripped;
       }
     }
@@ -174,6 +192,138 @@ function repairTruncatedJSON(str) {
     return null;
   }
 }
+
+// ===== REUSABLE API CALL HELPER =====
+
+async function makeApiCall(prompt, signal, sessionToken) {
+  // Makes a single API call and returns parsed JSON data
+  const response = await fetch(WORKER_URL, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'X-Session-Token': sessionToken
+    },
+    body: JSON.stringify({
+      model: CLAUDE_MODEL,
+      max_tokens: 16000,
+      messages: [{ role: 'user', content: prompt }]
+    }),
+    signal: signal
+  });
+
+  if (!response.ok) {
+    let errorMsg = `API error: ${response.status}`;
+    try {
+      const errorText = await response.text();
+      try {
+        const errorData = JSON.parse(errorText);
+        errorMsg = errorData.error?.message || errorData.error || errorMsg;
+        if (typeof errorMsg === 'object') errorMsg = JSON.stringify(errorMsg);
+      } catch {
+        if (errorText && errorText.length < 500) errorMsg = errorText;
+      }
+    } catch {}
+    if (response.status === 401) {
+      clearSession();
+      throw new Error('SESSION_EXPIRED');
+    }
+    if (response.status === 429) {
+      throw new Error('Rate limited. Please wait a moment and try again.');
+    }
+    throw new Error(errorMsg);
+  }
+
+  // Read and parse the SSE response
+  const responseText = await response.text();
+  let fullText = '';
+  let stopReason = null;
+
+  // Parse SSE events
+  const lines = responseText.split('\n');
+  let deltaCount = 0;
+
+  for (const line of lines) {
+    const trimmed = line.trim();
+    if (trimmed.startsWith('data:')) {
+      const data = trimmed.startsWith('data: ') ? trimmed.slice(6).trim() : trimmed.slice(5).trim();
+      if (data === '[DONE]') continue;
+      try {
+        const event = JSON.parse(data);
+        if (event.type === 'content_block_delta' && event.delta?.type === 'text_delta') {
+          fullText += event.delta.text;
+          deltaCount++;
+        }
+        if (event.type === 'message_delta' && event.delta?.stop_reason) {
+          stopReason = event.delta.stop_reason;
+        }
+        if (event.type === 'error') {
+          throw new Error('AI error: ' + (event.error?.message || JSON.stringify(event.error || event)));
+        }
+      } catch (e) {
+        if (e.message?.startsWith('AI error:')) throw e;
+      }
+    }
+  }
+
+  // Fallback: try direct JSON if SSE yielded nothing
+  if (!fullText) {
+    try {
+      const jsonResp = JSON.parse(responseText);
+      if (jsonResp.content && Array.isArray(jsonResp.content)) {
+        for (const block of jsonResp.content) {
+          if (block.type === 'text') fullText += block.text;
+        }
+        stopReason = jsonResp.stop_reason || null;
+      }
+    } catch {}
+  }
+
+  console.log('API call: deltas=' + deltaCount, 'textLen=' + fullText.length, 'stop=' + stopReason);
+
+  if (!fullText) {
+    throw new Error('Empty response from AI. Please try again.');
+  }
+
+  // Extract JSON from the response text
+  let jsonStr = fullText.trim();
+
+  // Strip markdown code fences
+  const fenceMatch = jsonStr.match(/```(?:json)?\s*([\s\S]*?)```/);
+  if (fenceMatch) {
+    jsonStr = fenceMatch[1].trim();
+  }
+
+  // Try direct parse
+  try {
+    return JSON.parse(jsonStr);
+  } catch {}
+
+  // Find outermost JSON object
+  const firstBrace = jsonStr.indexOf('{');
+  const lastBrace = jsonStr.lastIndexOf('}');
+  if (firstBrace !== -1 && lastBrace > firstBrace) {
+    const extracted = jsonStr.substring(firstBrace, lastBrace + 1);
+    try {
+      return JSON.parse(extracted);
+    } catch {
+      // Try repair
+      console.warn('JSON parse failed, attempting repair... (stop=' + stopReason + ')');
+      const repaired = repairTruncatedJSON(jsonStr.substring(firstBrace));
+      if (repaired) {
+        try {
+          const result = JSON.parse(repaired);
+          console.log('JSON repair succeeded, recovered keys:', Object.keys(result).join(', '));
+          return result;
+        } catch {}
+      }
+    }
+  }
+
+  const hint = stopReason === 'max_tokens' ? ' Response was truncated (too long).' : '';
+  throw new Error('Failed to parse AI response.' + hint + ' Please try again.');
+}
+
+// ===== MAIN ANALYSIS FUNCTION =====
 
 // Global abort controller — allows cancellation from outside
 let currentAbortController = null;
@@ -191,249 +341,111 @@ async function analyzeBusiness(url, industry, size, platforms, audience, onProgr
     throw new Error('NOT_LOGGED_IN');
   }
 
-  // Create a new AbortController for this request
   currentAbortController = new AbortController();
   const signal = currentAbortController.signal;
 
-  // Progress updates
-  if (onProgress) onProgress(2, 'Preparing analysis request...', '');
-
-  const prompt = buildAnalysisPrompt(url, industry, size, platforms, audience);
-
-  if (onProgress) onProgress(4, 'Connecting to analysis engine...', '');
-
   try {
-    const response = await fetch(WORKER_URL, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'X-Session-Token': token
-      },
-      body: JSON.stringify({
-        model: CLAUDE_MODEL,
-        max_tokens: 16000,
-        messages: [
-          {
-            role: 'user',
-            content: prompt
-          }
-        ]
-      }),
-      signal: signal
-    });
+    // ===== CALL 1: Core Analysis =====
+    if (onProgress) onProgress(2, 'Preparing analysis...', '');
 
-    if (!response.ok) {
-      let errorMsg = `API error: ${response.status}`;
-      try {
-        const errorText = await response.text();
-        try {
-          const errorData = JSON.parse(errorText);
-          // Handle Anthropic error format: { "type": "error", "error": { "message": "..." } }
-          errorMsg = errorData.error?.message || errorData.error || errorMsg;
-          if (typeof errorMsg === 'object') errorMsg = JSON.stringify(errorMsg);
-        } catch {
-          if (errorText && errorText.length < 500) errorMsg = errorText;
-        }
-      } catch {}
-      if (response.status === 401) {
-        clearSession();
-        throw new Error('SESSION_EXPIRED');
-      }
-      if (response.status === 429) {
-        throw new Error('Rate limited. Please wait a moment and try again.');
-      }
-      console.error('API error response:', response.status, errorMsg);
-      throw new Error(errorMsg);
-    }
+    const prompt1 = buildPromptPart1(url, industry, size, platforms, audience);
 
-    if (onProgress) onProgress(5, 'AI is generating your report...', 'Business Profile');
+    if (onProgress) onProgress(4, 'Connecting to AI — Phase 1 of 2...', '');
 
-    // Simulated progress stages — shown while waiting for the full response
-    const PROGRESS_STAGES = [
-      { pct: 8,  name: 'Business Profile',       label: 'AI is generating your report...' },
-      { pct: 14, name: 'Industry Trends',         label: 'Analysing industry trends...' },
-      { pct: 22, name: 'Viral Post Database',     label: 'Scanning viral content...' },
-      { pct: 32, name: 'Viral Post Database',     label: 'Scanning viral content...' },
-      { pct: 42, name: 'Competitor Analysis',      label: 'Researching competitors...' },
-      { pct: 50, name: 'Content Archetypes',       label: 'Evaluating content archetypes...' },
-      { pct: 56, name: 'Gap Analysis',             label: 'Identifying gaps...' },
-      { pct: 62, name: 'Virality Scorecard',       label: 'Calculating virality score...' },
-      { pct: 70, name: 'Improved Posts',           label: 'Writing improved posts...' },
-      { pct: 76, name: 'Improved Posts',           label: 'Writing improved posts...' },
-      { pct: 82, name: 'KPI Dashboard',            label: 'Building KPI dashboard...' },
-      { pct: 86, name: '90-Day Roadmap',           label: 'Creating 90-day roadmap...' },
-      { pct: 89, name: 'SEO Opportunities',        label: 'Finding SEO opportunities...' },
-      { pct: 91, name: 'AI & LLM Opportunities',   label: 'Discovering AI opportunities...' },
-      { pct: 93, name: 'Finishing up...',           label: 'Almost done...' }
+    // Simulated progress for Call 1 (4% to 48%)
+    const STAGES_1 = [
+      { pct: 8,  name: 'Business Profile',   label: 'Phase 1: Analysing business profile...' },
+      { pct: 14, name: 'Industry Trends',     label: 'Phase 1: Scanning industry trends...' },
+      { pct: 20, name: 'Viral Post Database',  label: 'Phase 1: Finding viral content...' },
+      { pct: 28, name: 'Viral Post Database',  label: 'Phase 1: Analysing viral posts...' },
+      { pct: 34, name: 'Competitor Analysis',   label: 'Phase 1: Researching competitors...' },
+      { pct: 38, name: 'Content Archetypes',    label: 'Phase 1: Evaluating archetypes...' },
+      { pct: 42, name: 'Gap Analysis',          label: 'Phase 1: Identifying gaps...' },
+      { pct: 45, name: 'Virality Scorecard',    label: 'Phase 1: Calculating virality score...' },
     ];
 
-    // Start simulated progress timer (advances every ~5 seconds over ~75 seconds)
-    let simStageIdx = 0;
-    const simInterval = setInterval(() => {
-      if (simStageIdx < PROGRESS_STAGES.length) {
-        const stage = PROGRESS_STAGES[simStageIdx];
-        if (onProgress) onProgress(stage.pct, stage.label, stage.name);
-        simStageIdx++;
+    let stageIdx = 0;
+    const timer1 = setInterval(() => {
+      if (stageIdx < STAGES_1.length) {
+        const s = STAGES_1[stageIdx];
+        if (onProgress) onProgress(s.pct, s.label, s.name);
+        stageIdx++;
       }
     }, 5000);
 
-    // Read the full response (blocks until complete)
-    let fullText = '';
-    let stopReason = null;
-    let deltaCount = 0;
-    let dataLineCount = 0;
-    let sseParseErrors = 0;
-    let sseError = null;
-    let firstFailedData = '';
-    let responseLength = 0;
-
+    let part1Data;
     try {
-      const responseText = await response.text();
-
-      // Stop simulated progress
-      clearInterval(simInterval);
-
-      responseLength = responseText.length;
-      console.log('Response text length:', responseLength);
-      console.log('Response first 300 chars:', responseText.substring(0, 300));
-
-      // Always try SSE parsing first (Worker forces streaming)
-      const lines = responseText.split('\n');
-
-      for (const line of lines) {
-        const trimmed = line.trim();
-        if (trimmed.startsWith('data:')) {
-          dataLineCount++;
-          // Handle both "data: {...}" and "data:{...}" formats
-          const data = trimmed.startsWith('data: ') ? trimmed.slice(6).trim() : trimmed.slice(5).trim();
-          if (data === '[DONE]') continue;
-          try {
-            const event = JSON.parse(data);
-            if (event.type === 'content_block_delta' && event.delta?.type === 'text_delta') {
-              fullText += event.delta.text;
-              deltaCount++;
-            }
-            // Track if response was truncated due to token limit
-            if (event.type === 'message_delta' && event.delta?.stop_reason) {
-              stopReason = event.delta.stop_reason;
-            }
-            // Catch API errors returned within the stream
-            if (event.type === 'error') {
-              sseError = event.error?.message || JSON.stringify(event.error || event);
-            }
-          } catch (e) {
-            sseParseErrors++;
-            if (sseParseErrors === 1) firstFailedData = data.substring(0, 200);
-          }
-        }
-      }
-
-      console.log('SSE: dataLines=' + dataLineCount, 'deltas=' + deltaCount, 'parseErrors=' + sseParseErrors, 'textLen=' + fullText.length, 'stop=' + stopReason, 'sseErr=' + sseError);
-      if (firstFailedData) console.log('First failed data line:', firstFailedData);
-
-      // If the API returned an error event within the stream
-      if (sseError) {
-        throw new Error('AI analysis error: ' + sseError);
-      }
-
-      // If SSE parsing didn't extract anything, try direct JSON (non-streaming fallback)
-      if (!fullText) {
-        console.log('SSE yielded no text, trying direct JSON parse...');
-        try {
-          const jsonResp = JSON.parse(responseText);
-          if (jsonResp.content && Array.isArray(jsonResp.content)) {
-            for (const block of jsonResp.content) {
-              if (block.type === 'text') fullText += block.text;
-            }
-            stopReason = jsonResp.stop_reason || null;
-          }
-          // Note: Don't set fullText to raw responseText — it would be SSE gibberish
-        } catch {
-          // Neither SSE nor JSON worked — response format is unknown
-          console.error('Both SSE and JSON parsing failed');
-          console.error('Response start:', responseText.substring(0, 500));
-        }
-        console.log('Fallback extracted text length:', fullText.length);
-      }
-
-      if (onProgress) onProgress(95, 'Generating report...', 'Processing data');
-    } catch (streamErr) {
-      clearInterval(simInterval);
-      console.error('Stream reading error:', streamErr);
-      throw streamErr.message?.startsWith('AI analysis error') ? streamErr :
-        new Error('Failed to read analysis response. Please try again. (' + streamErr.message + ')');
+      part1Data = await makeApiCall(prompt1, signal, token);
+      clearInterval(timer1);
+    } catch (err) {
+      clearInterval(timer1);
+      throw err;
     }
 
-    const content = fullText;
-    const debugInfo = ' [Debug: respLen=' + responseLength + ' dataLines=' + dataLineCount + ' deltas=' + deltaCount + ' parseErrs=' + sseParseErrors + ' textLen=' + content.length + ' stop=' + stopReason + (firstFailedData ? ' firstFail="' + firstFailedData.substring(0, 80) + '"' : '') + (content ? ' start="' + content.substring(0, 80) + '"' : '') + ']';
-
-    if (!content) {
-      console.error('Empty content after all parsing attempts');
-      throw new Error('Empty response from AI.' + debugInfo);
+    // Validate Part 1
+    if (!part1Data.business || !part1Data.trends) {
+      throw new Error('Incomplete analysis from Phase 1. Please try again.');
     }
 
-    if (onProgress) onProgress(97, 'Processing marketing data...', 'Parsing response');
+    console.log('Part 1 complete. Keys:', Object.keys(part1Data).join(', '));
 
-    // Log raw content for debugging
-    console.log('Raw AI response length:', content.length);
-    console.log('Raw AI response start:', content.substring(0, 300));
-    console.log('Raw AI response end:', content.substring(content.length - 200));
+    // ===== CALL 2: Strategy & Content =====
+    if (onProgress) onProgress(48, 'Phase 1 complete — starting Phase 2...', '');
 
-    // Robust JSON extraction — handles markdown wrapping, truncation, etc.
-    let analysisData;
-    let jsonStr = content.trim();
+    const businessContext = {
+      name: part1Data.business?.name || 'Unknown',
+      score: part1Data.scorecard?.overall || 'N/A'
+    };
+    const prompt2 = buildPromptPart2(url, industry, size, platforms, audience, businessContext);
 
-    // Step 1: Strip markdown code fences if present
-    const fenceMatch = jsonStr.match(/```(?:json)?\s*([\s\S]*?)```/);
-    if (fenceMatch) {
-      jsonStr = fenceMatch[1].trim();
-    }
+    if (onProgress) onProgress(50, 'Connecting to AI — Phase 2 of 2...', '');
 
-    // Step 2: Try direct parse first
+    // Simulated progress for Call 2 (50% to 93%)
+    const STAGES_2 = [
+      { pct: 54, name: 'Improved Posts',        label: 'Phase 2: Writing improved posts...' },
+      { pct: 60, name: 'Improved Posts',        label: 'Phase 2: Crafting post scripts...' },
+      { pct: 66, name: 'KPI Dashboard',         label: 'Phase 2: Building KPI dashboard...' },
+      { pct: 72, name: '90-Day Roadmap',        label: 'Phase 2: Creating 90-day roadmap...' },
+      { pct: 78, name: '90-Day Roadmap',        label: 'Phase 2: Planning action items...' },
+      { pct: 84, name: 'SEO Opportunities',     label: 'Phase 2: Finding SEO opportunities...' },
+      { pct: 88, name: 'AI & LLM Opportunities', label: 'Phase 2: Discovering AI opportunities...' },
+      { pct: 91, name: 'Finishing up...',        label: 'Phase 2: Finalising strategy...' },
+    ];
+
+    let stageIdx2 = 0;
+    const timer2 = setInterval(() => {
+      if (stageIdx2 < STAGES_2.length) {
+        const s = STAGES_2[stageIdx2];
+        if (onProgress) onProgress(s.pct, s.label, s.name);
+        stageIdx2++;
+      }
+    }, 5000);
+
+    let part2Data = {};
     try {
-      analysisData = JSON.parse(jsonStr);
-    } catch {
-      // Step 3: Find the outermost JSON object by locating first { and last }
-      const firstBrace = jsonStr.indexOf('{');
-      const lastBrace = jsonStr.lastIndexOf('}');
-      if (firstBrace !== -1 && lastBrace > firstBrace) {
-        const extracted = jsonStr.substring(firstBrace, lastBrace + 1);
-        try {
-          analysisData = JSON.parse(extracted);
-        } catch (parseErr2) {
-          // Step 4: Try to repair truncated JSON (happens when AI hits token limit)
-          console.warn('Standard JSON parse failed:', parseErr2.message);
-          console.warn('Stop reason was:', stopReason);
-          console.log('Attempting JSON repair on', jsonStr.length, 'chars...');
-          const repaired = repairTruncatedJSON(jsonStr.substring(firstBrace));
-          if (repaired) {
-            try {
-              analysisData = JSON.parse(repaired);
-              console.log('JSON repair succeeded! Recovered', Object.keys(analysisData).length, 'top-level keys');
-            } catch (repairErr) {
-              console.error('JSON repair also failed:', repairErr.message);
-              console.error('Content end (last 500 chars):', content.substring(content.length - 500));
-              const hint = stopReason === 'max_tokens' ? ' The AI response was cut off (too long).' : '';
-              throw new Error('Failed to parse analysis data.' + hint + debugInfo);
-            }
-          } else {
-            console.error('JSON repair returned null. Content end:', content.substring(content.length - 500));
-            throw new Error('Failed to parse analysis data.' + debugInfo);
-          }
-        }
-      } else {
-        console.error('No JSON object found. Content length:', content.length);
-        console.error('Content start:', content.substring(0, 500));
-        throw new Error('No JSON found in AI response.' + debugInfo);
-      }
+      part2Data = await makeApiCall(prompt2, signal, token);
+      clearInterval(timer2);
+      console.log('Part 2 complete. Keys:', Object.keys(part2Data).join(', '));
+    } catch (err) {
+      clearInterval(timer2);
+      // Graceful degradation: if Part 2 fails, return partial data from Part 1
+      console.warn('Part 2 failed, returning partial data:', err.message);
+      part1Data._meta = {
+        analyzedAt: new Date().toISOString(),
+        url: url,
+        industry: industry,
+        model: CLAUDE_MODEL,
+        partial: true,
+        partialReason: err.message
+      };
+      if (onProgress) onProgress(100, 'Analysis partially complete', '');
+      return part1Data;
     }
 
-    if (onProgress) onProgress(98, 'Finalizing report...', 'Validating data');
+    // ===== MERGE RESULTS =====
+    if (onProgress) onProgress(95, 'Merging analysis data...', 'Processing');
 
-    // Validate essential fields
-    if (!analysisData.business || !analysisData.trends) {
-      throw new Error('Incomplete analysis data received. Please try again.');
-    }
+    const analysisData = { ...part1Data, ...part2Data };
 
     // Add metadata
     analysisData._meta = {
@@ -442,6 +454,8 @@ async function analyzeBusiness(url, industry, size, platforms, audience, onProgr
       industry: industry,
       model: CLAUDE_MODEL
     };
+
+    if (onProgress) onProgress(98, 'Finalising report...', 'Validating data');
 
     if (onProgress) onProgress(100, 'Analysis complete!', '');
 
@@ -460,7 +474,8 @@ async function analyzeBusiness(url, industry, size, platforms, audience, onProgr
   }
 }
 
-// Save/load analyses from localStorage
+// ===== Save/load analyses from localStorage =====
+
 function saveAnalysis(data) {
   const saved = getSavedAnalyses();
   const key = data.business?.url || data._meta?.url || 'unknown';

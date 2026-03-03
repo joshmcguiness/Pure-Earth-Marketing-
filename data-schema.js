@@ -187,8 +187,10 @@ const DATA_SCHEMA = {
   ]
 };
 
-// Schema description string for the Claude API prompt
-const SCHEMA_PROMPT = `Return a JSON object with this exact structure:
+// Schema prompts split into two parts to stay within token limits
+
+// Part 1: Core Analysis (business, trends, viral posts, competitors, archetypes, gap analysis, scorecard)
+const SCHEMA_PROMPT_PART1 = `Return a JSON object with this exact structure:
 {
   "business": { "name": string, "url": string, "industry": string, "description": string, "tagline": string },
   "trends": [8 objects - 4 with timeframe "day", 4 with timeframe "week". Each: { "title": string, "status": "TRENDING NOW"|"RISING"|"EMERGING"|"TRENDING", "tier": "hot"|"warm"|"", "timeframe": "day"|"week", "platforms": ["tiktok","instagram","facebook","linkedin"], "description": string, "views": {"global":string,"australia":string,"asia":string,"europe":string,"africa":string,"usa":string,"canada":string,"south-america":string}, "growth": string like "+340%", "relevance": number 0-100, "detailMetrics": [{"platform":string,"value":string,"label":string}], "searchLinks": [{"platform":"tiktok"|"instagram"|"google"|"linkedin"|"facebook","url":string,"label":string}] }],
@@ -196,7 +198,12 @@ const SCHEMA_PROMPT = `Return a JSON object with this exact structure:
   "competitors": { "products": [3-5 products. Each: {"name":string,"price":string,"id":string (lowercase no spaces),"competitors":[4 objects. Each: {"name":string,"type":string,"metrics":[{"label":string,"pe":string,"comp":string}],"strengths":[string],"businessWins":[string],"action":string}]}] },
   "archetypes": [8 objects. Each: {"number":1-8,"title":string,"description":string,"usage":number 0-100,"usageLabel":"Absent"|"Very Low"|"Low"|"Medium"|"High","status":string,"statusType":"underused"|"balanced"|"critical"}],
   "gapAnalysis": { "missingTriggers": [{"name":string,"detail":string}], "overusedArchetypes": [{"name":string,"detail":string}], "underusedArchetypes": [{"name":string,"detail":string}], "platformReach": [{"platform":string,"level":"LOW"|"MODERATE"|"HIGH"|"ABSENT","detail":string}] },
-  "scorecard": { "overall": number 0-100, "assessment": string, "assessmentDetail": string, "categories": [8 objects: {"name":string,"score":number 0-100,"description":string}], "benchmarks": [{"metric":string,"business":string,"average":string,"topPerformer":string,"gap":"Severe"|"Moderate"|"Slight"|"No Data"}] },
+  "scorecard": { "overall": number 0-100, "assessment": string, "assessmentDetail": string, "categories": [8 objects: {"name":string,"score":number 0-100,"description":string}], "benchmarks": [{"metric":string,"business":string,"average":string,"topPerformer":string,"gap":"Severe"|"Moderate"|"Slight"|"No Data"}] }
+}`;
+
+// Part 2: Strategy & Content (improved posts, KPI, roadmap, SEO, LLM opportunities)
+const SCHEMA_PROMPT_PART2 = `Return a JSON object with this exact structure:
+{
   "improvedPosts": { "tiktok": [5], "instagram": [5], "facebook": [5], "linkedin": [5]. Each: {"number":1-5,"title":string,"archetype":string,"script":{"hook":string,"body":string,"reveal":string,"cta":string},"triggers":[string]} },
   "kpi": { "recentPerformance": [5-9 rows: {"week":number,"date":string,"description":string,"platform":string,"type":string,"reach":string,"likes":string,"comments":string,"saves":string,"shares":string,"engRate":string,"trend":string,"trendType":"positive"|"negative"|"neutral"}], "targets": {"tiktok":[{"month":1,"target":string},{"month":2,"target":string},{"month":3,"target":string}],"instagram":[same],"facebook":[same],"linkedin":[same]}, "formulas": [{"name":string,"formula":string,"target":string}] },
   "roadmap": { "phases": [3 phases: {"title":string,"subtitle":string,"weeks":[{"label":string,"items":[string]}],"successMetrics":[string]}], "recommendations": [8: {"rank":1-8,"title":string,"description":string,"impact":"HIGHEST IMPACT"|"HIGH IMPACT"|"MEDIUM IMPACT"}] },
