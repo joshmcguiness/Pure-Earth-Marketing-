@@ -444,58 +444,149 @@ function renderDashboard(data) {
   renderLLM(data.llmOpportunities);
 }
 
-// ===== PDF EXPORT =====
+// ===================================================================
+// PDF EXPORT — Premium Agency-Quality Report
+// ===================================================================
 function exportToPDF(data) {
   try {
-    const { jsPDF } = window.jspdf;
-    if (!jsPDF) {
+    var jsPDFLib = window.jspdf;
+    if (!jsPDFLib || !jsPDFLib.jsPDF) {
       alert('PDF library not loaded. Please try again.');
       return;
     }
+    var jsPDF = jsPDFLib.jsPDF;
+    var doc = new jsPDF('p', 'mm', 'a4');
+    var pw = 210, ph = 297, m = 15, cw = pw - m * 2;
+    var y = 20;
 
-    // Safe string helper — ensures doc.text() always receives a valid string
+    // Safe string — strips non-ASCII for Helvetica compatibility
     function s(val) {
       if (val == null) return '';
-      return String(val).replace(/[^\x20-\x7E\n\r\t]/g, ' ');
+      return String(val).replace(/[^\x20-\x7E\n\r\t]/g, ' ').trim();
     }
 
-    const doc = new jsPDF('p', 'mm', 'a4');
-    const pw = 210; // page width
-    const ph = 297; // page height
-    const m = 18;   // margin
-    const cw = pw - m * 2; // content width
-    let y = 20;
+    // === COLOR PALETTE ===
+    var C = {
+      charcoal: [18, 18, 18],
+      charcoalLight: [38, 38, 42],
+      forest: [89, 102, 85],
+      forestDark: [55, 65, 52],
+      gold: [184, 151, 106],
+      goldLight: [210, 185, 145],
+      sand: [232, 226, 216],
+      cream: [246, 244, 240],
+      white: [255, 255, 255],
+      black: [30, 30, 30],
+      grey: [120, 120, 120],
+      greyLight: [195, 195, 195],
+      success: [75, 140, 94],
+      warning: [196, 150, 75],
+      error: [180, 60, 50],
+      link: [30, 90, 160],
+      tiktok: [0, 0, 0],
+      instagram: [193, 53, 132],
+      facebook: [24, 119, 242],
+      linkedin: [10, 102, 194]
+    };
 
-    // Color palette
-    const green = [89, 102, 85];
-    const darkGreen = [55, 65, 52];
-    const white = [255, 255, 255];
-    const black = [30, 30, 30];
-    const grey = [100, 100, 100];
-    const lightGrey = [230, 230, 230];
-    const veryLightGrey = [245, 245, 245];
+    var tocEntries = [];
+    var tocPageNum = 2;
 
-    // TOC entries collected during rendering
-    const tocEntries = [];
-    const tocPageNum = 2; // TOC is always page 2
+    // === HELPER FUNCTIONS ===
+    function newPage() { doc.addPage(); y = 22; }
+    function checkSpace(needed) { if (y + needed > 275) newPage(); }
+    function setC(c) { doc.setTextColor(c[0], c[1], c[2]); }
+    function setF(c) { doc.setFillColor(c[0], c[1], c[2]); }
+    function setD(c) { doc.setDrawColor(c[0], c[1], c[2]); }
 
-    // --- Helpers ---
-    function newPage() { doc.addPage(); y = 25; }
-    function checkSpace(needed) { if (y + needed > 272) newPage(); }
+    // Rounded card
+    function card(x, yy, w, h, opts) {
+      opts = opts || {};
+      var r = opts.r || 3;
+      if (opts.fill && opts.stroke) {
+        setF(opts.fill); setD(opts.stroke);
+        doc.setLineWidth(opts.lw || 0.3);
+        doc.roundedRect(x, yy, w, h, r, r, 'FD');
+      } else if (opts.fill) {
+        setF(opts.fill);
+        doc.roundedRect(x, yy, w, h, r, r, 'F');
+      } else if (opts.stroke) {
+        setD(opts.stroke);
+        doc.setLineWidth(opts.lw || 0.3);
+        doc.roundedRect(x, yy, w, h, r, r, 'S');
+      }
+    }
 
-    function setColor(rgb) { doc.setTextColor(rgb[0], rgb[1], rgb[2]); }
-    function setFill(rgb) { doc.setFillColor(rgb[0], rgb[1], rgb[2]); }
-
-    function heading(text) {
-      checkSpace(18);
-      setFill(green);
-      doc.rect(m, y - 1, cw, 10, 'F');
-      doc.setFontSize(13);
+    // Pill badge — returns width
+    function badge(text, x, yy, bg, fg) {
+      doc.setFontSize(6.5);
       doc.setFont('helvetica', 'bold');
-      setColor(white);
-      doc.text(s(text), m + 4, y + 6);
-      y += 14;
-      setColor(black);
+      var tw = doc.getTextWidth(s(text)) + 6;
+      setF(bg || C.forest);
+      doc.roundedRect(x, yy, tw, 5, 2.5, 2.5, 'F');
+      setC(fg || C.white);
+      doc.text(s(text), x + 3, yy + 3.5);
+      return tw;
+    }
+
+    // Score gauge (ring)
+    function scoreGauge(cx, cy, radius, score, max, lbl) {
+      var sc = Number(score) || 0;
+      var mx = Number(max) || 100;
+      var pct = Math.min(sc / mx, 1);
+      var ringCol = pct >= 0.7 ? C.success : pct >= 0.4 ? C.warning : C.error;
+      setF(ringCol);
+      doc.circle(cx, cy, radius, 'F');
+      setF(C.charcoal);
+      doc.circle(cx, cy, radius * 0.7, 'F');
+      doc.setFontSize(radius > 15 ? 20 : 13);
+      doc.setFont('helvetica', 'bold');
+      setC(C.white);
+      doc.text(String(sc), cx, cy + (radius > 15 ? 2 : 1), { align: 'center' });
+      doc.setFontSize(6.5);
+      doc.setFont('helvetica', 'normal');
+      setC(C.greyLight);
+      doc.text('/' + mx, cx, cy + (radius > 15 ? 7 : 4.5), { align: 'center' });
+      if (lbl) {
+        doc.setFontSize(6.5);
+        doc.setFont('helvetica', 'bold');
+        setC(C.gold);
+        doc.text(s(lbl), cx, cy + radius + 5, { align: 'center' });
+      }
+    }
+
+    // Rounded progress bar
+    function scoreBarRounded(x, yy, w, score, max, color) {
+      var sc = Number(score) || 0;
+      var mx = Number(max) || 100;
+      var fillW = Math.max(2, Math.min((sc / mx) * w, w));
+      if (!isFinite(fillW)) fillW = 2;
+      setF(C.sand);
+      doc.roundedRect(x, yy, w, 3.5, 1.8, 1.8, 'F');
+      setF(color || C.forest);
+      doc.roundedRect(x, yy, fillW, 3.5, 1.8, 1.8, 'F');
+    }
+
+    // Gold accent bar
+    function accentBar(x, yy, w, color) {
+      setF(color || C.gold);
+      doc.rect(x, yy, w, 1.2, 'F');
+    }
+
+    // Section heading with gold accent
+    function heading(text) {
+      checkSpace(16);
+      accentBar(m, y, 40, C.gold);
+      y += 5;
+      doc.setFontSize(15);
+      doc.setFont('helvetica', 'bold');
+      setC(C.charcoal);
+      doc.text(s(text), m, y);
+      y += 3;
+      setD(C.sand);
+      doc.setLineWidth(0.3);
+      doc.line(m, y, pw - m, y);
+      y += 6;
     }
 
     function sectionStart(title) {
@@ -508,10 +599,9 @@ function exportToPDF(data) {
       checkSpace(10);
       doc.setFontSize(11);
       doc.setFont('helvetica', 'bold');
-      setColor(darkGreen);
+      setC(C.forest);
       doc.text(s(text), m, y);
       y += 6;
-      setColor(black);
     }
 
     function txt(text, indent) {
@@ -519,8 +609,8 @@ function exportToPDF(data) {
       checkSpace(6);
       doc.setFontSize(9);
       doc.setFont('helvetica', 'normal');
-      setColor(grey);
-      const lines = doc.splitTextToSize(s(text), cw - (indent || 0));
+      setC(C.grey);
+      var lines = doc.splitTextToSize(s(text), cw - (indent || 0));
       lines.forEach(function(line) {
         checkSpace(4.5);
         doc.text(s(line), m + (indent || 0), y);
@@ -533,279 +623,545 @@ function exportToPDF(data) {
       checkSpace(6);
       doc.setFontSize(9);
       doc.setFont('helvetica', 'bold');
-      setColor(black);
+      setC(C.charcoal);
       doc.text(s(lbl), m + (indent || 0), y);
       var lblW = doc.getTextWidth(s(lbl));
       doc.setFont('helvetica', 'normal');
-      setColor(grey);
+      setC(C.grey);
       doc.text(s(val || 'N/A'), m + (indent || 0) + lblW + 2, y);
       y += 5;
     }
 
-    function scoreBar(x, yPos, width, score, max) {
-      var sc = Number(score) || 0;
-      var mx = Number(max) || 100;
-      setFill(lightGrey);
-      doc.rect(x, yPos, width, 4, 'F');
-      var fillW = Math.max(1, (sc / mx) * width);
-      if (!isFinite(fillW)) fillW = 1;
-      setFill(green);
-      doc.rect(x, yPos, fillW, 4, 'F');
+    // Clickable hyperlink (blue, underlined)
+    function addLink(text, url, x, yy) {
+      if (!url) return 0;
+      doc.setFontSize(8.5);
+      doc.setFont('helvetica', 'normal');
+      setC(C.link);
+      var lt = s(text || url);
+      doc.text(lt, x, yy);
+      var tw = doc.getTextWidth(lt);
+      doc.setLineWidth(0.15);
+      setD(C.link);
+      doc.line(x, yy + 0.5, x + tw, yy + 0.5);
+      doc.link(x, yy - 3, tw + 2, 5, { url: s(url) });
+      setC(C.black);
+      return tw;
+    }
+
+    // Professional table
+    function drawTable(headers, rows, colWidths, opts) {
+      opts = opts || {};
+      var startX = opts.x || m;
+      var totalW = 0;
+      colWidths.forEach(function(w) { totalW += w; });
+      checkSpace(10);
+      setF(opts.headerBg || C.charcoal);
+      doc.roundedRect(startX, y - 1, totalW, 7, 2, 2, 'F');
+      doc.setFontSize(7);
+      doc.setFont('helvetica', 'bold');
+      setC(opts.headerFg || C.white);
+      var tx = startX;
+      headers.forEach(function(h, i) {
+        doc.text(s(h), tx + 2, y + 3.5);
+        tx += colWidths[i];
+      });
+      y += 8;
+      rows.forEach(function(row, idx) {
+        checkSpace(7);
+        if (idx % 2 === 0) {
+          setF(C.cream);
+          doc.rect(startX, y - 1, totalW, 6.5, 'F');
+        }
+        doc.setFontSize(7);
+        doc.setFont('helvetica', 'normal');
+        setC(C.black);
+        tx = startX;
+        row.forEach(function(v, i) {
+          var maxChars = Math.floor(colWidths[i] / 1.8);
+          doc.text(s(v).substring(0, maxChars), tx + 2, y + 3.5);
+          tx += colWidths[i];
+        });
+        y += 6.5;
+      });
+      y += 3;
+    }
+
+    // Platform color lookup
+    function platColor(name) {
+      var n = (name || '').toLowerCase();
+      if (n.indexOf('tiktok') >= 0) return C.tiktok;
+      if (n.indexOf('instagram') >= 0) return C.instagram;
+      if (n.indexOf('facebook') >= 0) return C.facebook;
+      if (n.indexOf('linkedin') >= 0) return C.linkedin;
+      return C.forest;
     }
 
     function sep() {
       y += 2;
-      doc.setDrawColor(210, 210, 210);
+      setD(C.sand);
+      doc.setLineWidth(0.3);
       doc.line(m, y, pw - m, y);
       y += 4;
     }
 
-    // Clickable link — uses doc.text + doc.link for maximum compatibility
-    function addLink(text, url, x, yPos) {
-      doc.setFontSize(9);
-      doc.setFont('helvetica', 'normal');
-      doc.setTextColor(30, 90, 160);
-      var linkText = s(text);
-      doc.text(linkText, x, yPos);
-      var textW = doc.getTextWidth(linkText);
-      doc.link(x, yPos - 4, textW + 2, 6, { url: s(url) });
-      doc.setTextColor(30, 30, 30);
-    }
-
-    // ===== PAGE 1: COVER =====
-    // Full green background
-    setFill(green);
+    // ============================================================
+    // PAGE 1: PREMIUM COVER
+    // ============================================================
+    setF(C.charcoal);
     doc.rect(0, 0, pw, ph, 'F');
 
-    // Accent bar
-    setFill(darkGreen);
-    doc.rect(0, 0, pw, 8, 'F');
+    // Gold accent bar at very top
+    setF(C.gold);
+    doc.rect(0, 0, pw, 3, 'F');
+
+    // Forest overlay on lower third
+    setF(C.forestDark);
+    doc.rect(0, ph * 0.64, pw, ph * 0.36, 'F');
+    setF(C.gold);
+    doc.rect(0, ph * 0.64 - 0.8, pw, 1.2, 'F');
 
     // Title block
-    setColor(white);
-    doc.setFontSize(32);
+    setC(C.white);
+    doc.setFontSize(38);
     doc.setFont('helvetica', 'bold');
-    doc.text('Marketing', m, 80);
-    doc.text('Effectiveness', m, 95);
-    doc.text('Report', m, 110);
+    doc.text('MARKETING', m + 2, 72);
+    setC(C.gold);
+    doc.setFontSize(30);
+    doc.text('EFFECTIVENESS', m + 2, 88);
+    setC(C.white);
+    doc.setFontSize(30);
+    doc.text('REPORT', m + 2, 103);
 
-    // Separator line
-    doc.setDrawColor(255, 255, 255);
-    doc.setLineWidth(0.5);
-    doc.line(m, 120, m + 60, 120);
-    doc.setLineWidth(0.2);
+    // Gold rule
+    setF(C.gold);
+    doc.rect(m + 2, 111, 55, 1, 'F');
 
     // Business name
-    doc.setFontSize(20);
+    doc.setFontSize(18);
     doc.setFont('helvetica', 'normal');
-    doc.text(s(data.business?.name || 'Business Analysis'), m, 135);
+    setC(C.white);
+    doc.text(s(data.business?.name || 'Business Analysis'), m + 2, 126);
 
-    // Details
-    doc.setFontSize(11);
+    // Date
+    doc.setFontSize(10);
+    setC(C.greyLight);
     var dateStr = new Date().toLocaleDateString('en-AU', { year: 'numeric', month: 'long', day: 'numeric' });
-    doc.text(dateStr, m, 150);
+    doc.text(dateStr, m + 2, 136);
+
+    // Industry badge
     if (data.business?.industry) {
-      doc.text(s('Industry: ' + data.business.industry), m, 160);
-    }
-    if (data.business?.url) {
-      doc.text(s(data.business.url), m, 170);
+      badge(s(data.business.industry).toUpperCase(), m + 2, 141, C.gold, C.charcoal);
     }
 
-    // Score badge
+    // Clickable URL
+    if (data.business?.url) {
+      doc.setFontSize(9);
+      setC([180, 200, 220]);
+      doc.text(s(data.business.url), m + 2, 155);
+      doc.link(m + 2, 152, doc.getTextWidth(s(data.business.url)) + 4, 6, { url: s(data.business.url) });
+    }
+
+    // Tagline
+    if (data.business?.tagline) {
+      doc.setFontSize(9);
+      doc.setFont('helvetica', 'italic');
+      setC(C.greyLight);
+      doc.text(s(data.business.tagline), m + 2, 165);
+    }
+
+    // Score gauge on right
     if (data.scorecard?.overall != null) {
-      var coverScore = data.scorecard.overall;
-      setFill(darkGreen);
-      doc.rect(pw - m - 50, 75, 50, 50, 'F');
-      setColor(white);
-      doc.setFontSize(28);
+      var cvScore = Number(data.scorecard.overall) || 0;
+      var cvPct = cvScore / 100;
+      var cvRingCol = cvPct >= 0.7 ? C.success : cvPct >= 0.4 ? C.warning : C.error;
+      var gcx = pw - m - 28, gcy = 90;
+      setF(cvRingCol);
+      doc.circle(gcx, gcy, 24, 'F');
+      setF(C.charcoal);
+      doc.circle(gcx, gcy, 17, 'F');
+      doc.setFontSize(26);
       doc.setFont('helvetica', 'bold');
-      doc.text(s(coverScore), pw - m - 25, 100, { align: 'center' });
-      doc.setFontSize(9);
+      setC(C.white);
+      doc.text(String(cvScore), gcx, gcy + 3, { align: 'center' });
+      doc.setFontSize(8);
       doc.setFont('helvetica', 'normal');
-      doc.text('VIRALITY', pw - m - 25, 110, { align: 'center' });
-      doc.text('SCORE', pw - m - 25, 116, { align: 'center' });
-    }
-
-    // Footer on cover
-    doc.setFontSize(9);
-    setColor([200, 210, 200]);
-    doc.text('AI-Powered Marketing Analysis', m, ph - 20);
-
-    // ===== PAGE 2: TABLE OF CONTENTS (placeholder — filled in second pass) =====
-    newPage();
-    // We'll fill this in after rendering all content
-
-    // ===== CONTENT SECTIONS =====
-
-    // --- Business Overview ---
-    sectionStart('Business Overview');
-    label('Business: ', data.business?.name || 'N/A');
-    if (data.business?.url) {
-      checkSpace(6);
-      doc.setFontSize(9);
+      setC(C.greyLight);
+      doc.text('/100', gcx, gcy + 9, { align: 'center' });
+      doc.setFontSize(7);
       doc.setFont('helvetica', 'bold');
-      setColor(black);
-      doc.text('Website: ', m, y);
-      addLink(data.business.url, data.business.url, m + doc.getTextWidth('Website: ') + 2, y);
-      y += 5;
+      setC(C.gold);
+      doc.text('VIRALITY SCORE', gcx, gcy + 30, { align: 'center' });
     }
-    label('Industry: ', data.business?.industry || 'N/A');
-    label('Tagline: ', data.business?.tagline || '');
-    y += 2;
-    txt(data.business?.description || '');
 
-    // --- Virality Scorecard ---
+    // Cover footer
+    doc.setFontSize(8);
+    doc.setFont('helvetica', 'normal');
+    setC([140, 155, 140]);
+    doc.text('AI-Powered Marketing Intelligence Report', m + 2, ph - 18);
+    doc.setFontSize(7);
+    setC([100, 115, 100]);
+    doc.text('CONFIDENTIAL', m + 2, ph - 12);
+
+    // ============================================================
+    // PAGE 2: TABLE OF CONTENTS (placeholder — filled second pass)
+    // ============================================================
+    newPage();
+
+    // ============================================================
+    // PAGE 3: EXECUTIVE SUMMARY (NEW)
+    // ============================================================
+    sectionStart('Executive Summary');
+
+    // Count metrics
+    var platCount = 0;
+    ['tiktok', 'instagram', 'facebook', 'linkedin'].forEach(function(p) {
+      if (data.viralPosts && data.viralPosts[p] && data.viralPosts[p].length) platCount++;
+    });
+    var compCount = 0;
+    (data.competitors?.products || []).forEach(function(p) {
+      compCount += (p.competitors || []).length;
+    });
+
+    // 4 metric cards
+    var metricData = [
+      { val: s(data.scorecard?.overall || '--'), lbl: 'Overall Score', color: C.forest },
+      { val: String((data.trends || []).length), lbl: 'Trends Tracked', color: C.gold },
+      { val: String(platCount), lbl: 'Platforms', color: C.instagram },
+      { val: String(compCount), lbl: 'Competitors', color: C.error }
+    ];
+    var cardW = (cw - 12) / 4;
+    metricData.forEach(function(met, i) {
+      var cx = m + i * (cardW + 4);
+      card(cx, y, cardW, 22, { fill: C.cream, stroke: C.sand });
+      setF(met.color);
+      doc.roundedRect(cx, y, cardW, 3, 3, 3, 'F');
+      setF(C.cream);
+      doc.rect(cx + 0.5, y + 2, cardW - 1, 2, 'F');
+      doc.setFontSize(18);
+      doc.setFont('helvetica', 'bold');
+      setC(C.charcoal);
+      doc.text(s(met.val), cx + cardW / 2, y + 13, { align: 'center' });
+      doc.setFontSize(7);
+      doc.setFont('helvetica', 'normal');
+      setC(C.grey);
+      doc.text(s(met.lbl), cx + cardW / 2, y + 19, { align: 'center' });
+    });
+    y += 28;
+
+    // Assessment card
+    if (data.scorecard?.assessment) {
+      checkSpace(26);
+      card(m, y, cw, 22, { fill: C.sand, r: 3 });
+      setF(C.gold);
+      doc.rect(m, y + 2, 2.5, 18, 'F');
+      doc.setFontSize(11);
+      doc.setFont('helvetica', 'bold');
+      setC(C.charcoal);
+      doc.text('Assessment: ' + s(data.scorecard.assessment), m + 8, y + 8);
+      doc.setFontSize(8);
+      doc.setFont('helvetica', 'normal');
+      setC(C.grey);
+      var aLines = doc.splitTextToSize(s(data.scorecard.assessmentDetail || ''), cw - 14);
+      aLines.slice(0, 3).forEach(function(l, i) {
+        doc.text(s(l), m + 8, y + 14 + i * 3.8);
+      });
+      y += 28;
+    }
+
+    // 2-column: categories left, recommendations right
+    checkSpace(55);
+    var colHalf = (cw - 8) / 2;
+    var leftX = m, rightX = m + colHalf + 8;
+    var colStartY = y;
+
+    // Left: category scores
+    doc.setFontSize(9);
+    doc.setFont('helvetica', 'bold');
+    setC(C.forest);
+    doc.text('TOP CATEGORY SCORES', leftX, y);
+    y += 6;
+    var cats = (data.scorecard?.categories || []).slice(0, 5);
+    cats.forEach(function(c) {
+      doc.setFontSize(8);
+      doc.setFont('helvetica', 'normal');
+      setC(C.charcoal);
+      doc.text(s(c.name), leftX + 2, y);
+      doc.text(s(c.score) + '/100', leftX + colHalf - 18, y);
+      y += 2;
+      scoreBarRounded(leftX + 2, y, colHalf - 24, c.score, 100, C.forest);
+      y += 7;
+    });
+
+    // Right: recommendations
+    var ry = colStartY;
+    doc.setFontSize(9);
+    doc.setFont('helvetica', 'bold');
+    setC(C.gold);
+    doc.text('PRIORITY RECOMMENDATIONS', rightX, ry);
+    ry += 6;
+    var recs = (data.roadmap?.recommendations || []).slice(0, 4);
+    recs.forEach(function(r, i) {
+      doc.setFontSize(8);
+      doc.setFont('helvetica', 'bold');
+      setC(C.charcoal);
+      doc.text(s((i + 1) + '. ' + (r.title || '')), rightX + 2, ry);
+      ry += 3.5;
+      doc.setFont('helvetica', 'normal');
+      setC(C.grey);
+      var rLines = doc.splitTextToSize(s(r.description || ''), colHalf - 6);
+      rLines.slice(0, 2).forEach(function(l) {
+        doc.text(s(l), rightX + 4, ry);
+        ry += 3.5;
+      });
+      ry += 3;
+    });
+    y = Math.max(y, ry) + 5;
+
+    // Business description
+    if (data.business?.description) {
+      checkSpace(15);
+      sub('About the Business');
+      txt(data.business.description, 2);
+    }
+    if (data.business?.url) {
+      addLink(data.business.url, data.business.url, m + 2, y);
+      y += 6;
+    }
+
+    // ============================================================
+    // VIRALITY SCORECARD
+    // ============================================================
     if (data.scorecard) {
       sectionStart('Virality Scorecard');
 
-      // Score hero
-      checkSpace(30);
-      setFill(veryLightGrey);
-      doc.rect(m, y, cw, 22, 'F');
-      doc.setFontSize(22);
+      // Hero block
+      checkSpace(38);
+      card(m, y, cw, 34, { fill: C.cream, stroke: C.sand });
+      scoreGauge(m + 28, y + 17, 14, data.scorecard.overall, 100, null);
+      doc.setFontSize(12);
       doc.setFont('helvetica', 'bold');
-      setColor(green);
-      doc.text(s(data.scorecard.overall) + '/100', m + 6, y + 12);
-      doc.setFontSize(10);
-      doc.setFont('helvetica', 'normal');
-      setColor(black);
-      doc.text(s(data.scorecard.assessment), m + 50, y + 10);
+      setC(C.charcoal);
+      doc.text(s(data.scorecard.assessment || ''), m + 52, y + 10);
       doc.setFontSize(8);
-      setColor(grey);
-      var assessLines = doc.splitTextToSize(s(data.scorecard.assessmentDetail), cw - 58);
-      assessLines.slice(0, 2).forEach(function(l, i) {
-        doc.text(s(l), m + 50, y + 16 + i * 3.5);
+      doc.setFont('helvetica', 'normal');
+      setC(C.grey);
+      var heroLines = doc.splitTextToSize(s(data.scorecard.assessmentDetail || ''), cw - 60);
+      heroLines.slice(0, 4).forEach(function(l, i) {
+        doc.text(s(l), m + 52, y + 16 + i * 3.8);
       });
-      y += 28;
+      y += 40;
 
-      // Category scores
+      // Category cards
       (data.scorecard.categories || []).forEach(function(c) {
-        checkSpace(14);
+        checkSpace(18);
+        card(m, y, cw, 14, { fill: C.cream, r: 2 });
         doc.setFontSize(9);
         doc.setFont('helvetica', 'bold');
-        setColor(black);
-        doc.text(s(c.name), m, y);
+        setC(C.charcoal);
+        doc.text(s(c.name), m + 4, y + 5);
+        doc.text(s(c.score) + '/100', m + cw - 22, y + 5);
+        scoreBarRounded(m + 4, y + 8, cw - 30, c.score, 100, C.forest);
+        doc.setFontSize(7);
         doc.setFont('helvetica', 'normal');
-        doc.text(s(c.score) + '/100', m + cw - 15, y);
-        y += 2;
-        scoreBar(m, y, cw - 20, c.score, 100);
-        y += 5;
-        doc.setFontSize(7.5);
-        setColor(grey);
-        var descLines = doc.splitTextToSize(s(c.description), cw - 5);
-        descLines.slice(0, 2).forEach(function(l) { doc.text(s(l), m + 2, y); y += 3.2; });
-        y += 3;
+        setC(C.grey);
+        doc.text(s(c.description || '').substring(0, 95), m + 4, y + 13);
+        y += 16;
       });
 
-      // Benchmarks table
+      // Benchmarks
       if (data.scorecard.benchmarks?.length) {
-        checkSpace(20);
         y += 4;
         sub('Industry Benchmarks');
-        var bmHeaders = ['Metric', 'You', 'Average', 'Top Performer', 'Gap'];
-        var bmColW = [40, 28, 30, 42, 30];
-        var tx = m;
-        // Header row
-        setFill([70, 80, 68]);
-        doc.rect(m, y - 1, cw, 7, 'F');
-        doc.setFontSize(8);
-        doc.setFont('helvetica', 'bold');
-        setColor(white);
-        bmHeaders.forEach(function(h, i) { doc.text(h, tx + 2, y + 4); tx += bmColW[i]; });
-        y += 8;
-        // Data rows
-        data.scorecard.benchmarks.forEach(function(b, idx) {
-          checkSpace(8);
-          if (idx % 2 === 0) { setFill(veryLightGrey); doc.rect(m, y - 1, cw, 7, 'F'); }
-          doc.setFontSize(8);
-          doc.setFont('helvetica', 'normal');
-          setColor(black);
-          tx = m;
-          [b.metric, b.business, b.average, b.topPerformer, b.gap].forEach(function(v, i) {
-            doc.text(s(v).substring(0, 25), tx + 2, y + 4);
-            tx += bmColW[i];
-          });
-          y += 7;
+        var bmH = ['Metric', 'You', 'Average', 'Top Performer', 'Gap'];
+        var bmW = [40, 28, 30, 45, 30];
+        var bmRows = data.scorecard.benchmarks.map(function(b) {
+          return [b.metric, b.business, b.average, b.topPerformer, b.gap];
         });
-        y += 4;
+        drawTable(bmH, bmRows, bmW, { headerBg: C.forest });
       }
     }
 
-    // --- Current Trends ---
+    // ============================================================
+    // CURRENT INDUSTRY TRENDS
+    // ============================================================
     if (data.trends?.length) {
       sectionStart('Current Industry Trends');
-      data.trends.forEach(function(t, idx) {
-        checkSpace(22);
-        // Card background
-        setFill(idx % 2 === 0 ? veryLightGrey : white);
-        doc.rect(m, y - 1, cw, 18, 'F');
+      data.trends.forEach(function(t) {
+        checkSpace(35);
+        card(m, y, cw, 28, { fill: C.cream, stroke: C.sand, r: 3 });
+
         // Status badge
-        doc.setFontSize(7);
-        doc.setFont('helvetica', 'bold');
-        setFill(t.tier === 'hot' ? [180, 60, 40] : green);
-        var badgeW = doc.getTextWidth(s(t.status || 'TREND')) + 6;
-        doc.rect(m + 2, y, badgeW, 5, 'F');
-        setColor(white);
-        doc.text(s(t.status), m + 5, y + 3.5);
+        var badgeBg = (s(t.tier)).toLowerCase() === 'hot' ? C.error : C.warning;
+        badge(s(t.status || 'TREND'), m + 4, y + 3, badgeBg, C.white);
+
         // Title
-        doc.setFontSize(10);
+        doc.setFontSize(11);
         doc.setFont('helvetica', 'bold');
-        setColor(black);
-        doc.text(s(t.title), m + 2, y + 10);
-        // Stats
+        setC(C.charcoal);
+        doc.text(s(t.title), m + 4, y + 13);
+
+        // Growth + relevance
         doc.setFontSize(8);
         doc.setFont('helvetica', 'normal');
-        setColor(grey);
-        doc.text(s('Growth: ' + (t.growth || '') + ' | Relevance: ' + (t.relevance || 0) + '% | Platforms: ' + (t.platforms || []).join(', ')), m + 2, y + 15);
-        y += 20;
-        txt(t.description, 2);
-        y += 1;
+        setC(C.grey);
+        doc.text('Growth: ' + s(t.growth), m + 4, y + 18);
+        doc.text('Relevance:', m + 50, y + 18);
+        scoreBarRounded(m + 72, y + 16, 30, t.relevance || 0, 100, C.forest);
+        doc.text(s(t.relevance || 0) + '%', m + 104, y + 18);
+
+        // Platform badges
+        var px = m + 4;
+        (t.platforms || []).forEach(function(p) {
+          px += badge(s(p).toUpperCase(), px, y + 22, platColor(p), C.white) + 2;
+        });
+
+        y += 32;
+        txt(t.description, 4);
+
+        // Search links (CLICKABLE!)
+        if (t.searchLinks?.length) {
+          doc.setFontSize(7.5);
+          doc.setFont('helvetica', 'bold');
+          setC(C.forest);
+          doc.text('Research Links:', m + 4, y);
+          y += 4;
+          t.searchLinks.forEach(function(link) {
+            checkSpace(5);
+            addLink(s(link.label || link.platform || 'Link'), s(link.url), m + 8, y);
+            y += 4.5;
+          });
+        }
+        y += 3;
       });
     }
 
-    // --- Competitor Analysis ---
+    // ============================================================
+    // COMPETITOR ANALYSIS
+    // ============================================================
     if (data.competitors?.products?.length) {
       sectionStart('Competitor Analysis');
       data.competitors.products.forEach(function(p) {
         checkSpace(15);
-        sub(s(p.name) + ' -- ' + s(p.price));
+        doc.setFontSize(12);
+        doc.setFont('helvetica', 'bold');
+        setC(C.charcoal);
+        doc.text(s(p.name), m, y);
+        doc.setFontSize(9);
+        doc.setFont('helvetica', 'normal');
+        setC(C.gold);
+        doc.text(s(p.price || ''), m + doc.getTextWidth(s(p.name)) + 4, y);
+        y += 7;
+
         (p.competitors || []).forEach(function(c) {
-          checkSpace(16);
-          doc.setFontSize(9);
+          checkSpace(30);
+          // Competitor header bar
+          card(m, y, cw, 7, { fill: C.charcoalLight, r: 2 });
+          doc.setFontSize(10);
           doc.setFont('helvetica', 'bold');
-          setColor(darkGreen);
-          doc.text(s('vs ' + c.name), m + 3, y);
-          doc.setFont('helvetica', 'normal');
-          setColor(grey);
-          doc.text(s(' (' + c.type + ')'), m + 3 + doc.getTextWidth(s('vs ' + c.name)) + 1, y);
-          y += 5;
-          // Metrics
-          (c.metrics || []).forEach(function(metric) {
-            label('  ' + s(metric.label) + ': ', s(metric.pe) + ' vs ' + s(metric.comp), 3);
-          });
-          txt('Action: ' + s(c.action), 6);
-          y += 2;
+          setC(C.white);
+          doc.text('vs ' + s(c.name), m + 4, y + 5);
+          badge(s(c.type || 'competitor').toUpperCase(), m + 8 + doc.getTextWidth('vs ' + s(c.name)), y + 1.5, C.gold, C.charcoal);
+          y += 10;
+
+          // Metrics table
+          if (c.metrics?.length) {
+            var metH = ['Metric', 'You', 'Them'];
+            var metW = [70, 50, 50];
+            var metRows = c.metrics.map(function(met) {
+              return [met.label, met.pe, met.comp];
+            });
+            drawTable(metH, metRows, metW, { headerBg: C.forest });
+          }
+
+          // Strengths
+          if (c.strengths?.length) {
+            doc.setFontSize(8);
+            doc.setFont('helvetica', 'bold');
+            setC(C.charcoal);
+            doc.text('Their Strengths:', m + 4, y);
+            y += 4;
+            c.strengths.forEach(function(str) {
+              checkSpace(4);
+              doc.setFontSize(7.5);
+              doc.setFont('helvetica', 'normal');
+              setC(C.grey);
+              doc.text('- ' + s(str), m + 8, y);
+              y += 3.8;
+            });
+            y += 2;
+          }
+
+          // Business wins
+          if (c.businessWins?.length) {
+            doc.setFontSize(8);
+            doc.setFont('helvetica', 'bold');
+            setC(C.success);
+            doc.text('Your Wins:', m + 4, y);
+            y += 4;
+            c.businessWins.forEach(function(w) {
+              checkSpace(4);
+              doc.setFontSize(7.5);
+              doc.setFont('helvetica', 'normal');
+              setC(C.grey);
+              doc.text('> ' + s(w), m + 8, y);
+              y += 3.8;
+            });
+            y += 2;
+          }
+
+          // Action
+          if (c.action) {
+            checkSpace(10);
+            card(m + 4, y, cw - 8, 8, { fill: C.sand, r: 2 });
+            doc.setFontSize(8);
+            doc.setFont('helvetica', 'bold');
+            setC(C.forest);
+            doc.text('Action: ', m + 8, y + 5);
+            doc.setFont('helvetica', 'normal');
+            setC(C.charcoal);
+            doc.text(s(c.action).substring(0, 85), m + 22, y + 5);
+            y += 11;
+          }
+          y += 3;
         });
         sep();
       });
     }
 
-    // --- Content Archetypes ---
+    // ============================================================
+    // CONTENT ARCHETYPES & GAP ANALYSIS
+    // ============================================================
     if (data.archetypes?.length) {
       sectionStart('Content Archetypes & Gap Analysis');
       data.archetypes.forEach(function(a) {
-        checkSpace(14);
+        checkSpace(18);
+        card(m, y, cw, 14, { fill: C.cream, r: 2 });
+        // Number circle
+        setF(C.forest);
+        doc.circle(m + 7, y + 7, 4.5, 'F');
         doc.setFontSize(9);
         doc.setFont('helvetica', 'bold');
-        setColor(black);
-        doc.text(s(a.number) + '. ' + s(a.title), m, y);
-        // Score bar
-        scoreBar(m + 90, y - 3, 50, a.usage, 100);
-        doc.setFontSize(8);
+        setC(C.white);
+        doc.text(s(a.number), m + 7, y + 8.5, { align: 'center' });
+        // Title
+        doc.setFontSize(10);
+        doc.setFont('helvetica', 'bold');
+        setC(C.charcoal);
+        doc.text(s(a.title), m + 15, y + 5.5);
+        // Usage label badge
+        if (a.usageLabel) {
+          var statusCol = (a.statusType === 'underused' || a.statusType === 'gap') ? C.error :
+                          a.statusType === 'moderate' ? C.warning : C.success;
+          badge(s(a.usageLabel), m + 18 + doc.getTextWidth(s(a.title)), y + 2, statusCol, C.white);
+        }
+        // Bar + percentage
+        scoreBarRounded(m + 15, y + 9, cw - 60, a.usage, 100, C.forest);
+        doc.setFontSize(7.5);
         doc.setFont('helvetica', 'normal');
-        setColor(grey);
-        doc.text(s(a.usage) + '% -- ' + s(a.status), m + 142, y);
-        y += 5;
+        setC(C.grey);
+        doc.text(s(a.usage) + '%', m + cw - 40, y + 11);
+        y += 16;
         txt(a.description, 5);
       });
 
@@ -813,132 +1169,335 @@ function exportToPDF(data) {
       if (data.gapAnalysis) {
         y += 3;
         sub('Gap Analysis Summary');
+
         if (data.gapAnalysis.missingTriggers?.length) {
-          label('Missing Triggers: ', data.gapAnalysis.missingTriggers.map(function(t) { return s(t.name); }).join(', '));
+          checkSpace(10);
+          doc.setFontSize(8);
+          doc.setFont('helvetica', 'bold');
+          setC(C.error);
+          doc.text('Missing Psychological Triggers:', m + 2, y);
+          y += 4;
+          data.gapAnalysis.missingTriggers.forEach(function(t) {
+            checkSpace(4);
+            doc.setFontSize(7.5);
+            doc.setFont('helvetica', 'normal');
+            setC(C.grey);
+            doc.text('- ' + s(t.name) + ': ' + s(t.detail || ''), m + 6, y);
+            y += 3.8;
+          });
+          y += 2;
         }
+
         if (data.gapAnalysis.underusedArchetypes?.length) {
-          label('Underused: ', data.gapAnalysis.underusedArchetypes.map(function(a) { return s(a.name); }).join(', '));
+          checkSpace(8);
+          doc.setFontSize(8);
+          doc.setFont('helvetica', 'bold');
+          setC(C.warning);
+          doc.text('Underused Archetypes:', m + 2, y);
+          y += 4;
+          data.gapAnalysis.underusedArchetypes.forEach(function(a) {
+            checkSpace(4);
+            doc.setFontSize(7.5);
+            doc.setFont('helvetica', 'normal');
+            setC(C.grey);
+            doc.text('- ' + s(a.name) + ': ' + s(a.detail || ''), m + 6, y);
+            y += 3.8;
+          });
+          y += 2;
         }
+
         if (data.gapAnalysis.overusedArchetypes?.length) {
-          label('Overused: ', data.gapAnalysis.overusedArchetypes.map(function(a) { return s(a.name); }).join(', '));
+          checkSpace(8);
+          doc.setFontSize(8);
+          doc.setFont('helvetica', 'bold');
+          setC(C.forest);
+          doc.text('Overused Archetypes:', m + 2, y);
+          y += 4;
+          data.gapAnalysis.overusedArchetypes.forEach(function(a) {
+            checkSpace(4);
+            doc.setFontSize(7.5);
+            doc.setFont('helvetica', 'normal');
+            setC(C.grey);
+            doc.text('- ' + s(a.name) + ': ' + s(a.detail || ''), m + 6, y);
+            y += 3.8;
+          });
+          y += 2;
+        }
+
+        // Platform reach
+        if (data.gapAnalysis.platformReach?.length) {
+          checkSpace(10);
+          doc.setFontSize(8);
+          doc.setFont('helvetica', 'bold');
+          setC(C.charcoal);
+          doc.text('Predicted Organic Reach by Platform:', m + 2, y);
+          y += 5;
+          data.gapAnalysis.platformReach.forEach(function(p) {
+            checkSpace(6);
+            var lvlCol = (p.level === 'LOW' || p.level === 'ABSENT') ? C.error :
+                          p.level === 'MODERATE' ? C.warning : C.success;
+            badge(s(p.level), m + 6, y - 1, lvlCol, C.white);
+            doc.setFontSize(7.5);
+            doc.setFont('helvetica', 'normal');
+            setC(C.charcoal);
+            doc.text(s(p.platform) + ' - ' + s(p.detail || ''), m + 30, y + 2);
+            y += 6;
+          });
         }
       }
     }
 
-    // --- Viral Post Database ---
+    // ============================================================
+    // VIRAL POST DATABASE
+    // ============================================================
     if (data.viralPosts) {
       sectionStart('Viral Post Database');
       ['tiktok', 'instagram', 'facebook', 'linkedin'].forEach(function(platform) {
         var posts = data.viralPosts[platform];
         if (!posts?.length) return;
-        sub(capitalize(platform));
+
+        // Platform header
+        checkSpace(12);
+        card(m, y, cw, 8, { fill: platColor(platform), r: 2 });
+        doc.setFontSize(11);
+        doc.setFont('helvetica', 'bold');
+        setC(C.white);
+        doc.text(capitalize(platform) + ' (' + posts.length + ' posts)', m + 5, y + 5.5);
+        y += 12;
+
         posts.forEach(function(p) {
-          checkSpace(14);
-          doc.setFontSize(9);
+          checkSpace(35);
+
+          // Rank + Title
+          doc.setFontSize(10);
           doc.setFont('helvetica', 'bold');
-          setColor(black);
-          doc.text(s('#' + p.rank + ' ' + (p.title || '')), m + 2, y);
-          doc.setFont('helvetica', 'normal');
-          setColor(grey);
-          doc.text(s('Score: ' + (p.viralityScore || 0) + '/100'), m + cw - 30, y);
-          y += 4.5;
+          setC(C.charcoal);
+          doc.text('#' + s(p.rank) + '  ' + s(p.title || ''), m + 4, y);
+          y += 5;
+
+          // Creator
           doc.setFontSize(8);
-          doc.text(s(p.creator), m + 5, y);
+          doc.setFont('helvetica', 'normal');
+          setC(C.grey);
+          doc.text(s(p.creator || ''), m + 4, y);
+
+          // Score pill
+          if (p.viralityScore) {
+            var sc = Number(p.viralityScore) || 0;
+            var scCol = sc >= 70 ? C.success : sc >= 40 ? C.warning : C.error;
+            setF(scCol);
+            doc.roundedRect(m + cw - 28, y - 3, 24, 6, 3, 3, 'F');
+            doc.setFontSize(8);
+            doc.setFont('helvetica', 'bold');
+            setC(C.white);
+            doc.text(s(sc) + '/100', m + cw - 16, y + 1, { align: 'center' });
+          }
+          y += 5;
+
+          // Metrics
+          if (p.metrics?.length) {
+            var mx = m + 4;
+            p.metrics.forEach(function(met) {
+              doc.setFontSize(9);
+              doc.setFont('helvetica', 'bold');
+              setC(C.charcoal);
+              doc.text(s(met.value), mx, y);
+              doc.setFontSize(6.5);
+              doc.setFont('helvetica', 'normal');
+              setC(C.grey);
+              doc.text(s(met.label), mx, y + 3.5);
+              mx += 28;
+            });
+            y += 7;
+          }
+
+          // Badge row: hook type, content category, visual style
+          var bx = m + 4;
+          if (p.hookType?.length) {
+            p.hookType.forEach(function(h) {
+              bx += badge(s(h), bx, y, C.forest, C.white) + 2;
+            });
+          }
+          if (p.contentCategory?.length) {
+            p.contentCategory.forEach(function(ct) {
+              bx += badge(s(ct), bx, y, C.gold, C.charcoal) + 2;
+            });
+          }
+          if (p.visualStyle) {
+            badge(s(p.visualStyle), bx, y, C.charcoalLight, C.white);
+          }
+          if (bx > m + 4) y += 7;
+
+          // Psych triggers
+          if (p.psychTriggers?.length) {
+            var ptx = m + 4;
+            doc.setFontSize(7);
+            doc.setFont('helvetica', 'bold');
+            setC(C.forest);
+            doc.text('Triggers:', ptx, y);
+            ptx += 16;
+            p.psychTriggers.forEach(function(t) {
+              ptx += badge(s(t), ptx, y - 2, C.sand, C.charcoal) + 2;
+              if (ptx > m + cw - 20) { ptx = m + 20; y += 6; }
+            });
+            y += 5;
+          }
+
+          // Score bars
+          if (p.scores) {
+            checkSpace(14);
+            [
+              { lbl: 'Shareability', val: p.scores.shareability || 0, max: 10 },
+              { lbl: 'Saveability', val: p.scores.saveability || 0, max: 10 },
+              { lbl: 'Comment Driver', val: p.scores.commentDriver || 0, max: 10 }
+            ].forEach(function(bar) {
+              doc.setFontSize(7);
+              doc.setFont('helvetica', 'normal');
+              setC(C.grey);
+              doc.text(s(bar.lbl), m + 4, y);
+              scoreBarRounded(m + 33, y - 2, 40, bar.val, bar.max, C.forest);
+              doc.text(s(bar.val) + '/' + s(bar.max), m + 76, y);
+              y += 4.5;
+            });
+          }
+
+          // Why it resonated
+          if (p.whyItResonated) {
+            checkSpace(8);
+            doc.setFontSize(7.5);
+            doc.setFont('helvetica', 'bold');
+            setC(C.forest);
+            doc.text('Why It Resonated:', m + 4, y);
+            y += 3.5;
+            doc.setFont('helvetica', 'normal');
+            setC(C.grey);
+            var whyL = doc.splitTextToSize(s(p.whyItResonated), cw - 12);
+            whyL.slice(0, 2).forEach(function(l) { doc.text(s(l), m + 4, y); y += 3.5; });
+            y += 1;
+          }
+
+          // Core learning
+          if (p.coreLearning) {
+            checkSpace(8);
+            doc.setFontSize(7.5);
+            doc.setFont('helvetica', 'bold');
+            setC(C.charcoal);
+            doc.text('Core Learning:', m + 4, y);
+            y += 3.5;
+            doc.setFont('helvetica', 'normal');
+            setC(C.grey);
+            var clL = doc.splitTextToSize(s(p.coreLearning), cw - 12);
+            clL.slice(0, 2).forEach(function(l) { doc.text(s(l), m + 4, y); y += 3.5; });
+            y += 1;
+          }
+
+          // Search links (clickable)
+          if (p.searchLinks?.length) {
+            checkSpace(6);
+            p.searchLinks.forEach(function(link) {
+              checkSpace(4.5);
+              addLink(s(link.label || link.platform || 'Search'), s(link.url), m + 4, y);
+              y += 4.5;
+            });
+          }
+
           y += 4;
-          txt(p.coreLearning, 5);
+          sep();
         });
       });
     }
 
-    // --- Improved Post Scripts ---
+    // ============================================================
+    // IMPROVED POST SCRIPTS
+    // ============================================================
     if (data.improvedPosts) {
       sectionStart('Improved Post Scripts');
       ['tiktok', 'instagram', 'facebook', 'linkedin'].forEach(function(platform) {
         var posts = data.improvedPosts[platform];
         if (!posts?.length) return;
-        sub(capitalize(platform));
+
+        checkSpace(10);
+        card(m, y, cw, 7, { fill: platColor(platform), r: 2 });
+        doc.setFontSize(10);
+        doc.setFont('helvetica', 'bold');
+        setC(C.white);
+        doc.text(capitalize(platform), m + 5, y + 5);
+        y += 10;
+
         posts.forEach(function(p) {
-          checkSpace(28);
-          doc.setFontSize(9);
+          checkSpace(30);
+          doc.setFontSize(10);
           doc.setFont('helvetica', 'bold');
-          setColor(black);
-          doc.text(s('#' + p.number + ': ' + (p.title || '')), m + 2, y);
-          doc.setFontSize(8);
-          doc.setFont('helvetica', 'normal');
-          setColor(green);
-          doc.text(s(p.archetype), m + 2, y + 4);
-          y += 7;
-          setColor(grey);
+          setC(C.charcoal);
+          doc.text('#' + s(p.number) + ': ' + s(p.title || ''), m + 2, y);
+          y += 4;
+
+          // Archetype + triggers
+          badge(s(p.archetype || ''), m + 2, y, C.forest, C.white);
+          var tpx = m + 6 + doc.getTextWidth(s(p.archetype || '')) + 8;
+          (p.triggers || []).forEach(function(t) {
+            tpx += badge(s(t), tpx, y, C.sand, C.charcoal) + 2;
+          });
+          y += 8;
+
           // Script sections
           if (p.script) {
             ['hook', 'body', 'reveal', 'cta'].forEach(function(section) {
               if (!p.script[section]) return;
-              checkSpace(8);
+              checkSpace(10);
+              doc.setFontSize(8);
               doc.setFont('helvetica', 'bold');
-              setColor(darkGreen);
+              setC(C.forest);
               doc.text(section.toUpperCase() + ':', m + 5, y);
               doc.setFont('helvetica', 'normal');
-              setColor(grey);
+              setC(C.grey);
               var scriptLines = doc.splitTextToSize(s(p.script[section]), cw - 30);
-              scriptLines.forEach(function(l) { checkSpace(4); doc.text(s(l), m + 22, y); y += 4; });
-              y += 1;
+              scriptLines.forEach(function(l) {
+                checkSpace(4);
+                doc.text(s(l), m + 22, y);
+                y += 4;
+              });
+              y += 1.5;
             });
           }
-          y += 3;
+          y += 4;
+          sep();
         });
       });
     }
 
-    // --- KPI Dashboard ---
+    // ============================================================
+    // KPI TRACKING DASHBOARD
+    // ============================================================
     if (data.kpi) {
       sectionStart('KPI Tracking Dashboard');
 
-      // Recent performance table
+      // Full performance table with ALL columns
       if (data.kpi.recentPerformance?.length) {
         sub('Recent Performance');
-        var kpiHeaders = ['Wk', 'Date', 'Post', 'Platform', 'Reach', 'Likes', 'Eng%', 'Trend'];
-        var kpiColW = [10, 18, 50, 22, 20, 16, 16, 22];
-        var tx = m;
-        setFill([70, 80, 68]);
-        doc.rect(m, y - 1, cw, 6, 'F');
-        doc.setFontSize(7);
-        doc.setFont('helvetica', 'bold');
-        setColor(white);
-        kpiHeaders.forEach(function(h, i) { doc.text(h, tx + 1, y + 3); tx += kpiColW[i]; });
-        y += 7;
-
-        data.kpi.recentPerformance.forEach(function(r, idx) {
-          checkSpace(7);
-          if (idx % 2 === 0) { setFill(veryLightGrey); doc.rect(m, y - 1, cw, 6, 'F'); }
-          doc.setFontSize(7);
-          doc.setFont('helvetica', 'normal');
-          setColor(black);
-          tx = m;
-          [r.week, r.date, (s(r.description)).substring(0, 30), r.platform, r.reach, r.likes, r.engRate, r.trend].forEach(function(v, i) {
-            doc.text(s(v), tx + 1, y + 3);
-            tx += kpiColW[i];
-          });
-          y += 6;
+        var kH = ['Wk', 'Date', 'Post', 'Plat', 'Type', 'Reach', 'Likes', 'Cmts', 'Saves', 'Shrs', 'Eng%', 'Trend'];
+        var kW = [8, 14, 32, 14, 14, 16, 13, 12, 12, 12, 13, 18];
+        var kRows = data.kpi.recentPerformance.map(function(r) {
+          return [r.week, r.date, s(r.description || '').substring(0, 18), r.platform,
+                  r.type || '', r.reach, r.likes, r.comments || '', r.saves || '',
+                  r.shares || '', r.engRate, r.trend];
         });
-        y += 5;
+        drawTable(kH, kRows, kW, { headerBg: C.charcoal });
       }
 
       // Targets
       if (data.kpi.targets) {
-        sub('90-Day Targets');
+        sub('90-Day Platform Targets');
         ['tiktok', 'instagram', 'facebook', 'linkedin'].forEach(function(platform) {
           var targets = data.kpi.targets[platform];
           if (!targets?.length) return;
-          checkSpace(12);
-          doc.setFontSize(9);
-          doc.setFont('helvetica', 'bold');
-          setColor(darkGreen);
-          doc.text(capitalize(platform), m + 2, y);
-          y += 5;
+          checkSpace(14);
+          badge(capitalize(platform).toUpperCase(), m + 2, y, platColor(platform), C.white);
+          y += 7;
           targets.forEach(function(t) {
             label('  Month ' + s(t.month) + ': ', s(t.target), 3);
           });
-          y += 2;
+          y += 3;
         });
       }
 
@@ -947,165 +1506,258 @@ function exportToPDF(data) {
         y += 3;
         sub('Key Formulas');
         data.kpi.formulas.forEach(function(f) {
-          label(s(f.name) + ': ', s(f.formula) + ' (Target: ' + s(f.target) + ')');
+          checkSpace(8);
+          card(m, y, cw, 8, { fill: C.cream, r: 2 });
+          doc.setFontSize(8);
+          doc.setFont('helvetica', 'bold');
+          setC(C.charcoal);
+          doc.text(s(f.name) + ':', m + 4, y + 4);
+          doc.setFont('helvetica', 'normal');
+          setC(C.grey);
+          doc.text(s(f.formula) + '  (Target: ' + s(f.target) + ')', m + 4 + doc.getTextWidth(s(f.name) + ': ') + 1, y + 4);
+          y += 10;
         });
       }
     }
 
-    // --- 90-Day Roadmap ---
+    // ============================================================
+    // 90-DAY MARKETING ROADMAP
+    // ============================================================
     if (data.roadmap) {
       sectionStart('90-Day Marketing Roadmap');
 
-      // Phases
       (data.roadmap.phases || []).forEach(function(phase) {
         checkSpace(20);
-        sub(s(phase.title) + ' -- ' + s(phase.subtitle));
+        // Phase header
+        card(m, y, cw, 10, { fill: C.charcoal, r: 3 });
+        doc.setFontSize(11);
+        doc.setFont('helvetica', 'bold');
+        setC(C.gold);
+        doc.text(s(phase.title), m + 5, y + 5);
+        doc.setFontSize(8);
+        doc.setFont('helvetica', 'normal');
+        setC(C.greyLight);
+        doc.text(s(phase.subtitle || ''), m + 5, y + 9);
+        y += 14;
+
         (phase.weeks || []).forEach(function(w) {
-          checkSpace(10);
-          doc.setFontSize(8.5);
+          checkSpace(12);
+          doc.setFontSize(9);
           doc.setFont('helvetica', 'bold');
-          setColor(black);
-          doc.text(s(w.label), m + 3, y);
+          setC(C.forest);
+          doc.text(s(w.label), m + 4, y);
           y += 4;
           (w.items || []).forEach(function(item) {
             checkSpace(5);
             doc.setFontSize(8);
             doc.setFont('helvetica', 'normal');
-            setColor(grey);
-            var itemLines = doc.splitTextToSize('- ' + s(item), cw - 12);
-            itemLines.forEach(function(l) { doc.text(s(l), m + 6, y); y += 3.8; });
+            setC(C.grey);
+            var itemLines = doc.splitTextToSize('- ' + s(item), cw - 14);
+            itemLines.forEach(function(l) { doc.text(s(l), m + 8, y); y += 3.8; });
           });
           y += 2;
         });
+
         if (phase.successMetrics?.length) {
+          checkSpace(10);
           doc.setFontSize(8);
           doc.setFont('helvetica', 'bold');
-          setColor(darkGreen);
-          doc.text('Success Metrics:', m + 3, y);
+          setC(C.gold);
+          doc.text('Success Metrics:', m + 4, y);
           y += 4;
           phase.successMetrics.forEach(function(metric) {
-            checkSpace(5);
+            checkSpace(4);
+            doc.setFontSize(7.5);
             doc.setFont('helvetica', 'normal');
-            setColor(grey);
-            doc.text('> ' + s(metric), m + 6, y);
+            setC(C.grey);
+            doc.text('> ' + s(metric), m + 8, y);
             y += 3.8;
           });
         }
-        y += 4;
+        y += 5;
       });
 
-      // Top Recommendations
+      // Recommendations
       if (data.roadmap.recommendations?.length) {
-        sub('Top 8 Priority Recommendations');
+        sub('Top Priority Recommendations');
         data.roadmap.recommendations.forEach(function(r) {
-          checkSpace(12);
-          setFill(veryLightGrey);
-          doc.rect(m, y - 1, cw, 9, 'F');
+          checkSpace(16);
+          card(m, y, cw, 12, { fill: C.cream, stroke: C.sand, r: 3 });
+          // Rank circle
+          setF(C.charcoal);
+          doc.circle(m + 8, y + 6, 4, 'F');
           doc.setFontSize(9);
           doc.setFont('helvetica', 'bold');
-          setColor(black);
-          doc.text(s(r.rank) + '. ' + s(r.title), m + 3, y + 4);
+          setC(C.white);
+          doc.text(s(r.rank), m + 8, y + 7.5, { align: 'center' });
+          // Title
+          doc.setFontSize(9);
+          doc.setFont('helvetica', 'bold');
+          setC(C.charcoal);
+          doc.text(s(r.title), m + 16, y + 5);
           // Impact badge
-          var impactColor = (s(r.impact)).indexOf('HIGHEST') >= 0 ? [180, 60, 40] : (s(r.impact)).indexOf('HIGH') >= 0 ? [200, 140, 30] : green;
-          setFill(impactColor);
-          var impactText = s(r.impact);
-          var impactW = doc.getTextWidth(impactText) + 6;
-          doc.rect(m + cw - impactW - 2, y + 1, impactW, 5, 'F');
-          doc.setFontSize(6.5);
-          setColor(white);
-          doc.text(impactText, m + cw - impactW + 1, y + 4.5);
-          y += 10;
-          txt(r.description, 5);
+          var impCol = (s(r.impact)).indexOf('HIGHEST') >= 0 ? C.error :
+                       (s(r.impact)).indexOf('HIGH') >= 0 ? C.warning : C.success;
+          badge(s(r.impact), m + cw - 30, y + 2, impCol, C.white);
+          // Description
+          doc.setFontSize(7.5);
+          doc.setFont('helvetica', 'normal');
+          setC(C.grey);
+          doc.text(s(r.description || '').substring(0, 100), m + 16, y + 10);
+          y += 15;
         });
       }
     }
 
-    // --- SEO Opportunities ---
+    // ============================================================
+    // SEO OPPORTUNITIES
+    // ============================================================
     if (data.seo?.length) {
       sectionStart('Google Search Opportunities');
-      data.seo.forEach(function(seoItem, idx) {
-        checkSpace(22);
-        setFill(idx % 2 === 0 ? veryLightGrey : white);
-        doc.rect(m, y - 1, cw, 16, 'F');
-        doc.setFontSize(10);
+      data.seo.forEach(function(seoItem) {
+        checkSpace(32);
+        card(m, y, cw, 16, { fill: C.cream, stroke: C.sand, r: 3 });
+        doc.setFontSize(11);
         doc.setFont('helvetica', 'bold');
-        setColor(black);
-        doc.text('"' + s(seoItem.term) + '"', m + 3, y + 5);
+        setC(C.charcoal);
+        doc.text('"' + s(seoItem.term) + '"', m + 5, y + 6);
         doc.setFontSize(8);
         doc.setFont('helvetica', 'normal');
-        setColor(grey);
-        doc.text(s(seoItem.volume) + '  |  ' + s(seoItem.difficulty) + ' difficulty  |  ' + s(seoItem.currentRank), m + 3, y + 11);
-        y += 18;
-        if (seoItem.strategy?.length) {
-          seoItem.strategy.forEach(function(step, i) {
-            checkSpace(5);
-            txt((i + 1) + '. ' + s(step), 5);
-          });
+        setC(C.grey);
+        doc.text(s(seoItem.volume) + '  |  Current: ' + s(seoItem.currentRank), m + 5, y + 12);
+        // Difficulty badge
+        var diffCol = (s(seoItem.difficulty)).toLowerCase().indexOf('hard') >= 0 ? C.error :
+                      (s(seoItem.difficulty)).toLowerCase().indexOf('med') >= 0 ? C.warning : C.success;
+        badge(s(seoItem.difficulty), m + cw - 30, y + 3, diffCol, C.white);
+        y += 19;
+
+        // Trend data
+        if (seoItem.trendData) {
+          checkSpace(16);
+          doc.setFontSize(7.5);
+          doc.setFont('helvetica', 'bold');
+          setC(C.forest);
+          doc.text('Trend Insights:', m + 4, y);
+          y += 4;
+          doc.setFont('helvetica', 'normal');
+          setC(C.grey);
+          if (seoItem.trendData.trend) { doc.text('YoY Trend: ' + s(seoItem.trendData.trend), m + 8, y); y += 3.5; }
+          if (seoItem.trendData.peakMonths) { doc.text('Peak Months: ' + s(seoItem.trendData.peakMonths), m + 8, y); y += 3.5; }
+          if (seoItem.trendData.relatedRising) { doc.text('Related Rising: ' + s(seoItem.trendData.relatedRising), m + 8, y); y += 3.5; }
+          if (seoItem.trendData.regional) { doc.text('Regional: ' + s(seoItem.trendData.regional), m + 8, y); y += 3.5; }
+          y += 2;
         }
-        label('Cost: ', s(seoItem.cost) + '  |  Impact: ' + s(seoItem.impact), 3);
-        y += 3;
+
+        // Strategy
+        if (seoItem.strategy?.length) {
+          checkSpace(10);
+          doc.setFontSize(7.5);
+          doc.setFont('helvetica', 'bold');
+          setC(C.charcoal);
+          doc.text('Strategy to Rank:', m + 4, y);
+          y += 4;
+          seoItem.strategy.forEach(function(step, i) {
+            checkSpace(4);
+            doc.setFontSize(7.5);
+            doc.setFont('helvetica', 'normal');
+            setC(C.grey);
+            var stepL = doc.splitTextToSize((i + 1) + '. ' + s(step), cw - 14);
+            stepL.forEach(function(l) { doc.text(s(l), m + 8, y); y += 3.5; });
+          });
+          y += 2;
+        }
+
+        // Cost + Impact
+        checkSpace(6);
+        doc.setFontSize(7.5);
+        doc.setFont('helvetica', 'bold');
+        setC(C.gold);
+        doc.text('Cost: ' + s(seoItem.cost) + '     Impact: ' + s(seoItem.impact), m + 4, y);
+        y += 7;
       });
     }
 
-    // --- AI & LLM Opportunities ---
+    // ============================================================
+    // AI & LLM OPPORTUNITIES
+    // ============================================================
     if (data.llmOpportunities?.length) {
       sectionStart('AI & LLM Marketing Opportunities');
       data.llmOpportunities.forEach(function(o) {
-        checkSpace(18);
+        checkSpace(22);
+        card(m, y, cw, 6, { fill: C.cream, r: 2 });
+
         // Badge
-        var badgeColor = o.badgeType === 'critical' ? [180, 60, 40] : o.badgeType === 'new' ? [40, 120, 180] : green;
-        setFill(badgeColor);
-        var badgeText = s(o.badge || 'OPPORTUNITY');
-        doc.setFontSize(7);
-        doc.setFont('helvetica', 'bold');
-        var bw = doc.getTextWidth(badgeText) + 8;
-        doc.rect(m, y, bw, 5, 'F');
-        setColor(white);
-        doc.text(badgeText, m + 3, y + 3.5);
-        y += 7;
+        var bCol = o.badgeType === 'critical' ? C.error :
+                   o.badgeType === 'new' ? [40, 120, 180] : C.success;
+        badge(s(o.badge || 'OPPORTUNITY'), m + 4, y + 1, bCol, C.white);
+        y += 9;
+
         doc.setFontSize(10);
         doc.setFont('helvetica', 'bold');
-        setColor(black);
-        doc.text(s(o.title), m + 2, y);
+        setC(C.charcoal);
+        doc.text(s(o.title), m + 4, y);
         y += 5;
-        txt(o.description, 2);
-        label('Action: ', o.action, 2);
-        label('Cost: ', o.cost, 2);
+        txt(o.description, 4);
+
+        if (o.action) {
+          checkSpace(6);
+          doc.setFontSize(8);
+          doc.setFont('helvetica', 'bold');
+          setC(C.forest);
+          doc.text('Action: ', m + 4, y);
+          doc.setFont('helvetica', 'normal');
+          setC(C.grey);
+          var aLines = doc.splitTextToSize(s(o.action), cw - 24);
+          aLines.forEach(function(l) { doc.text(s(l), m + 18, y); y += 3.8; });
+          y += 1;
+        }
+
+        if (o.cost) {
+          doc.setFontSize(7.5);
+          doc.setFont('helvetica', 'bold');
+          setC(C.gold);
+          doc.text('Cost: ' + s(o.cost), m + 4, y);
+          y += 5;
+        }
         y += 3;
       });
     }
 
-    // ===== SECOND PASS: Fill Table of Contents =====
+    // ============================================================
+    // SECOND PASS: TABLE OF CONTENTS
+    // ============================================================
     doc.setPage(tocPageNum);
-    var tocY = 25;
+    var tocY = 20;
 
-    // TOC header
-    setFill(green);
-    doc.rect(0, 0, pw, 8, 'F');
+    // TOC header styling
+    setF(C.charcoal);
+    doc.rect(0, 0, pw, 5, 'F');
+    accentBar(0, 5, pw, C.gold);
+    tocY = 25;
     doc.setFontSize(22);
     doc.setFont('helvetica', 'bold');
-    setColor(black);
-    doc.text('Table of Contents', m, tocY + 10);
-    tocY += 20;
-    doc.setDrawColor(89, 102, 85);
-    doc.line(m, tocY, m + 40, tocY);
-    tocY += 10;
+    setC(C.charcoal);
+    doc.text('Table of Contents', m, tocY);
+    tocY += 5;
+    accentBar(m, tocY, 45, C.gold);
+    tocY += 12;
 
     tocEntries.forEach(function(entry, idx) {
       doc.setFontSize(11);
       doc.setFont('helvetica', 'normal');
-      setColor(black);
-      doc.text((idx + 1) + '.  ' + entry.title, m + 5, tocY);
+      setC(C.charcoal);
+      var numLabel = (idx + 1) + '.  ';
+      doc.text(numLabel + entry.title, m + 4, tocY);
       // Page number
       doc.setFont('helvetica', 'bold');
-      setColor(green);
-      doc.text(String(entry.page), pw - m - 5, tocY);
-      // Dotted line
+      setC(C.gold);
+      doc.text(String(entry.page), pw - m - 4, tocY, { align: 'right' });
+      // Dotted leader
       doc.setFontSize(8);
-      setColor(lightGrey);
-      var textEnd = m + 10 + doc.getTextWidth(entry.title) + 5;
-      var numStart = pw - m - 10;
-      for (var dx = textEnd; dx < numStart; dx += 3) {
+      setC(C.greyLight);
+      var textEnd = m + 8 + doc.getTextWidth(numLabel + entry.title);
+      var numStart = pw - m - 12;
+      for (var dx = textEnd; dx < numStart; dx += 2.5) {
         doc.text('.', dx, tocY);
       }
       // Internal link
@@ -1113,29 +1765,35 @@ function exportToPDF(data) {
       tocY += 10;
     });
 
-    // ===== THIRD PASS: Add page numbers + footer to all pages =====
+    // ============================================================
+    // THIRD PASS: PAGE FOOTERS
+    // ============================================================
     var totalPages = doc.internal.getNumberOfPages();
     for (var i = 2; i <= totalPages; i++) {
       doc.setPage(i);
-      doc.setFontSize(7.5);
-      doc.setFont('helvetica', 'normal');
-      doc.setTextColor(160, 160, 160);
-      doc.text('Page ' + (i - 1) + ' of ' + (totalPages - 1), pw / 2, 290, { align: 'center' });
-      doc.text(s(data.business?.name), m, 290);
-      doc.text('Marketing Analysis Report', pw - m, 290, { align: 'right' });
-      // Thin line above footer
-      doc.setDrawColor(220, 220, 220);
+      // Gold accent line
+      doc.setDrawColor(C.gold[0], C.gold[1], C.gold[2]);
+      doc.setLineWidth(0.4);
       doc.line(m, 286, pw - m, 286);
+      // Footer text
+      doc.setFontSize(7);
+      doc.setFont('helvetica', 'normal');
+      doc.setTextColor(140, 140, 140);
+      doc.text(s(data.business?.name || ''), m, 290);
+      doc.text('Page ' + (i - 1) + ' of ' + (totalPages - 1), pw / 2, 290, { align: 'center' });
+      doc.text('Marketing Intelligence Report', pw - m, 290, { align: 'right' });
     }
 
-    // ===== DOWNLOAD =====
+    // ============================================================
+    // DOWNLOAD
+    // ============================================================
     var filename = (s(data.business?.name) || 'analysis').replace(/[^a-zA-Z0-9]/g, '-') + '-marketing-report.pdf';
     doc.save(filename);
     return filename;
 
   } catch (err) {
     console.error('PDF Export Error:', err);
-    alert('PDF export failed: ' + err.message + '\n\nLocation: ' + (err.stack ? err.stack.split('\n').slice(0, 3).join('\n') : 'unknown'));
+    alert('PDF export failed: ' + err.message + '\n\nCheck console for details.');
   }
 }
 
