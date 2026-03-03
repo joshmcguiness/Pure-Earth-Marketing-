@@ -149,8 +149,6 @@ async function analyzeBusiness(url, industry, size, platforms, audience, onProgr
       })
     });
 
-    if (onProgress) onProgress(30, 'Analyzing the business...');
-
     if (!response.ok) {
       const errorData = await response.json().catch(() => ({}));
       if (response.status === 401) {
@@ -160,19 +158,52 @@ async function analyzeBusiness(url, industry, size, platforms, audience, onProgr
       if (response.status === 429) {
         throw new Error('Rate limited. Please wait a moment and try again.');
       }
-      throw new Error(errorData.error?.message || `API error: ${response.status}`);
+      throw new Error(errorData.error?.message || errorData.error || `API error: ${response.status}`);
     }
 
-    if (onProgress) onProgress(60, 'Processing marketing data...');
+    if (onProgress) onProgress(20, 'AI is analyzing the business...');
 
-    const data = await response.json();
-    const content = data.content?.[0]?.text;
+    // Read streaming response from Anthropic via Worker
+    const reader = response.body.getReader();
+    const decoder = new TextDecoder();
+    let fullText = '';
+    let buffer = '';
+
+    while (true) {
+      const { done, value } = await reader.read();
+      if (done) break;
+
+      buffer += decoder.decode(value, { stream: true });
+
+      // Parse SSE events from buffer
+      const lines = buffer.split('\n');
+      buffer = lines.pop() || ''; // Keep incomplete line in buffer
+
+      for (const line of lines) {
+        if (line.startsWith('data: ')) {
+          const data = line.slice(6).trim();
+          if (data === '[DONE]') continue;
+          try {
+            const event = JSON.parse(data);
+            if (event.type === 'content_block_delta' && event.delta?.type === 'text_delta') {
+              fullText += event.delta.text;
+            }
+          } catch {}
+        }
+      }
+
+      // Update progress based on text length (estimate ~30K chars for full response)
+      const estimatedProgress = Math.min(85, 20 + Math.floor((fullText.length / 30000) * 65));
+      if (onProgress) onProgress(estimatedProgress, 'AI is generating analysis... (' + Math.round(fullText.length / 1000) + 'K chars)');
+    }
+
+    const content = fullText;
 
     if (!content) {
       throw new Error('Empty response from Claude. Please try again.');
     }
 
-    if (onProgress) onProgress(80, 'Building dashboard...');
+    if (onProgress) onProgress(88, 'Processing marketing data...');
 
     // Parse JSON from response — handle potential markdown wrapping
     let jsonStr = content.trim();

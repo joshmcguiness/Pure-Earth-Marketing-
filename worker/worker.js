@@ -199,9 +199,12 @@ async function handleAnalyze(request, env, origin) {
     return jsonResponse({ error: 'Session expired. Please log in again.' }, 401, origin);
   }
 
-  // Proxy to Anthropic API
+  // Proxy to Anthropic API with streaming to avoid Cloudflare timeouts
   try {
     const body = await request.json();
+
+    // Force streaming on to prevent Worker timeout on long responses
+    body.stream = true;
 
     const anthropicResponse = await fetch('https://api.anthropic.com/v1/messages', {
       method: 'POST',
@@ -213,11 +216,22 @@ async function handleAnalyze(request, env, origin) {
       body: JSON.stringify(body)
     });
 
-    const responseBody = await anthropicResponse.text();
+    if (!anthropicResponse.ok) {
+      const errorBody = await anthropicResponse.text();
+      return new Response(errorBody, {
+        status: anthropicResponse.status,
+        headers: { 'Content-Type': 'application/json', ...corsHeaders(origin) }
+      });
+    }
 
-    return new Response(responseBody, {
-      status: anthropicResponse.status,
-      headers: { 'Content-Type': 'application/json', ...corsHeaders(origin) }
+    // Stream the response through to the client
+    return new Response(anthropicResponse.body, {
+      status: 200,
+      headers: {
+        'Content-Type': 'text/event-stream',
+        'Cache-Control': 'no-cache',
+        ...corsHeaders(origin)
+      }
     });
   } catch (err) {
     return jsonResponse({ error: 'Proxy error: ' + err.message }, 500, origin);
