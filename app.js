@@ -259,9 +259,14 @@ document.addEventListener('DOMContentLoaded', () => {
     loadingFill.style.width = '0%';
 
     try {
-      const data = await analyzeBusiness(url, industry, size, platforms, audience, (pct, label) => {
+      const loadingPct = document.getElementById('loadingPct');
+      const loadingSection = document.getElementById('loadingSection');
+
+      const data = await analyzeBusiness(url, industry, size, platforms, audience, (pct, label, section) => {
         loadingFill.style.width = pct + '%';
+        loadingPct.textContent = pct + '%';
         loadingLabel.textContent = label;
+        loadingSection.textContent = section ? 'Currently generating: ' + section : '';
       });
 
       currentData = data;

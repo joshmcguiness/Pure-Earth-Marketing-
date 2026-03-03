@@ -124,11 +124,11 @@ async function analyzeBusiness(url, industry, size, platforms, audience, onProgr
   }
 
   // Progress updates
-  if (onProgress) onProgress(5, 'Preparing analysis request...');
+  if (onProgress) onProgress(2, 'Preparing analysis request...', '');
 
   const prompt = buildAnalysisPrompt(url, industry, size, platforms, audience);
 
-  if (onProgress) onProgress(10, 'Connecting to analysis engine...');
+  if (onProgress) onProgress(4, 'Connecting to analysis engine...', '');
 
   try {
     const response = await fetch(WORKER_URL, {
@@ -161,7 +161,24 @@ async function analyzeBusiness(url, industry, size, platforms, audience, onProgr
       throw new Error(errorData.error?.message || errorData.error || `API error: ${response.status}`);
     }
 
-    if (onProgress) onProgress(20, 'AI is analyzing the business...');
+    if (onProgress) onProgress(5, 'Connecting to AI...', '');
+
+    // Section detection: maps JSON keys to human-readable section names + progress %
+    const SECTION_MAP = [
+      { key: '"business"',          name: 'Business Profile',         pct: 5 },
+      { key: '"trends"',            name: 'Industry Trends',          pct: 12 },
+      { key: '"viralPosts"',        name: 'Viral Post Database',      pct: 25 },
+      { key: '"competitors"',       name: 'Competitor Analysis',      pct: 40 },
+      { key: '"archetypes"',        name: 'Content Archetypes',       pct: 50 },
+      { key: '"gapAnalysis"',       name: 'Gap Analysis',             pct: 56 },
+      { key: '"scorecard"',         name: 'Virality Scorecard',       pct: 62 },
+      { key: '"improvedPosts"',     name: 'Improved Posts',           pct: 72 },
+      { key: '"kpi"',               name: 'KPI Dashboard',            pct: 82 },
+      { key: '"roadmap"',           name: '90-Day Roadmap',           pct: 88 },
+      { key: '"seo"',               name: 'SEO Opportunities',        pct: 92 },
+      { key: '"llmOpportunities"',  name: 'AI & LLM Opportunities',  pct: 96 }
+    ];
+    let currentSectionIdx = -1;
 
     // Read streaming response from Anthropic via Worker
     const reader = response.body.getReader();
@@ -192,9 +209,27 @@ async function analyzeBusiness(url, industry, size, platforms, audience, onProgr
         }
       }
 
-      // Update progress based on text length (estimate ~30K chars for full response)
-      const estimatedProgress = Math.min(85, 20 + Math.floor((fullText.length / 30000) * 65));
-      if (onProgress) onProgress(estimatedProgress, 'AI is generating analysis... (' + Math.round(fullText.length / 1000) + 'K chars)');
+      // Detect which section is currently being generated
+      for (let i = currentSectionIdx + 1; i < SECTION_MAP.length; i++) {
+        if (fullText.includes(SECTION_MAP[i].key)) {
+          currentSectionIdx = i;
+        }
+      }
+
+      // Calculate progress: use section-based progress if detected, otherwise estimate by length
+      let pct, sectionName;
+      if (currentSectionIdx >= 0) {
+        const section = SECTION_MAP[currentSectionIdx];
+        const nextPct = currentSectionIdx < SECTION_MAP.length - 1 ? SECTION_MAP[currentSectionIdx + 1].pct : 98;
+        // Interpolate within current section based on text growth
+        pct = Math.min(nextPct - 1, section.pct);
+        sectionName = section.name;
+      } else {
+        pct = Math.min(10, 5 + Math.floor(fullText.length / 500));
+        sectionName = 'Starting analysis...';
+      }
+
+      if (onProgress) onProgress(pct, 'Generating report...', sectionName);
     }
 
     const content = fullText;
@@ -203,7 +238,7 @@ async function analyzeBusiness(url, industry, size, platforms, audience, onProgr
       throw new Error('Empty response from Claude. Please try again.');
     }
 
-    if (onProgress) onProgress(88, 'Processing marketing data...');
+    if (onProgress) onProgress(97, 'Processing marketing data...', 'Parsing response');
 
     // Parse JSON from response — handle potential markdown wrapping
     let jsonStr = content.trim();
@@ -226,7 +261,7 @@ async function analyzeBusiness(url, industry, size, platforms, audience, onProgr
       throw new Error('Failed to parse analysis data. The AI response was not valid JSON. Please try again.');
     }
 
-    if (onProgress) onProgress(90, 'Finalizing report...');
+    if (onProgress) onProgress(98, 'Finalizing report...', 'Validating data');
 
     // Validate essential fields
     if (!analysisData.business || !analysisData.trends) {
@@ -241,7 +276,7 @@ async function analyzeBusiness(url, industry, size, platforms, audience, onProgr
       model: CLAUDE_MODEL
     };
 
-    if (onProgress) onProgress(100, 'Analysis complete!');
+    if (onProgress) onProgress(100, 'Analysis complete!', '');
 
     return analysisData;
 
