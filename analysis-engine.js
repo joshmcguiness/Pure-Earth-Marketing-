@@ -478,11 +478,14 @@ async function analyzeBusiness(url, industry, size, platforms, audience, onProgr
 
 function saveAnalysis(data) {
   const saved = getSavedAnalyses();
-  const key = data.business?.url || data._meta?.url || 'unknown';
+  // Use URL + timestamp as unique key so multiple reports per business are kept
+  const url = data.business?.url || data._meta?.url || 'unknown';
+  const key = url + '|' + Date.now();
   saved[key] = {
     data: data,
     savedAt: new Date().toISOString(),
-    businessName: data.business?.name || 'Unknown Business'
+    businessName: data.business?.name || 'Unknown Business',
+    url: url
   };
   localStorage.setItem('saved_analyses', JSON.stringify(saved));
 }
@@ -495,13 +498,13 @@ function getSavedAnalyses() {
   }
 }
 
-function loadAnalysis(url) {
+function loadAnalysis(key) {
   const saved = getSavedAnalyses();
-  return saved[url]?.data || null;
+  return saved[key]?.data || null;
 }
 
-function deleteAnalysis(url) {
+function deleteAnalysis(key) {
   const saved = getSavedAnalyses();
-  delete saved[url];
+  delete saved[key];
   localStorage.setItem('saved_analyses', JSON.stringify(saved));
 }

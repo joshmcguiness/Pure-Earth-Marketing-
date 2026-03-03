@@ -330,6 +330,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const saved = getSavedAnalyses();
     const list = document.getElementById('savedList');
     const section = document.getElementById('savedSection');
+    const countBadge = document.getElementById('savedCount');
     const entries = Object.entries(saved);
 
     if (!entries.length) {
@@ -337,15 +338,20 @@ document.addEventListener('DOMContentLoaded', () => {
       return;
     }
     section.classList.remove('hidden');
+    countBadge.textContent = entries.length;
 
-    list.innerHTML = entries.sort((a, b) => (b[1].savedAt || '').localeCompare(a[1].savedAt || '')).map(([url, entry]) => {
+    // Sort newest first
+    const sorted = entries.sort((a, b) => (b[1].savedAt || '').localeCompare(a[1].savedAt || ''));
+
+    list.innerHTML = sorted.map(([key, entry]) => {
+      const displayUrl = entry.url || key.split('|')[0] || '';
       const date = entry.savedAt ? new Date(entry.savedAt).toLocaleDateString('en-AU', { weekday: 'short', month: 'short', day: 'numeric', year: 'numeric', hour: '2-digit', minute: '2-digit' }) : '';
       const industry = entry.data?.business?.industry || entry.data?._meta?.industry || '';
       const score = entry.data?.scorecard?.overall;
       const scoreHtml = score != null ? `<span class="saved-item-score">${score}/100</span>` : '';
       const partial = entry.data?._meta?.partial ? '<span class="saved-item-partial">Partial</span>' : '';
 
-      return `<div class="saved-item" data-url="${escHtml(url)}">
+      return `<div class="saved-item" data-key="${escHtml(key)}">
         <div class="saved-item-info">
           <div class="saved-item-name">${escHtml(entry.businessName)}</div>
           <div class="saved-item-meta">
@@ -353,24 +359,24 @@ document.addEventListener('DOMContentLoaded', () => {
             <span class="saved-item-date">${date}</span>
             ${partial}
           </div>
-          <div class="saved-item-url">${escHtml(url)}</div>
+          <div class="saved-item-url">${escHtml(displayUrl)}</div>
         </div>
         <div class="saved-item-right">
           ${scoreHtml}
-          <button class="saved-item-delete" data-delete="${escHtml(url)}" title="Delete">&times;</button>
+          <button class="saved-item-delete" data-delete="${escHtml(key)}" title="Delete">&times;</button>
         </div>
       </div>`;
     }).join('');
 
-    // Click to load
+    // Click to load report
     list.querySelectorAll('.saved-item').forEach(item => {
       item.addEventListener('click', e => {
         if (e.target.classList.contains('saved-item-delete')) return;
-        const url = item.dataset.url;
-        const data = loadAnalysis(url);
+        const key = item.dataset.key;
+        const data = loadAnalysis(key);
         if (data) {
           currentData = data;
-          currentUrl = url;
+          currentUrl = data.business?.url || key.split('|')[0] || '';
           showDashboard(data);
         }
       });
@@ -384,6 +390,15 @@ document.addEventListener('DOMContentLoaded', () => {
         renderSavedList();
       });
     });
+
+    // Dropdown toggle (attach once)
+    const toggle = document.getElementById('savedToggle');
+    if (toggle && !toggle._bound) {
+      toggle._bound = true;
+      toggle.addEventListener('click', () => {
+        section.classList.toggle('open');
+      });
+    }
   }
 
   // ===== DASHBOARD NAVIGATION =====
