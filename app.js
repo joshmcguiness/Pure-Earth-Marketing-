@@ -440,7 +440,16 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Export PDF button
     document.getElementById('exportBtn').addEventListener('click', () => {
-      if (currentData) exportToPDF(currentData);
+      if (!currentData) {
+        alert('No report data loaded. Please run an analysis first.');
+        return;
+      }
+      try {
+        exportToPDF(currentData);
+      } catch (err) {
+        console.error('Export PDF error:', err);
+        alert('PDF export failed: ' + (err.message || err));
+      }
     });
   }
 
