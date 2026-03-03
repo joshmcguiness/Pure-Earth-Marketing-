@@ -67,6 +67,13 @@ document.addEventListener('DOMContentLoaded', () => {
     stepQuestions.classList.remove('hidden');
   });
 
+  // Stop analysis button
+  document.getElementById('stopAnalysisBtn').addEventListener('click', () => {
+    cancelAnalysis();
+    loadingEl.classList.add('hidden');
+    stepQuestions.classList.remove('hidden');
+  });
+
   // ===== AUTH GATE =====
   const authGate = document.getElementById('authGate');
   const loginView = document.getElementById('loginView');
@@ -276,6 +283,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
     } catch (err) {
       loadingEl.classList.add('hidden');
+      if (err.message === 'ANALYSIS_CANCELLED') {
+        // User clicked Stop — already handled, just return quietly
+        return;
+      }
       if (err.message === 'SESSION_EXPIRED' || err.message === 'NOT_LOGGED_IN') {
         authGate.classList.remove('hidden');
         return;

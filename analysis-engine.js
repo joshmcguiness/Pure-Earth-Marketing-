@@ -117,11 +117,25 @@ IMPORTANT: Return ONLY valid JSON. No markdown, no code blocks, no explanation t
 ${SCHEMA_PROMPT}`;
 }
 
+// Global abort controller — allows cancellation from outside
+let currentAbortController = null;
+
+function cancelAnalysis() {
+  if (currentAbortController) {
+    currentAbortController.abort();
+    currentAbortController = null;
+  }
+}
+
 async function analyzeBusiness(url, industry, size, platforms, audience, onProgress) {
   const token = getSessionToken();
   if (!token) {
     throw new Error('NOT_LOGGED_IN');
   }
+
+  // Create a new AbortController for this request
+  currentAbortController = new AbortController();
+  const signal = currentAbortController.signal;
 
   // Progress updates
   if (onProgress) onProgress(2, 'Preparing analysis request...', '');
@@ -146,7 +160,8 @@ async function analyzeBusiness(url, industry, size, platforms, audience, onProgr
             content: prompt
           }
         ]
-      })
+      }),
+      signal: signal
     });
 
     if (!response.ok) {
@@ -281,10 +296,15 @@ async function analyzeBusiness(url, industry, size, platforms, audience, onProgr
     return analysisData;
 
   } catch (err) {
+    if (err.name === 'AbortError') {
+      throw new Error('ANALYSIS_CANCELLED');
+    }
     if (err.name === 'TypeError' && err.message.includes('Failed to fetch')) {
       throw new Error('Network error. Please check your internet connection and try again.');
     }
     throw err;
+  } finally {
+    currentAbortController = null;
   }
 }
 
