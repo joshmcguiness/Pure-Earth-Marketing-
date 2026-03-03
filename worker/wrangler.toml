@@ -10,7 +10,7 @@ ALLOWED_ORIGIN = "https://joshmcguiness.github.io"
 # Then paste the id below
 [[kv_namespaces]]
 binding = "AUTH"
-id = "PASTE_YOUR_KV_NAMESPACE_ID_HERE"
+id = "666e02cbb9664f9a90b96f96e4fdf2cb"
 
 # Secrets (set via CLI — never stored in this file):
 # wrangler secret put ANTHROPIC_API_KEY

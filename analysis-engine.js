@@ -4,7 +4,7 @@
 // ============================================
 
 // UPDATE THIS after deploying your Cloudflare Worker:
-const WORKER_BASE_URL = 'https://marketing-tool-proxy.YOUR_SUBDOMAIN.workers.dev';
+const WORKER_BASE_URL = 'https://marketing-tool-proxy.josh-mcguiness.workers.dev';
 const WORKER_URL = WORKER_BASE_URL + '/api/analyze';
 const CLAUDE_MODEL = 'claude-sonnet-4-20250514';
 
