@@ -4,23 +4,77 @@
 // ============================================
 
 // UPDATE THIS after deploying your Cloudflare Worker:
-const WORKER_URL = 'https://marketing-tool-proxy.YOUR_SUBDOMAIN.workers.dev/api/analyze';
+const WORKER_BASE_URL = 'https://marketing-tool-proxy.YOUR_SUBDOMAIN.workers.dev';
+const WORKER_URL = WORKER_BASE_URL + '/api/analyze';
 const CLAUDE_MODEL = 'claude-sonnet-4-20250514';
 
-function getAccessPassword() {
-  return localStorage.getItem('access_password') || '';
+// ===== SESSION MANAGEMENT =====
+
+function getSessionToken() {
+  return localStorage.getItem('session_token') || '';
 }
 
-function saveAccessPassword(password) {
-  localStorage.setItem('access_password', password.trim());
+function getSessionUsername() {
+  return localStorage.getItem('session_username') || '';
 }
 
-function clearAccessPassword() {
-  localStorage.removeItem('access_password');
+function saveSession(token, username) {
+  localStorage.setItem('session_token', token);
+  localStorage.setItem('session_username', username);
+}
+
+function clearSession() {
+  localStorage.removeItem('session_token');
+  localStorage.removeItem('session_username');
 }
 
 function isLoggedIn() {
-  return !!getAccessPassword();
+  return !!getSessionToken();
+}
+
+// ===== AUTH API FUNCTIONS =====
+
+async function registerUser(username, password, inviteCode) {
+  const response = await fetch(WORKER_BASE_URL + '/api/register', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ username, password, inviteCode })
+  });
+  const data = await response.json();
+  if (!response.ok) {
+    throw new Error(data.error || 'Registration failed');
+  }
+  saveSession(data.sessionToken, data.username);
+  return data;
+}
+
+async function loginUser(username, password) {
+  const response = await fetch(WORKER_BASE_URL + '/api/login', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ username, password })
+  });
+  const data = await response.json();
+  if (!response.ok) {
+    throw new Error(data.error || 'Login failed');
+  }
+  saveSession(data.sessionToken, data.username);
+  return data;
+}
+
+async function logoutUser() {
+  const token = getSessionToken();
+  if (token) {
+    try {
+      await fetch(WORKER_BASE_URL + '/api/logout', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'X-Session-Token': token }
+      });
+    } catch (e) {
+      // Ignore network errors on logout — clear locally regardless
+    }
+  }
+  clearSession();
 }
 
 function buildAnalysisPrompt(url, industry, size, platforms, audience) {
@@ -64,8 +118,8 @@ ${SCHEMA_PROMPT}`;
 }
 
 async function analyzeBusiness(url, industry, size, platforms, audience, onProgress) {
-  const password = getAccessPassword();
-  if (!password) {
+  const token = getSessionToken();
+  if (!token) {
     throw new Error('NOT_LOGGED_IN');
   }
 
@@ -81,7 +135,7 @@ async function analyzeBusiness(url, industry, size, platforms, audience, onProgr
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        'X-Access-Password': password
+        'X-Session-Token': token
       },
       body: JSON.stringify({
         model: CLAUDE_MODEL,
@@ -100,8 +154,8 @@ async function analyzeBusiness(url, industry, size, platforms, audience, onProgr
     if (!response.ok) {
       const errorData = await response.json().catch(() => ({}));
       if (response.status === 401) {
-        clearAccessPassword();
-        throw new Error('INVALID_PASSWORD');
+        clearSession();
+        throw new Error('SESSION_EXPIRED');
       }
       if (response.status === 429) {
         throw new Error('Rate limited. Please wait a moment and try again.');

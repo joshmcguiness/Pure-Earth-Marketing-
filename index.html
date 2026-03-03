@@ -11,16 +11,54 @@
 </head>
 <body>
 
-  <!-- ==================== LOGIN GATE ==================== -->
-  <div id="loginGate" class="login-gate">
-    <div class="login-card">
+  <!-- ==================== AUTH GATE ==================== -->
+  <div id="authGate" class="login-gate">
+    <div class="auth-card">
       <h1 class="login-title">Marketing Analysis Tool</h1>
-      <p class="login-subtitle">Enter your access password to continue</p>
-      <div class="login-form">
-        <input type="password" id="loginPassword" class="login-input" placeholder="Access password" autocomplete="current-password">
-        <button class="login-btn" id="loginBtn">Sign In</button>
+
+      <!-- LOGIN VIEW -->
+      <div id="loginView">
+        <p class="login-subtitle">Sign in to continue</p>
+        <div class="auth-form">
+          <div class="auth-field">
+            <label class="auth-label" for="loginUsername">Username</label>
+            <input type="text" id="loginUsername" class="auth-input" placeholder="Username" autocomplete="username">
+          </div>
+          <div class="auth-field">
+            <label class="auth-label" for="loginPassword">Password</label>
+            <input type="password" id="loginPassword" class="auth-input" placeholder="Password" autocomplete="current-password">
+          </div>
+          <button class="login-btn auth-submit-btn" id="loginBtn">Sign In</button>
+        </div>
+        <p class="login-error hidden" id="loginError"></p>
+        <p class="auth-toggle">Don't have an account? <a href="#" id="showRegister">Create Account</a></p>
       </div>
-      <p class="login-error hidden" id="loginError">Incorrect password. Please try again.</p>
+
+      <!-- REGISTER VIEW -->
+      <div id="registerView" class="hidden">
+        <p class="login-subtitle">Create your account</p>
+        <div class="auth-form">
+          <div class="auth-field">
+            <label class="auth-label" for="registerInviteCode">Invite Code</label>
+            <input type="text" id="registerInviteCode" class="auth-input" placeholder="Enter invite code" autocomplete="off">
+          </div>
+          <div class="auth-field">
+            <label class="auth-label" for="registerUsername">Username</label>
+            <input type="text" id="registerUsername" class="auth-input" placeholder="Choose a username" autocomplete="username">
+          </div>
+          <div class="auth-field">
+            <label class="auth-label" for="registerPassword">Password</label>
+            <input type="password" id="registerPassword" class="auth-input" placeholder="Min 8 characters" autocomplete="new-password">
+          </div>
+          <div class="auth-field">
+            <label class="auth-label" for="registerPasswordConfirm">Confirm Password</label>
+            <input type="password" id="registerPasswordConfirm" class="auth-input" placeholder="Confirm password" autocomplete="new-password">
+          </div>
+          <button class="login-btn auth-submit-btn" id="registerBtn">Create Account</button>
+        </div>
+        <p class="login-error hidden" id="registerError"></p>
+        <p class="auth-toggle">Already have an account? <a href="#" id="showLogin">Sign In</a></p>
+      </div>
     </div>
   </div>
 
@@ -116,7 +154,10 @@
       <div class="saved-list" id="savedList"></div>
     </div>
 
-    <button class="logout-btn" id="logoutBtn">Sign Out</button>
+    <div class="user-info">
+      <span class="user-greeting" id="userGreeting"></span>
+      <button class="logout-btn" id="logoutBtn">Sign Out</button>
+    </div>
   </div>
 
   <!-- ==================== DASHBOARD ==================== -->

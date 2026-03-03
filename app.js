@@ -67,63 +67,163 @@ document.addEventListener('DOMContentLoaded', () => {
     stepQuestions.classList.remove('hidden');
   });
 
-  // ===== LOGIN GATE =====
-  const loginGate = document.getElementById('loginGate');
+  // ===== AUTH GATE =====
+  const authGate = document.getElementById('authGate');
+  const loginView = document.getElementById('loginView');
+  const registerView = document.getElementById('registerView');
+
+  // Login form refs
+  const loginUsername = document.getElementById('loginUsername');
   const loginPassword = document.getElementById('loginPassword');
   const loginBtn = document.getElementById('loginBtn');
   const loginError = document.getElementById('loginError');
 
-  // Show/hide login gate based on stored password
+  // Register form refs
+  const registerInviteCode = document.getElementById('registerInviteCode');
+  const registerUsername = document.getElementById('registerUsername');
+  const registerPassword = document.getElementById('registerPassword');
+  const registerPasswordConfirm = document.getElementById('registerPasswordConfirm');
+  const registerBtn = document.getElementById('registerBtn');
+  const registerError = document.getElementById('registerError');
+
+  // User greeting
+  const userGreeting = document.getElementById('userGreeting');
+
+  // Show/hide auth gate based on session
   if (isLoggedIn()) {
-    loginGate.classList.add('hidden');
+    authGate.classList.add('hidden');
+    updateUserGreeting();
   }
 
+  function updateUserGreeting() {
+    const username = getSessionUsername();
+    if (userGreeting && username) {
+      userGreeting.textContent = 'Signed in as ' + username;
+    }
+  }
+
+  // Toggle between login and register views
+  document.getElementById('showRegister').addEventListener('click', e => {
+    e.preventDefault();
+    loginView.classList.add('hidden');
+    registerView.classList.remove('hidden');
+    loginError.classList.add('hidden');
+    registerError.classList.add('hidden');
+    registerInviteCode.focus();
+  });
+
+  document.getElementById('showLogin').addEventListener('click', e => {
+    e.preventDefault();
+    registerView.classList.add('hidden');
+    loginView.classList.remove('hidden');
+    loginError.classList.add('hidden');
+    registerError.classList.add('hidden');
+    loginUsername.focus();
+  });
+
+  // Login handlers
   loginBtn.addEventListener('click', handleLogin);
   loginPassword.addEventListener('keydown', e => {
     if (e.key === 'Enter') handleLogin();
   });
+  loginUsername.addEventListener('keydown', e => {
+    if (e.key === 'Enter') loginPassword.focus();
+  });
 
   async function handleLogin() {
-    const password = loginPassword.value.trim();
+    const username = loginUsername.value.trim();
+    const password = loginPassword.value;
+    if (!username) { loginUsername.focus(); return; }
     if (!password) { loginPassword.focus(); return; }
 
     loginBtn.disabled = true;
-    loginBtn.textContent = 'Verifying...';
+    loginBtn.textContent = 'Signing in...';
     loginError.classList.add('hidden');
 
     try {
-      const verifyUrl = WORKER_URL.replace('/api/analyze', '/api/verify');
-      const response = await fetch(verifyUrl, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'X-Access-Password': password
-        }
-      });
-
-      if (response.ok) {
-        saveAccessPassword(password);
-        loginGate.classList.add('hidden');
-        loginPassword.value = '';
-      } else {
-        loginError.classList.remove('hidden');
-        loginError.textContent = 'Incorrect password. Please try again.';
-        loginPassword.value = '';
-        loginPassword.focus();
-      }
+      await loginUser(username, password);
+      authGate.classList.add('hidden');
+      loginUsername.value = '';
+      loginPassword.value = '';
+      updateUserGreeting();
     } catch (err) {
-      loginError.textContent = 'Connection error. Please try again.';
+      loginError.textContent = err.message || 'Login failed. Please try again.';
       loginError.classList.remove('hidden');
+      loginPassword.value = '';
+      loginPassword.focus();
     }
 
     loginBtn.disabled = false;
     loginBtn.textContent = 'Sign In';
   }
 
+  // Register handlers
+  registerBtn.addEventListener('click', handleRegister);
+  registerPasswordConfirm.addEventListener('keydown', e => {
+    if (e.key === 'Enter') handleRegister();
+  });
+
+  async function handleRegister() {
+    const inviteCode = registerInviteCode.value.trim();
+    const username = registerUsername.value.trim();
+    const password = registerPassword.value;
+    const passwordConfirm = registerPasswordConfirm.value;
+
+    // Client-side validation
+    if (!inviteCode) { registerInviteCode.focus(); return; }
+    if (!username) { registerUsername.focus(); return; }
+    if (username.length < 3 || username.length > 30) {
+      showRegisterError('Username must be 3-30 characters.');
+      registerUsername.focus();
+      return;
+    }
+    if (!/^[a-zA-Z0-9_-]+$/.test(username)) {
+      showRegisterError('Username can only contain letters, numbers, hyphens, and underscores.');
+      registerUsername.focus();
+      return;
+    }
+    if (password.length < 8) {
+      showRegisterError('Password must be at least 8 characters.');
+      registerPassword.focus();
+      return;
+    }
+    if (password !== passwordConfirm) {
+      showRegisterError('Passwords do not match.');
+      registerPasswordConfirm.focus();
+      return;
+    }
+
+    registerBtn.disabled = true;
+    registerBtn.textContent = 'Creating account...';
+    registerError.classList.add('hidden');
+
+    try {
+      await registerUser(username, password, inviteCode);
+      authGate.classList.add('hidden');
+      registerInviteCode.value = '';
+      registerUsername.value = '';
+      registerPassword.value = '';
+      registerPasswordConfirm.value = '';
+      updateUserGreeting();
+    } catch (err) {
+      showRegisterError(err.message || 'Registration failed. Please try again.');
+    }
+
+    registerBtn.disabled = false;
+    registerBtn.textContent = 'Create Account';
+  }
+
+  function showRegisterError(msg) {
+    registerError.textContent = msg;
+    registerError.classList.remove('hidden');
+  }
+
   // Logout button
-  document.getElementById('logoutBtn').addEventListener('click', () => {
-    clearAccessPassword();
-    loginGate.classList.remove('hidden');
+  document.getElementById('logoutBtn').addEventListener('click', async () => {
+    await logoutUser();
+    authGate.classList.remove('hidden');
+    loginView.classList.remove('hidden');
+    registerView.classList.add('hidden');
   });
 
   // Load saved analyses list
@@ -145,7 +245,7 @@ document.addEventListener('DOMContentLoaded', () => {
     if (!url) { document.getElementById('businessUrl').focus(); return; }
     if (!industry) { alert('Please select an industry.'); return; }
     if (!isLoggedIn()) {
-      loginGate.classList.remove('hidden');
+      authGate.classList.remove('hidden');
       return;
     }
 
@@ -171,8 +271,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
     } catch (err) {
       loadingEl.classList.add('hidden');
-      if (err.message === 'INVALID_PASSWORD' || err.message === 'NOT_LOGGED_IN') {
-        loginGate.classList.remove('hidden');
+      if (err.message === 'SESSION_EXPIRED' || err.message === 'NOT_LOGGED_IN') {
+        authGate.classList.remove('hidden');
         return;
       }
       errorEl.classList.remove('hidden');
