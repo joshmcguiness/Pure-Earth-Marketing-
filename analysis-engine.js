@@ -280,6 +280,12 @@ async function analyzeBusiness(url, industry, size, platforms, audience, onProgr
     // Read the full response (blocks until complete)
     let fullText = '';
     let stopReason = null;
+    let deltaCount = 0;
+    let dataLineCount = 0;
+    let sseParseErrors = 0;
+    let sseError = null;
+    let firstFailedData = '';
+    let responseLength = 0;
 
     try {
       const responseText = await response.text();
@@ -287,16 +293,17 @@ async function analyzeBusiness(url, industry, size, platforms, audience, onProgr
       // Stop simulated progress
       clearInterval(simInterval);
 
-      console.log('Response text length:', responseText.length);
+      responseLength = responseText.length;
+      console.log('Response text length:', responseLength);
       console.log('Response first 300 chars:', responseText.substring(0, 300));
 
       // Always try SSE parsing first (Worker forces streaming)
       const lines = responseText.split('\n');
-      let deltaCount = 0;
 
       for (const line of lines) {
         const trimmed = line.trim();
         if (trimmed.startsWith('data:')) {
+          dataLineCount++;
           // Handle both "data: {...}" and "data:{...}" formats
           const data = trimmed.startsWith('data: ') ? trimmed.slice(6).trim() : trimmed.slice(5).trim();
           if (data === '[DONE]') continue;
@@ -310,13 +317,26 @@ async function analyzeBusiness(url, industry, size, platforms, audience, onProgr
             if (event.type === 'message_delta' && event.delta?.stop_reason) {
               stopReason = event.delta.stop_reason;
             }
-          } catch {}
+            // Catch API errors returned within the stream
+            if (event.type === 'error') {
+              sseError = event.error?.message || JSON.stringify(event.error || event);
+            }
+          } catch (e) {
+            sseParseErrors++;
+            if (sseParseErrors === 1) firstFailedData = data.substring(0, 200);
+          }
         }
       }
 
-      console.log('SSE deltas:', deltaCount, 'Text length:', fullText.length, 'Stop reason:', stopReason);
+      console.log('SSE: dataLines=' + dataLineCount, 'deltas=' + deltaCount, 'parseErrors=' + sseParseErrors, 'textLen=' + fullText.length, 'stop=' + stopReason, 'sseErr=' + sseError);
+      if (firstFailedData) console.log('First failed data line:', firstFailedData);
 
-      // If SSE parsing didn't extract anything, fall back to direct JSON (non-streaming)
+      // If the API returned an error event within the stream
+      if (sseError) {
+        throw new Error('AI analysis error: ' + sseError);
+      }
+
+      // If SSE parsing didn't extract anything, try direct JSON (non-streaming fallback)
       if (!fullText) {
         console.log('SSE yielded no text, trying direct JSON parse...');
         try {
@@ -326,11 +346,12 @@ async function analyzeBusiness(url, industry, size, platforms, audience, onProgr
               if (block.type === 'text') fullText += block.text;
             }
             stopReason = jsonResp.stop_reason || null;
-          } else {
-            fullText = responseText;
           }
+          // Note: Don't set fullText to raw responseText — it would be SSE gibberish
         } catch {
-          fullText = responseText;
+          // Neither SSE nor JSON worked — response format is unknown
+          console.error('Both SSE and JSON parsing failed');
+          console.error('Response start:', responseText.substring(0, 500));
         }
         console.log('Fallback extracted text length:', fullText.length);
       }
@@ -339,14 +360,16 @@ async function analyzeBusiness(url, industry, size, platforms, audience, onProgr
     } catch (streamErr) {
       clearInterval(simInterval);
       console.error('Stream reading error:', streamErr);
-      throw new Error('Failed to read analysis response. Please try again. (' + streamErr.message + ')');
+      throw streamErr.message?.startsWith('AI analysis error') ? streamErr :
+        new Error('Failed to read analysis response. Please try again. (' + streamErr.message + ')');
     }
 
     const content = fullText;
+    const debugInfo = ' [Debug: respLen=' + responseLength + ' dataLines=' + dataLineCount + ' deltas=' + deltaCount + ' parseErrs=' + sseParseErrors + ' textLen=' + content.length + ' stop=' + stopReason + (firstFailedData ? ' firstFail="' + firstFailedData.substring(0, 80) + '"' : '') + (content ? ' start="' + content.substring(0, 80) + '"' : '') + ']';
 
     if (!content) {
-      console.error('Empty content. Response type:', response.headers.get('content-type'));
-      throw new Error('Empty response from Claude. Please try again.');
+      console.error('Empty content after all parsing attempts');
+      throw new Error('Empty response from AI.' + debugInfo);
     }
 
     if (onProgress) onProgress(97, 'Processing marketing data...', 'Parsing response');
@@ -390,18 +413,18 @@ async function analyzeBusiness(url, industry, size, platforms, audience, onProgr
             } catch (repairErr) {
               console.error('JSON repair also failed:', repairErr.message);
               console.error('Content end (last 500 chars):', content.substring(content.length - 500));
-              const hint = stopReason === 'max_tokens' ? ' The AI response was cut off because it exceeded the length limit.' : '';
-              throw new Error('Failed to parse analysis data.' + hint + ' Please try again.');
+              const hint = stopReason === 'max_tokens' ? ' The AI response was cut off (too long).' : '';
+              throw new Error('Failed to parse analysis data.' + hint + debugInfo);
             }
           } else {
             console.error('JSON repair returned null. Content end:', content.substring(content.length - 500));
-            throw new Error('Failed to parse analysis data. The response could not be recovered. Please try again.');
+            throw new Error('Failed to parse analysis data.' + debugInfo);
           }
         }
       } else {
         console.error('No JSON object found. Content length:', content.length);
         console.error('Content start:', content.substring(0, 500));
-        throw new Error('Failed to parse analysis data. No JSON found in response. Please try again.');
+        throw new Error('No JSON found in AI response.' + debugInfo);
       }
     }
 
