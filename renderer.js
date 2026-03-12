@@ -266,7 +266,13 @@ function renderScorecard(scorecard) {
 
 // ===== IMPROVED POSTS =====
 function renderImprovedPosts(posts) {
-  if (!posts) return;
+  if (!posts) {
+    ['tiktok', 'instagram', 'facebook', 'linkedin'].forEach(platform => {
+      const container = document.getElementById(`improved-${platform}`);
+      if (container) container.innerHTML = '<div class="empty-section-msg">No improved posts data available. Try re-running the analysis.</div>';
+    });
+    return;
+  }
   ['tiktok', 'instagram', 'facebook', 'linkedin'].forEach(platform => {
     const container = document.getElementById(`improved-${platform}`);
     if (!container) return;
@@ -292,7 +298,11 @@ function renderImprovedPosts(posts) {
 
 // ===== KPI =====
 function renderKPI(kpi) {
-  if (!kpi) return;
+  if (!kpi) {
+    const tbody = document.getElementById('kpi-perf-body');
+    if (tbody) tbody.innerHTML = '<tr><td colspan="12" class="empty-section-msg">No KPI data available. Try re-running the analysis.</td></tr>';
+    return;
+  }
   const tbody = document.getElementById('kpi-perf-body');
   const targetsEl = document.getElementById('kpi-targets');
   const formulasEl = document.getElementById('kpi-formulas');
@@ -329,7 +339,11 @@ function renderKPI(kpi) {
 
 // ===== ROADMAP =====
 function renderRoadmap(roadmap) {
-  if (!roadmap) return;
+  if (!roadmap) {
+    const phasesEl = document.getElementById('roadmap-phases');
+    if (phasesEl) phasesEl.innerHTML = '<div class="empty-section-msg">No roadmap data available. Try re-running the analysis.</div>';
+    return;
+  }
   const phasesEl = document.getElementById('roadmap-phases');
   const recsEl = document.getElementById('roadmap-recs');
 
@@ -349,7 +363,8 @@ function renderRoadmap(roadmap) {
 
   if (recsEl) {
     recsEl.innerHTML = (roadmap.recommendations || []).map(r => {
-      const impactClass = r.impact.includes('HIGHEST') ? 'highest' : r.impact.includes('HIGH') ? 'high' : 'medium';
+      const impact = r.impact || '';
+      const impactClass = impact.includes('HIGHEST') ? 'highest' : impact.includes('HIGH') ? 'high' : 'medium';
       return `<div class="rec-card">
         <div class="rec-rank">${r.rank}</div>
         <div class="rec-content"><h4>${esc(r.title)}</h4><p>${esc(r.description)}</p></div>

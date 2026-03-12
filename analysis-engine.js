@@ -205,7 +205,7 @@ async function makeApiCall(prompt, signal, sessionToken) {
     },
     body: JSON.stringify({
       model: CLAUDE_MODEL,
-      max_tokens: 16000,
+      max_tokens: 16384,
       messages: [{ role: 'user', content: prompt }]
     }),
     signal: signal
@@ -447,12 +447,21 @@ async function analyzeBusiness(url, industry, size, platforms, audience, onProgr
 
     const analysisData = { ...part1Data, ...part2Data };
 
+    // Log which Part 2 sections were received
+    const p2Sections = ['improvedPosts', 'kpi', 'roadmap', 'seo', 'llmOpportunities'];
+    const p2Present = p2Sections.filter(k => analysisData[k]);
+    const p2Missing = p2Sections.filter(k => !analysisData[k]);
+    console.log('Merge complete. Part 2 sections present:', p2Present.join(', ') || 'NONE');
+    if (p2Missing.length) console.warn('Part 2 sections MISSING:', p2Missing.join(', '));
+
     // Add metadata
     analysisData._meta = {
       analyzedAt: new Date().toISOString(),
       url: url,
       industry: industry,
-      model: CLAUDE_MODEL
+      model: CLAUDE_MODEL,
+      partial: p2Missing.length > 0,
+      missingSections: p2Missing
     };
 
     if (onProgress) onProgress(98, 'Finalising report...', 'Validating data');
