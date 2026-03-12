@@ -236,6 +236,17 @@ document.addEventListener('DOMContentLoaded', () => {
   // Load saved analyses list
   renderSavedList();
 
+  // Landing page tab switching
+  document.querySelectorAll('.landing-tab').forEach(tab => {
+    tab.addEventListener('click', () => {
+      document.querySelectorAll('.landing-tab').forEach(t => t.classList.remove('active'));
+      tab.classList.add('active');
+      document.querySelectorAll('.landing-tab-panel').forEach(p => p.classList.remove('active'));
+      const target = document.getElementById('panel-' + tab.dataset.landingTab);
+      if (target) target.classList.add('active');
+    });
+  });
+
   // ===== ANALYSIS FLOW =====
 
   async function startAnalysis() {
@@ -329,16 +340,22 @@ document.addEventListener('DOMContentLoaded', () => {
   function renderSavedList() {
     const saved = getSavedAnalyses();
     const list = document.getElementById('savedList');
-    const section = document.getElementById('savedSection');
-    const countBadge = document.getElementById('savedCount');
+    const tabCount = document.getElementById('savedTabCount');
+    const emptyMsg = document.getElementById('savedEmpty');
     const entries = Object.entries(saved);
 
+    // Update tab badge count
+    if (tabCount) {
+      tabCount.textContent = entries.length;
+      tabCount.classList.toggle('hidden', entries.length === 0);
+    }
+
     if (!entries.length) {
-      section.classList.add('hidden');
+      list.innerHTML = '';
+      if (emptyMsg) emptyMsg.classList.remove('hidden');
       return;
     }
-    section.classList.remove('hidden');
-    countBadge.textContent = entries.length;
+    if (emptyMsg) emptyMsg.classList.add('hidden');
 
     // Sort newest first
     const sorted = entries.sort((a, b) => (b[1].savedAt || '').localeCompare(a[1].savedAt || ''));
@@ -390,15 +407,6 @@ document.addEventListener('DOMContentLoaded', () => {
         renderSavedList();
       });
     });
-
-    // Dropdown toggle (attach once)
-    const toggle = document.getElementById('savedToggle');
-    if (toggle && !toggle._bound) {
-      toggle._bound = true;
-      toggle.addEventListener('click', () => {
-        section.classList.toggle('open');
-      });
-    }
   }
 
   // ===== DASHBOARD NAVIGATION =====

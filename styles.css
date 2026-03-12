@@ -318,62 +318,78 @@ body {
   font-family: var(--font-body);
 }
 
-/* Previously Run Reports */
-/* Previously Run Reports — Collapsible Dropdown */
-.saved-section {
+/* Landing Page Tabs */
+.landing-tabs {
+  display: flex;
+  gap: 0;
   width: 100%;
   max-width: 680px;
-  margin-top: 36px;
-  margin-bottom: 24px;
-  background: rgba(255, 255, 255, 0.04);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  border-radius: var(--radius-md);
-  overflow: hidden;
+  margin-bottom: 0;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.12);
 }
-.saved-header {
+.landing-tab {
+  flex: 1;
+  padding: 14px 20px;
+  background: none;
+  border: none;
+  color: rgba(255, 255, 255, 0.45);
+  font-family: var(--font-body);
+  font-size: 0.95rem;
+  font-weight: 500;
+  cursor: pointer;
+  position: relative;
+  transition: color 0.2s;
   display: flex;
   align-items: center;
-  padding: 18px 24px;
-  cursor: pointer;
-  user-select: none;
-  transition: background 0.2s;
+  justify-content: center;
+  gap: 8px;
 }
-.saved-header:hover {
-  background: rgba(255, 255, 255, 0.06);
+.landing-tab:hover { color: rgba(255, 255, 255, 0.7); }
+.landing-tab.active {
+  color: white;
 }
-.saved-title {
-  font-family: var(--font-heading);
-  font-size: 1.3rem;
-  margin: 0;
-  flex: 1;
+.landing-tab.active::after {
+  content: '';
+  position: absolute;
+  bottom: -1px;
+  left: 20%;
+  right: 20%;
+  height: 2px;
+  background: var(--pe-forest);
+  border-radius: 1px;
 }
-.saved-count {
+.landing-tab-count {
   background: var(--pe-forest);
   color: white;
-  font-size: 0.75rem;
+  font-size: 0.7rem;
   font-weight: 600;
-  padding: 2px 9px;
-  border-radius: 10px;
-  margin-right: 12px;
+  padding: 1px 7px;
+  border-radius: 8px;
+  min-width: 18px;
+  text-align: center;
 }
-.saved-chevron {
-  opacity: 0.5;
-  transition: transform 0.3s ease;
-  flex-shrink: 0;
-}
-.saved-section.open .saved-chevron {
-  transform: rotate(180deg);
+.landing-tab-count.hidden { display: none; }
+.landing-tab-panel { display: none; width: 100%; max-width: 680px; }
+.landing-tab-panel.active { display: block; }
+
+/* Previously Run Reports */
+.saved-section {
+  width: 100%;
+  padding-top: 16px;
 }
 .saved-list {
-  display: none;
+  display: flex;
   flex-direction: column;
   gap: 6px;
-  padding: 0 16px 16px;
-  max-height: 400px;
+  max-height: 500px;
   overflow-y: auto;
 }
-.saved-section.open .saved-list {
-  display: flex;
+.saved-empty {
+  text-align: center;
+  padding: 48px 20px;
+  color: rgba(255, 255, 255, 0.35);
+  font-size: 0.95rem;
+  font-style: italic;
 }
 .saved-item {
   display: flex;

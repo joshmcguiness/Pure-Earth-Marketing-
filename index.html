@@ -69,99 +69,106 @@
       <p class="landing-subtitle">AI-powered marketing effectiveness analysis for any business</p>
     </div>
 
-    <div class="landing-form">
-      <div class="form-step" id="step-url">
-        <label class="form-label">Enter your business website</label>
-        <div class="url-input-wrapper">
-          <input type="url" id="businessUrl" class="url-input" placeholder="https://yourbusiness.com" autocomplete="url">
-          <button class="url-next-btn" id="urlNextBtn">Next &rarr;</button>
-        </div>
-      </div>
+    <!-- Landing Tabs -->
+    <div class="landing-tabs">
+      <button class="landing-tab active" data-landing-tab="new">New Analysis</button>
+      <button class="landing-tab" data-landing-tab="saved">Previously Run Reports <span class="landing-tab-count hidden" id="savedTabCount">0</span></button>
+    </div>
 
-      <div class="form-step hidden" id="step-questions">
-        <div class="question-grid">
-          <div class="question-group">
-            <label class="form-label">Industry</label>
-            <select id="industrySelect" class="form-select">
-              <option value="">Select industry...</option>
-              <option value="Beauty & Skincare">Beauty & Skincare</option>
-              <option value="Health & Wellness">Health & Wellness</option>
-              <option value="Food & Beverage">Food & Beverage</option>
-              <option value="Fashion & Apparel">Fashion & Apparel</option>
-              <option value="Technology & SaaS">Technology & SaaS</option>
-              <option value="Fitness & Sports">Fitness & Sports</option>
-              <option value="Home & Living">Home & Living</option>
-              <option value="Education & Coaching">Education & Coaching</option>
-              <option value="Real Estate">Real Estate</option>
-              <option value="Hospitality & Travel">Hospitality & Travel</option>
-              <option value="Financial Services">Financial Services</option>
-              <option value="Automotive">Automotive</option>
-              <option value="Other">Other</option>
-            </select>
-            <input type="text" id="industryCustom" class="form-input hidden" placeholder="Enter your industry...">
+    <!-- Tab: New Analysis -->
+    <div class="landing-tab-panel active" id="panel-new">
+      <div class="landing-form">
+        <div class="form-step" id="step-url">
+          <label class="form-label">Enter your business website</label>
+          <div class="url-input-wrapper">
+            <input type="url" id="businessUrl" class="url-input" placeholder="https://yourbusiness.com" autocomplete="url">
+            <button class="url-next-btn" id="urlNextBtn">Next &rarr;</button>
           </div>
+        </div>
 
-          <div class="question-group">
-            <label class="form-label">Business Size</label>
-            <div class="size-btns">
-              <button class="size-btn" data-size="Small (1-10 employees)">Small</button>
-              <button class="size-btn" data-size="Medium (11-100 employees)">Medium</button>
-              <button class="size-btn" data-size="Large (100+ employees)">Large</button>
+        <div class="form-step hidden" id="step-questions">
+          <div class="question-grid">
+            <div class="question-group">
+              <label class="form-label">Industry</label>
+              <select id="industrySelect" class="form-select">
+                <option value="">Select industry...</option>
+                <option value="Beauty & Skincare">Beauty & Skincare</option>
+                <option value="Health & Wellness">Health & Wellness</option>
+                <option value="Food & Beverage">Food & Beverage</option>
+                <option value="Fashion & Apparel">Fashion & Apparel</option>
+                <option value="Technology & SaaS">Technology & SaaS</option>
+                <option value="Fitness & Sports">Fitness & Sports</option>
+                <option value="Home & Living">Home & Living</option>
+                <option value="Education & Coaching">Education & Coaching</option>
+                <option value="Real Estate">Real Estate</option>
+                <option value="Hospitality & Travel">Hospitality & Travel</option>
+                <option value="Financial Services">Financial Services</option>
+                <option value="Automotive">Automotive</option>
+                <option value="Other">Other</option>
+              </select>
+              <input type="text" id="industryCustom" class="form-input hidden" placeholder="Enter your industry...">
+            </div>
+
+            <div class="question-group">
+              <label class="form-label">Business Size</label>
+              <div class="size-btns">
+                <button class="size-btn" data-size="Small (1-10 employees)">Small</button>
+                <button class="size-btn" data-size="Medium (11-100 employees)">Medium</button>
+                <button class="size-btn" data-size="Large (100+ employees)">Large</button>
+              </div>
+            </div>
+
+            <div class="question-group">
+              <label class="form-label">Active / Target Platforms</label>
+              <div class="platform-checks">
+                <label class="check-label"><input type="checkbox" value="TikTok" checked> TikTok</label>
+                <label class="check-label"><input type="checkbox" value="Instagram" checked> Instagram</label>
+                <label class="check-label"><input type="checkbox" value="Facebook" checked> Facebook</label>
+                <label class="check-label"><input type="checkbox" value="LinkedIn"> LinkedIn</label>
+              </div>
+            </div>
+
+            <div class="question-group full-width">
+              <label class="form-label">Target Audience</label>
+              <input type="text" id="targetAudience" class="form-input" placeholder="e.g. Australian women 25-45 interested in natural skincare">
             </div>
           </div>
 
-          <div class="question-group">
-            <label class="form-label">Active / Target Platforms</label>
-            <div class="platform-checks">
-              <label class="check-label"><input type="checkbox" value="TikTok" checked> TikTok</label>
-              <label class="check-label"><input type="checkbox" value="Instagram" checked> Instagram</label>
-              <label class="check-label"><input type="checkbox" value="Facebook" checked> Facebook</label>
-              <label class="check-label"><input type="checkbox" value="LinkedIn"> LinkedIn</label>
-            </div>
-          </div>
-
-          <div class="question-group full-width">
-            <label class="form-label">Target Audience</label>
-            <input type="text" id="targetAudience" class="form-input" placeholder="e.g. Australian women 25-45 interested in natural skincare">
-          </div>
+          <button class="analyze-btn" id="analyzeBtn">
+            <svg class="analyze-icon" viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+            Analyze Business
+          </button>
         </div>
 
-        <button class="analyze-btn" id="analyzeBtn">
-          <svg class="analyze-icon" viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
-          Analyze Business
-        </button>
-      </div>
-
-      <!-- Loading State -->
-      <div class="analysis-loading hidden" id="analysisLoading">
-        <div class="loading-spinner"></div>
-        <div class="loading-progress">
-          <div class="loading-bar"><div class="loading-fill" id="loadingFill"></div></div>
-          <div class="loading-pct" id="loadingPct">0%</div>
-          <span class="loading-label" id="loadingLabel">Preparing analysis...</span>
-          <span class="loading-section" id="loadingSection"></span>
+        <!-- Loading State -->
+        <div class="analysis-loading hidden" id="analysisLoading">
+          <div class="loading-spinner"></div>
+          <div class="loading-progress">
+            <div class="loading-bar"><div class="loading-fill" id="loadingFill"></div></div>
+            <div class="loading-pct" id="loadingPct">0%</div>
+            <span class="loading-label" id="loadingLabel">Preparing analysis...</span>
+            <span class="loading-section" id="loadingSection"></span>
+          </div>
+          <button class="stop-btn" id="stopAnalysisBtn">
+            <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor"><rect x="6" y="6" width="12" height="12" rx="2"/></svg>
+            Stop Analysis
+          </button>
         </div>
-        <button class="stop-btn" id="stopAnalysisBtn">
-          <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor"><rect x="6" y="6" width="12" height="12" rx="2"/></svg>
-          Stop Analysis
-        </button>
-      </div>
 
-      <!-- Error State -->
-      <div class="analysis-error hidden" id="analysisError">
-        <p class="error-msg" id="errorMsg"></p>
-        <button class="retry-btn" id="retryBtn">Try Again</button>
+        <!-- Error State -->
+        <div class="analysis-error hidden" id="analysisError">
+          <p class="error-msg" id="errorMsg"></p>
+          <button class="retry-btn" id="retryBtn">Try Again</button>
+        </div>
       </div>
     </div>
 
-    <!-- Previously Run Reports -->
-    <div class="saved-section" id="savedSection">
-      <div class="saved-header" id="savedToggle">
-        <h3 class="saved-title">Previously Run Reports</h3>
-        <span class="saved-count" id="savedCount">0</span>
-        <svg class="saved-chevron" viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+    <!-- Tab: Previously Run Reports -->
+    <div class="landing-tab-panel" id="panel-saved">
+      <div class="saved-section" id="savedSection">
+        <div class="saved-list" id="savedList"></div>
+        <div class="saved-empty hidden" id="savedEmpty">No reports yet. Run your first analysis to get started.</div>
       </div>
-      <div class="saved-list" id="savedList"></div>
     </div>
 
     <div class="user-info">
